@@ -30,24 +30,16 @@ An AI coding agent usually does not know any of this.
 
 So a simple task can become:
 
-```text
-Task
- ↓
-Search the repository
- ↓
-Read many unrelated files
- ↓
-Infer the architecture
- ↓
-Guess hidden business rules
- ↓
-Find the implementation
- ↓
-Modify code
- ↓
-Discover a forgotten dependency
- ↓
-Break something else
+```mermaid
+flowchart TB
+  T[Task] --> S[Search the repository]
+  S --> R[Read many unrelated files]
+  R --> I[Infer the architecture]
+  I --> G[Guess hidden business rules]
+  G --> F[Find the implementation]
+  F --> M[Modify code]
+  M --> D[Discover a forgotten dependency]
+  D --> B[Break something else]
 ```
 
 This wastes context, increases cost, and makes AI-assisted development less reliable.
@@ -56,37 +48,79 @@ This wastes context, increases cost, and makes AI-assisted development less reli
 
 ## The Idea
 
-AI-Friendly Repo treats the repository as two layers:
+> **AI-Friendly Repo does not replace traditional software architecture.** It adds an **Agent Context Layer** on top of it.
 
-```text
-┌─────────────────────────────────────┐
-│          Knowledge Layer            │
-│                                     │
-│  Agent Rules                        │
-│  Project Map                        │
-│  Architecture                       │
-│  Domain Knowledge                   │
-│  Contracts / Interfaces             │
-│  Invariants                         │
-│  ADRs                               │
-│  Context Index                      │
-└──────────────────┬──────────────────┘
-                   │
-                   ↓
-┌─────────────────────────────────────┐
-│             Code Layer              │
-│                                     │
-│  iOS                                │
-│  Backend                            │
-│  Web                                │
-│  Workers                            │
-│  Infrastructure                     │
-└─────────────────────────────────────┘
+It is not “AI-MVVM”. Traditional architecture is not obsolete. The upgrade is:
+
+```mermaid
+flowchart TB
+  old["Knowledge Layer + Code Layer"] --> neu["AI Context Architecture + Software Architecture"]
+  neu --> impl[Implementation]
 ```
 
-The AI should not start by reading the entire codebase.
+```mermaid
+flowchart TB
+  repo[AI-Friendly Repository]
+  repo --> ctx["AI Context Architecture<br/>how an agent understands, navigates, and verifies code"]
+  repo --> sw["Software Architecture<br/>how the program runs"]
+```
 
-It should **navigate the knowledge layer first**, then progressively enter the relevant part of the codebase.
+Software architecture stays conventional:
+
+```mermaid
+flowchart LR
+  subgraph ios["iOS"]
+    MVVM
+    TCA
+    Clean
+    Feature
+  end
+  subgraph backend["Backend"]
+    DDD
+    Clean2[Clean]
+    Hexagonal
+    DI["Dependency Inversion"]
+  end
+```
+
+The full model:
+
+```mermaid
+flowchart TB
+  repo[AI-Friendly Repo]
+  repo --> ctx[AI Context Architecture]
+  repo --> sw[Software Architecture]
+  ctx --> rules[Rules]
+  ctx --> maps[Maps]
+  ctx --> domain[Domain]
+  rules --> contracts[Contracts]
+  maps --> invariants[Invariants]
+  domain --> adr[ADR]
+  sw --> mvvm[MVVM]
+  sw --> ddd[DDD]
+  sw --> clean[Clean]
+  mvvm --> feature[Feature]
+  ddd --> di[DI]
+  clean --> hex[Hexagonal]
+  contracts --> code[Code]
+  invariants --> code
+  adr --> code
+  feature --> code
+  di --> code
+  hex --> code
+```
+
+On a task, the agent walks the context layer first, then the runtime layer:
+
+```mermaid
+flowchart TB
+  task[AI TASK]
+  task --> ctx["AI Context Layer<br/>Rules · Maps · Domain · Contract<br/>Invariants · ADR · Index · Tests"]
+  ctx --> runtime["Runtime Layer<br/>MVVM / TCA / Clean<br/>DDD / Hexagonal / DI"]
+  runtime --> code[Actual Code]
+```
+
+See [Philosophy](spec/philosophy.md).
 
 ---
 
@@ -96,30 +130,28 @@ It should **navigate the knowledge layer first**, then progressively enter the r
 
 Instead of:
 
-```text
-Read everything
-    ↓
-Try to understand everything
+```mermaid
+flowchart TB
+  A[Read everything] --> B[Try to understand everything]
 ```
 
-AI-Friendly Repo uses:
+This project names a second architecture plane: **Cognitive Architecture**.
+
+```mermaid
+flowchart LR
+  subgraph runtime["Runtime Architecture — how the program runs"]
+    direction TB
+    V[View] --> VM[ViewModel] --> UC[UseCase] --> RP[Repository] --> API
+  end
+  subgraph cognitive["Cognitive Architecture — how an agent understands the program"]
+    direction TB
+    T[Task] --> Map --> Dom[Domain] --> Con[Contract] --> Inv[Invariant] --> Test --> Impl[Implementation]
+  end
+```
 
 ```text
-Map
- ↓
-Locate
- ↓
-Understand the domain
- ↓
-Read the contract
- ↓
-Read the rules
- ↓
-Inspect the relevant implementation
- ↓
-Modify
- ↓
-Verify
+Runtime Flow     →  how does the program run?
+Cognitive Flow   →  how does the AI understand the program?
 ```
 
 ---
@@ -131,7 +163,7 @@ This repository offers two distinct usage modes depending on your needs:
 ### Mode A: Knowledge-only Template
 **Use case**: You already have an existing codebase and only want to make it AI-Friendly.
 - Copy `template/AGENTS.md`, `template/.agents/`, and `template/docs/` to your root directory.
-- You don't need to restructure your entire code layer immediately. Just map it using the knowledge layer.
+- You don't need to replace MVVM / DDD / Clean. Map the existing runtime architecture with the knowledge layer.
 
 ### Mode B: New Project Template
 **Use case**: Starting a project from scratch with an AI-Native architecture.
@@ -171,24 +203,13 @@ The map is a navigation layer, not a giant manual.
 
 Information is organized by depth:
 
-```text
-Level 0
-Agent instructions
-
-Level 1
-Project map
-
-Level 2
-Architecture + domain map
-
-Level 3
-Interfaces / contracts
-
-Level 4
-Invariants + ADRs + tests
-
-Level 5
-Implementation
+```mermaid
+flowchart TB
+  L0["L0 Agent instructions"] --> L1["L1 Project map"]
+  L1 --> L2["L2 Architecture + domain map"]
+  L2 --> L3["L3 Interfaces / contracts"]
+  L3 --> L4["L4 Invariants + ADRs + tests"]
+  L4 --> L5["L5 Implementation"]
 ```
 
 Agents expand the context only when necessary.
@@ -252,6 +273,32 @@ The interface describes what a component can do.
 The implementation describes how it does it.
 
 Agents should normally understand the interface before opening the implementation.
+
+AI-Friendly is **not** abstraction-heavy. This is not AI-friendly:
+
+```text
+UserService
+IUserService
+UserServiceProtocol
+BaseUserService
+UserServiceFactory
+UserServiceAdapter
+UserServiceFacade
+```
+
+This is:
+
+```text
+one clear responsibility
+        +
+one clear Interface
+        +
+one or few Implementations
+        +
+clear rules
+```
+
+> **Explicit structure, not excessive abstraction.**
 
 ---
 
@@ -433,9 +480,25 @@ project/
     └── mixed/
 ```
 
-The exact implementation is not mandatory.
+The exact implementation is not mandatory. The principles are.
 
-The principles are.
+**AI-Friendly Repo does not prescribe a single runtime architecture.**
+
+```text
+iOS:
+MVVM
+TCA
+Clean Architecture
+Feature Architecture
+
+Backend:
+DDD
+Clean Architecture
+Hexagonal Architecture
+Vertical Slice
+```
+
+All of these are valid. Whatever **Runtime Architecture** you choose, it must still satisfy the **AI Context Architecture**.
 
 ---
 
@@ -456,11 +519,46 @@ examples/
 └── mixed/
 ```
 
-The example demonstrates:
+The examples show **traditional software architecture plus an AI Context Layer**, not a replacement architecture:
+
+### iOS (`examples/ios/`)
+
+```mermaid
+flowchart TB
+  A[AI Context Layer] --> B[Feature-based Architecture]
+  B --> C[MVVM / Clean]
+  C --> D[Swift Implementation]
+```
+
+### FastAPI (`examples/fastapi/`)
+
+```mermaid
+flowchart TB
+  A[AI Context Layer] --> B[Feature / Domain]
+  B --> C[DDD / Clean / Dependency Inversion]
+  C --> D[FastAPI Implementation]
+```
+
+### Mixed (`examples/mixed/`)
+
+```text
+                     AI Context Layer
+                            │
+             ┌──────────────┴──────────────┐
+             ↓                             ↓
+      iOS Architecture              Backend Architecture
+       MVVM / Clean                  DDD / Clean
+             │                             │
+             └──────────────┬──────────────┘
+                            ↓
+                       System Domain
+```
+
+They also demonstrate:
 
 * Feature-based architecture
 * AI-readable documentation
-* Interface / implementation separation
+* Interface / implementation separation (without abstraction-for-its-own-sake)
 * Domain contracts
 * Business invariants
 * ADRs
@@ -512,12 +610,13 @@ AI-Friendly Repo is not:
 * a replacement for Claude Code
 * a prompt collection
 * a specific programming framework
-* a single application architecture
+* a single application architecture (not AI-MVVM, not a replacement for Clean / DDD)
 * a requirement to use one specific AI provider
+* a requirement to add more abstractions
 
-It is a **repository design methodology**.
+It is a **repository design methodology**: an Agent Context Layer on top of conventional software architecture.
 
-It can be used with different languages, frameworks, and coding agents.
+It can be used with different languages, frameworks, runtime architectures, and coding agents.
 
 ---
 
@@ -575,6 +674,10 @@ Indexes, symbols, dependencies, and other structural information should be gener
 
 Human-written documentation should focus on intent, rules, and decisions.
 
+### 6. AI context over a new runtime brand
+
+Do not invent AI-MVVM. Keep MVC / MVVM / DDD / Clean / Hexagonal / TCA as Runtime Architecture. Add an AI Context Architecture so an agent can use them.
+
 ---
 
 # Quick Start
@@ -598,10 +701,12 @@ Explore the templates:
 template/
 ```
 
-Explore the complete example:
+Explore the complete examples:
 
 ```text
-examples/ios-fastapi/
+examples/ios/
+examples/fastapi/
+examples/mixed/
 ```
 
 Copy the template into a new project and adapt:
@@ -620,9 +725,9 @@ Then begin development.
 
 AI-Friendly Repo is an evolving open-source standard.
 
-The goal is not to define a single “correct” architecture.
+The goal is not to define a single “correct” runtime architecture.
 
-The goal is to discover practical patterns that make software repositories easier for both humans and AI coding agents to understand and maintain.
+The goal is to specify a cross-architecture **AI Context Architecture** — practical patterns that make repositories easier for both humans and AI coding agents to understand and maintain.
 
 Contributions, experiments, examples, and alternative approaches are welcome.
 

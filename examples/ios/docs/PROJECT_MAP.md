@@ -1,16 +1,26 @@
 # Project Map (iOS App)
 
-This document explains the composition and core directory structure of the project.
+This example stacks an AI Context Layer on a conventional iOS runtime:
+
+```text
+AI Context Layer
+        ↓
+Feature-based Architecture
+        ↓
+MVVM / Clean
+        ↓
+Swift Implementation
+```
 
 ## Top-Level Directory
-- `AGENTS.md` - Global AI workflow guide entry.
-- `.agents/` - AI indices and skills pool.
-- `docs/` - **The Knowledge Layer of the entire project** (Architecture, Domain models, ADRs).
-- `ios/` - **The concrete Code Layer** (Native iOS implementations).
+- `AGENTS.md` — Agent working contract (cognitive entry).
+- `.agents/` — Indices and skills.
+- `docs/` — **AI Context Architecture** (architecture, domains, ADRs, invariants).
+- `ios/` — **Runtime Architecture + implementation** (Feature + MVVM / Clean).
 
 ## Major Subsystems and Locations
 1. **Voice Domain**
-   - Knowledge Layer: [docs/domains/voice.md](file:///Users/puyue/main/标准项目仓库设计/examples/ios/docs/domains/voice.md)
-   - Code Layer: [ios/Features/Voice/](file:///Users/puyue/main/标准项目仓库设计/examples/ios/ios/Features/Voice/)
+   - Context: [docs/domains/voice.md](domains/voice.md)
+   - Runtime: `ios/Features/Voice/` (`Interface/` → `Application/`)
 2. **Navigation Domain**
-   - Code Layer: [ios/Features/Navigation/](file:///Users/puyue/main/标准项目仓库设计/examples/ios/ios/Features/Navigation/)
+   - Runtime: `ios/Features/Navigation/`

@@ -1,16 +1,27 @@
 # 🤖 AGENTS.md (Root)
 
 ## Project Introduction
-This project is a pure iOS (SwiftUI) application project. It demonstrates how to build a project knowledge layer using the "AI-Friendly Repo Standard 1.0".
+This is a SwiftUI iOS app. It demonstrates **AI Context Architecture on top of Feature + MVVM / Clean**, not a replacement for MVVM.
+
+```text
+AI Context Layer (this file, docs/, .agents/)
+        ↓
+Feature-based boundaries (ios/Features/*)
+        ↓
+MVVM / Clean (runtime)
+        ↓
+Swift implementation
+```
 
 ## AI Navigation Guide
-Please strictly follow this order to understand the project context:
+Follow this **cognitive** order before opening implementation:
 
-1. **Macro Map**: [docs/PROJECT_MAP.md](file:///Users/puyue/main/标准项目仓库设计/examples/ios/docs/PROJECT_MAP.md) - Understand the overall structure.
-2. **Domain Knowledge**: `docs/domains/*.md` - When encountering specific business logic (e.g., Voice), read the corresponding Domain document first.
-3. **Architecture & Decisions**: `docs/architecture/` and `docs/adr/`.
-4. **Concrete Implementation**: Only dive into the concrete code in the `ios/` directory when troubleshooting bugs or executing modification tasks.
+1. **Macro Map**: [docs/PROJECT_MAP.md](docs/PROJECT_MAP.md)
+2. **Domain Knowledge**: `docs/domains/*.md` (e.g. Voice)
+3. **Architecture & Decisions**: `docs/architecture/` and `docs/adr/`
+4. **Runtime code**: `ios/` — View / ViewModel / UseCase / Repository. Prefer `Interface/` before concrete types.
 
 ## Global Invariants
-- All business modules in `ios/` must be divided by Feature boundaries. Pure horizontal layering (like mixing all business logic in `Controllers/`, `Models/`) is strictly prohibited.
-- Do not explain all details in this file; this is just the map entrance!
+- Business modules in `ios/` are split by Feature. Do not dump all business into `Controllers/` / `Models/`.
+- MVVM / Clean remains the runtime architecture; do not invent an "AI-MVVM".
+- This file is the map entrance, not an encyclopedia.

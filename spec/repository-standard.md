@@ -7,15 +7,132 @@
 
 ---
 
+# 0. Architecture Model
+
+This standard specifies an **AI Context Architecture**. It does **not** specify a single **Runtime Architecture**.
+
+```text
+AI-Friendly Repository
+│
+├── AI Context Architecture
+│       = how an agent understands, navigates, and verifies code
+│
+└── Software Architecture
+        = how the program runs
+```
+
+```text
+                    AI-Friendly Repo
+                           │
+             ┌─────────────┴─────────────┐
+             │                           │
+             ▼                           ▼
+   AI Context Architecture       Software Architecture
+             │                           │
+      ┌──────┼──────┐              ┌─────┼─────┐
+      │      │      │              │     │     │
+     Rules  Maps  Domain          MVVM  DDD   Clean
+      │      │      │              │     │     │
+ Contracts Invariants ADR       Feature DI  Hexagonal
+      │      │      │              │     │     │
+      └──────┼──────┘              └─────┼─────┘
+             │                           │
+             └──────────────┬────────────┘
+                            ▼
+                           Code
+```
+
+Existing artifacts in this spec belong to **AI Context Architecture**:
+
+```text
+Map
+Domain
+Contract
+Invariant
+ADR
+Index
+Test
+```
+
+These belong to **Software Architecture** (chosen per project, not prescribed):
+
+```text
+MVVM
+Clean Architecture
+DDD
+Hexagonal
+Repository
+DI
+```
+
+**Runtime Architecture** — how the program runs:
+
+```text
+View
+ ↓
+ViewModel
+ ↓
+UseCase
+ ↓
+Repository
+ ↓
+API
+```
+
+**Cognitive Architecture** — how an agent understands the program:
+
+```text
+Task
+ ↓
+Map
+ ↓
+Domain
+ ↓
+Contract
+ ↓
+Invariant
+ ↓
+Test
+ ↓
+Implementation
+```
+
+```text
+Runtime Flow     →  how does the program run?
+Cognitive Flow   →  how does the AI understand the program?
+```
+
+**AI-Friendly Repo does not prescribe a single runtime architecture.**
+
+```text
+iOS:
+MVVM
+TCA
+Clean Architecture
+Feature Architecture
+
+Backend:
+DDD
+Clean Architecture
+Hexagonal Architecture
+Vertical Slice
+```
+
+Whatever Runtime Architecture you choose, it must still satisfy the AI Context Architecture.
+
+Rules 01–38 below implement the AI Context Architecture. They do not replace MVC / MVVM / DDD.
+
+---
+
 # I. Core Principles
 
 ## Rule 01 — Repositories must be divided into a "Knowledge Layer" and a "Code Layer"
 
-The entire project must be abstracted as:
+The Knowledge Layer **is** the AI Context Architecture. The Code Layer holds Software Architecture plus implementation:
 
 ```text
 Repository
-├── Knowledge Layer
+├── Knowledge Layer              AI Context Architecture
 │   ├── Agent Rules
 │   ├── Project Map
 │   ├── Architecture
@@ -25,7 +142,7 @@ Repository
 │   ├── ADRs
 │   └── Generated Index
 │
-└── Code Layer
+└── Code Layer                   Software Architecture + Implementation
     ├── iOS
     ├── Backend
     ├── Web
@@ -34,7 +151,7 @@ Repository
 ```
 
 - **Knowledge Layer**: Explains what the project is, why it's designed this way, where things are, and the rules.
-- **Code Layer**: Contains the actual concrete implementations.
+- **Code Layer**: The runtime architecture (MVVM, DDD, Clean, …) and the concrete implementations.
 
 ---
 
@@ -92,6 +209,7 @@ File locations, symbols, dependencies, and test links should ideally be generate
 
 ## Rule 10 — Use Vertical Slice / Feature-based Architecture
 Organize code by feature (e.g., `features/voice/`, `features/navigation/`) rather than technical type (`routers/`, `services/`, `models/`).
+This is an AI context boundary. It sits **inside** the chosen runtime architecture (MVVM, DDD, Clean, …); it does not replace that architecture.
 
 ## Rule 11 — The Feature is the primary context boundary for AI
 An AI working on a task should find most of the relevant interfaces, application logic, infrastructure, APIs, and tests within that feature's boundary.
@@ -219,3 +337,36 @@ Recommended (but flexible) budgets:
 - **L2 (Domain)**: Domain-specific, concise
 - **L3 (Interface/Contract)**: Highly targeted
 - **L4/L5**: Fetched on demand as needed
+
+## Rule 37 — This standard does not prescribe a single runtime architecture
+AI-Friendly Repo does not invent AI-MVVM or replace Clean Architecture / DDD. Any runtime architecture is valid if the AI Context Architecture can still locate, constrain, and verify changes.
+
+## Rule 38 — Explicit structure, not excessive abstraction
+
+AI-Friendly ≠ Abstraction-Heavy.
+
+Not this:
+
+```text
+UserService
+IUserService
+UserServiceProtocol
+BaseUserService
+UserServiceFactory
+UserServiceAdapter
+UserServiceFacade
+```
+
+This:
+
+```text
+one clear responsibility
+        +
+one clear Interface
+        +
+one or few Implementations
+        +
+clear rules
+```
+
+> Explicit structure, not excessive abstraction.

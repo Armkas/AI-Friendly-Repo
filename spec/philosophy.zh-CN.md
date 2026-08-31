@@ -24,6 +24,143 @@
 
 > **让 AI 在不读完整个项目的情况下，仍然能够正确理解整个项目。**
 
+## 两个平面：AI Context Architecture + Software Architecture
+
+AI-Friendly Repo **不是**新的 MVC，也不是「AI-MVVM」。传统架构并没有过时。
+
+它是在现有软件架构之上增加一个 **Agent Context Layer**。
+
+```text
+Knowledge Layer + Code Layer
+
+        ↓
+
+AI Context Architecture
+        +
+Software Architecture
+        ↓
+Implementation
+```
+
+```text
+AI-Friendly Repository
+│
+├── AI Context Architecture
+│       = AI 如何理解、导航、验证代码
+│
+└── Software Architecture
+        = 程序如何运行
+```
+
+软件架构仍可以是传统的：
+
+```text
+iOS:
+MVVM / TCA / Clean / Feature Architecture
+
+Backend:
+DDD / Clean / Hexagonal / Dependency Inversion
+```
+
+完整模型：
+
+```text
+                    AI-Friendly Repo
+                           │
+             ┌─────────────┴─────────────┐
+             │                           │
+             ▼                           ▼
+   AI Context Architecture       Software Architecture
+             │                           │
+      ┌──────┼──────┐              ┌─────┼─────┐
+      │      │      │              │     │     │
+     Rules  Maps  Domain          MVVM  DDD   Clean
+      │      │      │              │     │     │
+ Contracts Invariants ADR       Feature DI  Hexagonal
+      │      │      │              │     │     │
+      └──────┼──────┘              └─────┼─────┘
+             │                           │
+             └──────────────┬────────────┘
+                            ▼
+                           Code
+```
+
+**Runtime Architecture** —— 程序怎么跑：
+
+```text
+View
+ ↓
+ViewModel
+ ↓
+UseCase
+ ↓
+Repository
+ ↓
+API
+```
+
+**Cognitive Architecture** —— AI 怎么理解程序：
+
+```text
+Task
+ ↓
+Map
+ ↓
+Domain
+ ↓
+Contract
+ ↓
+Invariant
+ ↓
+Test
+ ↓
+Implementation
+```
+
+```text
+Runtime Flow     →  程序怎么跑？
+Cognitive Flow   →  AI 怎么理解程序？
+```
+
+Agent 走过的栈是：
+
+```text
+Agent Layer            AI 应该怎么工作
+Knowledge Layer        项目是什么、为什么、有哪些规则
+Software Architecture  MVVM / DDD / Clean / Hexagonal / TCA / …
+Implementation         Swift / Python / SQL / 基础设施
+```
+
+本标准**不规定**某一种运行时架构。iOS 可以继续用 MVVM 或 TCA；后端可以继续用 DDD、Clean、Hexagonal 或 Vertical Slice。无论 Runtime Architecture 选择什么，都必须满足 AI Context Architecture。
+
+AI-Friendly ≠ Abstraction-Heavy。不要这样：
+
+```text
+UserService
+IUserService
+UserServiceProtocol
+BaseUserService
+UserServiceFactory
+UserServiceAdapter
+UserServiceFacade
+```
+
+而要这样：
+
+```text
+一个清晰职责
+        +
+一个清晰 Interface
+        +
+一个或少量 Implementation
+        +
+清晰规则
+```
+
+> **Explicit structure，不是 excessive abstraction。**
+
+本文其余部分（地图、契约、不变量、ADR、索引、测试）就是 AI Context Architecture。Feature 边界和依赖倒置让运行时平面更容易被 Agent 使用，并不取代它。
+
 ---
 
 # 一、核心理念
@@ -39,12 +176,14 @@ code + a short README + comments
 AI-Friendly 项目是：
 
 ```text
-Knowledge Layer + Code Layer
+AI Context Architecture  +  Software Architecture  →  Implementation
 ```
+
+知识层就是 AI Context Architecture。代码层容纳运行时架构和实现：
 
 ```text
 project
-├── knowledge layer
+├── knowledge layer          AI Context Architecture
 │   ├── agent rules
 │   ├── project map
 │   ├── architecture
@@ -54,9 +193,9 @@ project
 │   ├── ADRs
 │   └── indexes
 │
-└── code layer
-    ├── iOS
-    ├── backend
+└── code layer               Software Architecture + Implementation
+    ├── iOS                  例如 Feature + MVVM / Clean
+    ├── backend              例如 Feature + DDD / Hexagonal
     ├── web
     ├── worker
     └── other systems
@@ -196,6 +335,8 @@ VoiceSession   → ios/features/voice/interface/
 
 # 六、代码架构
 
+运行时模式（MVVM、DDD、Clean 等）由项目自行选择。本标准要求的是：运行时代码有 **Agent 能落进去的清晰边界**。
+
 ## 18. 按 Feature / Domain 组织，而非按文件类型
 
 ```text
@@ -223,6 +364,8 @@ features/            不要   controllers/
 ## 21. 重要业务能力必须显式抽象
 
 Swift `protocol`、Python `Protocol`，或等价的 interface / trait / abstract type。
+
+要的是明确结构，不是过量抽象：一个职责 → 一个接口 → 少量实现。一堆用不上的 Adapter 会让 Agent 更难，而不是更容易。
 
 ## 22. Interface 先于 Implementation 被阅读
 
@@ -488,42 +631,50 @@ AI-Friendly 结构。
 # 二十二、最终模型
 
 ```text
+                    AI-Friendly Repo
+                           │
+             ┌─────────────┴─────────────┐
+             │                           │
+             ▼                           ▼
+   AI Context Architecture       Software Architecture
+             │                           │
+      ┌──────┼──────┐              ┌─────┼─────┐
+      │      │      │              │     │     │
+     Rules  Maps  Domain          MVVM  DDD   Clean
+      │      │      │              │     │     │
+ Contracts Invariants ADR       Feature DI  Hexagonal
+      │      │      │              │     │     │
+      └──────┼──────┘              └─────┼─────┘
+             │                           │
+             └──────────────┬────────────┘
+                            ▼
+                           Code
+```
+
+Cognitive Architecture（Agent 如何理解）叠在 Runtime Architecture（程序如何运行）之上：
+
+```text
                          AI TASK
                             │
                             ▼
-                  ┌──────────────────┐
-                  │   AGENTS.md       │  working rules
-                  └────────┬─────────┘
+          ┌─────────────────────────────────┐
+          │     AI Context Architecture     │
+          │                                 │
+          │  AGENTS → Map → Domain          │
+          │  Contract → Invariant / ADR     │
+          │  Tests → Dependency / Impact    │
+          └────────────────┬────────────────┘
                            ▼
-                  ┌──────────────────┐
-                  │   PROJECT MAP     │  global map
-                  └────────┬─────────┘
+          ┌─────────────────────────────────┐
+          │     Software Architecture       │
+          │  MVVM / TCA / Clean / DDD / …   │
+          └────────────────┬────────────────┘
                            ▼
-                  ┌──────────────────┐
-                  │   DOMAIN MAP      │  the business
-                  └────────┬─────────┘
+          ┌─────────────────────────────────┐
+          │     Implementation              │
+          └────────────────┬────────────────┘
                            ▼
-                  ┌──────────────────┐
-                  │ Interface/Contract│  what a module does
-                  └────────┬─────────┘
-                           ▼
-                  ┌──────────────────┐
-                  │  Invariant / ADR  │  what must not break, and why
-                  └────────┬─────────┘
-                           ▼
-                  ┌──────────────────┐
-                  │      Tests        │  what must actually hold
-                  └────────┬─────────┘
-                           ▼
-                  ┌──────────────────┐
-                  │ Dependency/Impact │  who affects whom
-                  └────────┬─────────┘
-                           ▼
-                  ┌──────────────────┐
-                  │  Implementation   │  how it is done
-                  └────────┬─────────┘
-                           ▼
-                        MODIFY → TEST → UPDATE KNOWLEDGE
+                 MODIFY → TEST → UPDATE KNOWLEDGE
 ```
 
 ---

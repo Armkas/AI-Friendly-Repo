@@ -25,6 +25,143 @@ The goal is:
 
 > **Let the AI understand the entire project without reading all of it.**
 
+## Two planes: AI Context Architecture + Software Architecture
+
+AI-Friendly Repo is **not** a new MVC, and not “AI-MVVM”. Traditional architecture is not obsolete.
+
+It adds an **Agent Context Layer** on top of existing software architecture.
+
+```text
+Knowledge Layer + Code Layer
+
+        ↓
+
+AI Context Architecture
+        +
+Software Architecture
+        ↓
+Implementation
+```
+
+```text
+AI-Friendly Repository
+│
+├── AI Context Architecture
+│       = how an agent understands, navigates, and verifies code
+│
+└── Software Architecture
+        = how the program runs
+```
+
+Software architecture stays conventional:
+
+```text
+iOS:
+MVVM / TCA / Clean / Feature Architecture
+
+Backend:
+DDD / Clean / Hexagonal / Dependency Inversion
+```
+
+The full model:
+
+```text
+                    AI-Friendly Repo
+                           │
+             ┌─────────────┴─────────────┐
+             │                           │
+             ▼                           ▼
+   AI Context Architecture       Software Architecture
+             │                           │
+      ┌──────┼──────┐              ┌─────┼─────┐
+      │      │      │              │     │     │
+     Rules  Maps  Domain          MVVM  DDD   Clean
+      │      │      │              │     │     │
+ Contracts Invariants ADR       Feature DI  Hexagonal
+      │      │      │              │     │     │
+      └──────┼──────┘              └─────┼─────┘
+             │                           │
+             └──────────────┬────────────┘
+                            ▼
+                           Code
+```
+
+**Runtime Architecture** — how the program runs:
+
+```text
+View
+ ↓
+ViewModel
+ ↓
+UseCase
+ ↓
+Repository
+ ↓
+API
+```
+
+**Cognitive Architecture** — how an agent understands the program:
+
+```text
+Task
+ ↓
+Map
+ ↓
+Domain
+ ↓
+Contract
+ ↓
+Invariant
+ ↓
+Test
+ ↓
+Implementation
+```
+
+```text
+Runtime Flow     →  how does the program run?
+Cognitive Flow   →  how does the AI understand the program?
+```
+
+The stack an agent walks is:
+
+```text
+Agent Layer            how the AI is supposed to work
+Knowledge Layer        what the project is, why, and which rules apply
+Software Architecture  MVVM / DDD / Clean / Hexagonal / TCA / …
+Implementation         Swift / Python / SQL / infrastructure
+```
+
+This standard does **not** prescribe a single runtime architecture. iOS may keep MVVM or TCA; a backend may keep DDD, Clean, Hexagonal, or Vertical Slice. Whatever you choose must still satisfy the AI Context Architecture.
+
+AI-Friendly ≠ Abstraction-Heavy. Not this:
+
+```text
+UserService
+IUserService
+UserServiceProtocol
+BaseUserService
+UserServiceFactory
+UserServiceAdapter
+UserServiceFacade
+```
+
+This:
+
+```text
+one clear responsibility
+        +
+one clear Interface
+        +
+one or few Implementations
+        +
+clear rules
+```
+
+> **Explicit structure, not excessive abstraction.**
+
+The rest of this document (maps, contracts, invariants, ADRs, indexes, tests) is the AI Context Architecture. Feature boundaries and dependency inversion make the runtime plane easier for an agent to use; they do not replace it.
+
 ---
 
 # I. Core Ideas
@@ -40,12 +177,14 @@ code + a short README + comments
 An AI-Friendly project is:
 
 ```text
-Knowledge Layer + Code Layer
+AI Context Architecture  +  Software Architecture  →  Implementation
 ```
+
+The Knowledge Layer is the AI Context Architecture. The Code Layer holds the runtime architecture and the implementation:
 
 ```text
 project
-├── knowledge layer
+├── knowledge layer          AI Context Architecture
 │   ├── agent rules
 │   ├── project map
 │   ├── architecture
@@ -55,9 +194,9 @@ project
 │   ├── ADRs
 │   └── indexes
 │
-└── code layer
-    ├── iOS
-    ├── backend
+└── code layer               Software Architecture + Implementation
+    ├── iOS                  e.g. Feature + MVVM / Clean
+    ├── backend              e.g. Feature + DDD / Hexagonal
     ├── web
     ├── worker
     └── other systems
@@ -201,6 +340,8 @@ Humans maintain: business meaning, architectural intent, design rationale, busin
 
 # VI. Code Architecture
 
+The runtime pattern (MVVM, DDD, Clean, …) is chosen per project. What this standard requires is that the runtime code has **clear boundaries** an agent can land in.
+
 ## 18. Organize by feature / domain, not by file type
 
 ```text
@@ -228,6 +369,8 @@ what interfaces it exposes, its rules, and its tests.
 ## 21. Important business capabilities must be explicitly abstracted
 
 Swift `protocol`, Python `Protocol`, or the equivalent interface / trait / abstract type.
+
+Explicit structure, not excessive abstraction: one responsibility → one interface → few implementations. A pile of unused adapters is harder for an agent, not easier.
 
 ## 22. Interfaces are read before implementations
 
@@ -501,42 +644,50 @@ AI-friendly structure immediately.
 # XXII. The Final Model
 
 ```text
+                    AI-Friendly Repo
+                           │
+             ┌─────────────┴─────────────┐
+             │                           │
+             ▼                           ▼
+   AI Context Architecture       Software Architecture
+             │                           │
+      ┌──────┼──────┐              ┌─────┼─────┐
+      │      │      │              │     │     │
+     Rules  Maps  Domain          MVVM  DDD   Clean
+      │      │      │              │     │     │
+ Contracts Invariants ADR       Feature DI  Hexagonal
+      │      │      │              │     │     │
+      └──────┼──────┘              └─────┼─────┘
+             │                           │
+             └──────────────┬────────────┘
+                            ▼
+                           Code
+```
+
+Cognitive Architecture sits on Runtime Architecture:
+
+```text
                          AI TASK
                             │
                             ▼
-                  ┌──────────────────┐
-                  │   AGENTS.md       │  working rules
-                  └────────┬─────────┘
+          ┌─────────────────────────────────┐
+          │     AI Context Architecture     │
+          │                                 │
+          │  AGENTS → Map → Domain          │
+          │  Contract → Invariant / ADR     │
+          │  Tests → Dependency / Impact    │
+          └────────────────┬────────────────┘
                            ▼
-                  ┌──────────────────┐
-                  │   PROJECT MAP     │  global map
-                  └────────┬─────────┘
+          ┌─────────────────────────────────┐
+          │     Software Architecture       │
+          │  MVVM / TCA / Clean / DDD / …   │
+          └────────────────┬────────────────┘
                            ▼
-                  ┌──────────────────┐
-                  │   DOMAIN MAP      │  the business
-                  └────────┬─────────┘
+          ┌─────────────────────────────────┐
+          │     Implementation              │
+          └────────────────┬────────────────┘
                            ▼
-                  ┌──────────────────┐
-                  │ Interface/Contract│  what a module does
-                  └────────┬─────────┘
-                           ▼
-                  ┌──────────────────┐
-                  │  Invariant / ADR  │  what must not break, and why
-                  └────────┬─────────┘
-                           ▼
-                  ┌──────────────────┐
-                  │      Tests        │  what must actually hold
-                  └────────┬─────────┘
-                           ▼
-                  ┌──────────────────┐
-                  │ Dependency/Impact │  who affects whom
-                  └────────┬─────────┘
-                           ▼
-                  ┌──────────────────┐
-                  │  Implementation   │  how it is done
-                  └────────┬─────────┘
-                           ▼
-                        MODIFY → TEST → UPDATE KNOWLEDGE
+                 MODIFY → TEST → UPDATE KNOWLEDGE
 ```
 
 ---

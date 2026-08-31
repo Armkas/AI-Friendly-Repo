@@ -1,11 +1,14 @@
 # 🍏 iOS AGENTS.md
 
+## Runtime Architecture
+This directory is the **runtime plane**. Keep Feature + MVVM / Clean. The AI Context Layer lives in root `AGENTS.md` and `docs/`.
+
 ## Local Rules
-Code under this directory (and its subdirectories) must adhere to the following iOS / Swift development conventions:
+Code under this directory must adhere to:
 
-1. **Architectural Pattern**: Adopt Clean Architecture concepts.
-2. **Dependency Inversion**: Dependencies between business modules must use `Protocol`, and the Protocol definition should be located in the `Interface/` directory.
-3. **UI Framework**: Exclusively use SwiftUI. Avoid UIKit unless there is no alternative.
-4. **Concurrency Model**: Use Swift Concurrency (`async/await`, `Task`, `actor`). Legacy completion handlers or GCD are forbidden.
+1. **Architectural Pattern**: Feature modules; MVVM / Clean at the runtime layer (View → ViewModel → UseCase / Service → Repository).
+2. **Dependency Inversion**: Cross-module dependencies go through `Protocol` in `Interface/`. One real capability → one protocol, not a stack of unused adapters.
+3. **UI Framework**: SwiftUI. Avoid UIKit unless there is no alternative.
+4. **Concurrency Model**: Swift Concurrency (`async/await`, `Task`, `actor`). No legacy completion handlers or GCD.
 
-> When working in the `ios/` directory, keep in mind the combined constraints of the root `AGENTS.md` and this file.
+> When working in `ios/`, stack root `AGENTS.md` with this file.

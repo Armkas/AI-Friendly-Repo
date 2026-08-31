@@ -3,6 +3,8 @@
 ## Project Introduction
 This is a project skeleton built on the [AI-Friendly Repo](https://github.com/Armkas/ai-friendly-repo) standard.
 
+The knowledge layer is the **AI Context Architecture**. Declare your **runtime** architecture in `docs/` and in platform `AGENTS.md` (MVVM, DDD, Clean, Hexagonal, TCA, …). Do not replace it with an "AI-*" variant.
+
 ## AI Navigation Guide
 1. **Macro Map**: [docs/PROJECT_MAP.md](docs/PROJECT_MAP.md) - Locate the core of the system.
 2. **Context Index**: [.agents/context-index.md](.agents/context-index.md) - Quickly find specific implementations or configurations.

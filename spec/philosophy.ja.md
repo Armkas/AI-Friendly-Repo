@@ -25,6 +25,143 @@
 
 > **プロジェクト全体を読まなくても、AI が正しく理解できること。**
 
+## 二つの平面：AI Context Architecture + Software Architecture
+
+AI-Friendly Repo は新しい MVC でも「AI-MVVM」でもない。従来のアーキテクチャは陳腐化していない。
+
+既存のソフトウェアアーキテクチャの上に **Agent Context Layer** を加える。
+
+```text
+Knowledge Layer + Code Layer
+
+        ↓
+
+AI Context Architecture
+        +
+Software Architecture
+        ↓
+Implementation
+```
+
+```text
+AI-Friendly Repository
+│
+├── AI Context Architecture
+│       = エージェントがコードを理解・ナビゲート・検証する方法
+│
+└── Software Architecture
+        = プログラムの動き方
+```
+
+ソフトウェアアーキテクチャは従来どおりでよい：
+
+```text
+iOS:
+MVVM / TCA / Clean / Feature Architecture
+
+Backend:
+DDD / Clean / Hexagonal / Dependency Inversion
+```
+
+全体モデル：
+
+```text
+                    AI-Friendly Repo
+                           │
+             ┌─────────────┴─────────────┐
+             │                           │
+             ▼                           ▼
+   AI Context Architecture       Software Architecture
+             │                           │
+      ┌──────┼──────┐              ┌─────┼─────┐
+      │      │      │              │     │     │
+     Rules  Maps  Domain          MVVM  DDD   Clean
+      │      │      │              │     │     │
+ Contracts Invariants ADR       Feature DI  Hexagonal
+      │      │      │              │     │     │
+      └──────┼──────┘              └─────┼─────┘
+             │                           │
+             └──────────────┬────────────┘
+                            ▼
+                           Code
+```
+
+**Runtime Architecture** —— プログラムはどう動くか：
+
+```text
+View
+ ↓
+ViewModel
+ ↓
+UseCase
+ ↓
+Repository
+ ↓
+API
+```
+
+**Cognitive Architecture** —— AI はどうプログラムを理解するか：
+
+```text
+Task
+ ↓
+Map
+ ↓
+Domain
+ ↓
+Contract
+ ↓
+Invariant
+ ↓
+Test
+ ↓
+Implementation
+```
+
+```text
+Runtime Flow     →  プログラムはどう動くか？
+Cognitive Flow   →  AI はどうプログラムを理解するか？
+```
+
+エージェントが辿るスタックは：
+
+```text
+Agent Layer            AI はどう働くべきか
+Knowledge Layer        プロジェクトは何か、なぜ、どのルールか
+Software Architecture  MVVM / DDD / Clean / Hexagonal / TCA / …
+Implementation         Swift / Python / SQL / インフラ
+```
+
+本標準は単一のランタイムアーキテクチャを**規定しない**。iOS は MVVM や TCA のままでよく、バックエンドは DDD、Clean、Hexagonal、Vertical Slice のままでよい。選んだ Runtime Architecture が何であれ、AI Context Architecture を満たさなければならない。
+
+AI-Friendly ≠ Abstraction-Heavy。こうではない：
+
+```text
+UserService
+IUserService
+UserServiceProtocol
+BaseUserService
+UserServiceFactory
+UserServiceAdapter
+UserServiceFacade
+```
+
+こうである：
+
+```text
+一つの明確な責務
+        +
+一つの明確な Interface
+        +
+一つまたは少数の Implementation
+        +
+明確なルール
+```
+
+> **Explicit structure であり、excessive abstraction ではない。**
+
+本書の残り（マップ、契約、不変条件、ADR、インデックス、テスト）が AI Context Architecture である。Feature 境界と依存性逆転はランタイム平面をエージェントが使いやすくするだけで、置き換えるものではない。
+
 ---
 
 # I. コアの考え方
@@ -40,12 +177,14 @@ code + a short README + comments
 AI-Friendly なプロジェクトは：
 
 ```text
-Knowledge Layer + Code Layer
+AI Context Architecture  +  Software Architecture  →  Implementation
 ```
+
+ナレッジレイヤーが AI Context Architecture である。コードレイヤーはランタイムアーキテクチャと実装を持つ：
 
 ```text
 project
-├── knowledge layer
+├── knowledge layer          AI Context Architecture
 │   ├── agent rules
 │   ├── project map
 │   ├── architecture
@@ -55,9 +194,9 @@ project
 │   ├── ADRs
 │   └── indexes
 │
-└── code layer
-    ├── iOS
-    ├── backend
+└── code layer               Software Architecture + Implementation
+    ├── iOS                  例：Feature + MVVM / Clean
+    ├── backend              例：Feature + DDD / Hexagonal
     ├── web
     ├── worker
     └── other systems
@@ -202,6 +341,8 @@ VoiceSession   → ios/features/voice/interface/
 
 # VI. コードアーキテクチャ
 
+ランタイムパターン（MVVM、DDD、Clean など）はプロジェクトが選ぶ。本標準が求めるのは、エージェントが着地できる**明確な境界**があることである。
+
 ## 18. ファイル種別ではなく、フィーチャー / ドメインで構成する
 
 ```text
@@ -229,6 +370,8 @@ features/            NOT   controllers/
 ## 21. 重要なビジネス能力は明示的に抽象化する
 
 Swift の `protocol`、Python の `Protocol`、または同等の interface / trait / abstract type。
+
+求めるのは明確な構造であり、過剰な抽象ではない。一つの責務 → 一つのインターフェース → 少数の実装。使われない Adapter の山はエージェントを助けるどころか困らせる。
 
 ## 22. Interface は Implementation より先に読まれる
 
@@ -496,42 +639,50 @@ iOS のみ:   docs/ ios/
 # XXII. 最終モデル
 
 ```text
+                    AI-Friendly Repo
+                           │
+             ┌─────────────┴─────────────┐
+             │                           │
+             ▼                           ▼
+   AI Context Architecture       Software Architecture
+             │                           │
+      ┌──────┼──────┐              ┌─────┼─────┐
+      │      │      │              │     │     │
+     Rules  Maps  Domain          MVVM  DDD   Clean
+      │      │      │              │     │     │
+ Contracts Invariants ADR       Feature DI  Hexagonal
+      │      │      │              │     │     │
+      └──────┼──────┘              └─────┼─────┘
+             │                           │
+             └──────────────┬────────────┘
+                            ▼
+                           Code
+```
+
+Cognitive Architecture（エージェントの理解）は Runtime Architecture（プログラムの動き）の上に載る：
+
+```text
                          AI TASK
                             │
                             ▼
-                  ┌──────────────────┐
-                  │   AGENTS.md       │  working rules
-                  └────────┬─────────┘
+          ┌─────────────────────────────────┐
+          │     AI Context Architecture     │
+          │                                 │
+          │  AGENTS → Map → Domain          │
+          │  Contract → Invariant / ADR     │
+          │  Tests → Dependency / Impact    │
+          └────────────────┬────────────────┘
                            ▼
-                  ┌──────────────────┐
-                  │   PROJECT MAP     │  global map
-                  └────────┬─────────┘
+          ┌─────────────────────────────────┐
+          │     Software Architecture       │
+          │  MVVM / TCA / Clean / DDD / …   │
+          └────────────────┬────────────────┘
                            ▼
-                  ┌──────────────────┐
-                  │   DOMAIN MAP      │  the business
-                  └────────┬─────────┘
+          ┌─────────────────────────────────┐
+          │     Implementation              │
+          └────────────────┬────────────────┘
                            ▼
-                  ┌──────────────────┐
-                  │ Interface/Contract│  what a module does
-                  └────────┬─────────┘
-                           ▼
-                  ┌──────────────────┐
-                  │  Invariant / ADR  │  what must not break, and why
-                  └────────┬─────────┘
-                           ▼
-                  ┌──────────────────┐
-                  │      Tests        │  what must actually hold
-                  └────────┬─────────┘
-                           ▼
-                  ┌──────────────────┐
-                  │ Dependency/Impact │  who affects whom
-                  └────────┬─────────┘
-                           ▼
-                  ┌──────────────────┐
-                  │  Implementation   │  how it is done
-                  └────────┬─────────┘
-                           ▼
-                        MODIFY → TEST → UPDATE KNOWLEDGE
+                 MODIFY → TEST → UPDATE KNOWLEDGE
 ```
 
 ---
