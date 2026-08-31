@@ -173,7 +173,8 @@ This repository offers two distinct usage modes depending on your needs:
 ---
 
 ## Future Vision: The AI-Friendly Toolchain
-Currently, AI-Friendly Repo is a philosophy and template. The next phase is to turn it into an automated system.
+Currently, AI-Friendly Repo is a specification, philosophy, and template. **The Specification defines how the Context Index and maps should work; the tooling automation is planned but not yet implemented.**
+
 We envision a CLI tool (`anr`) that will automate context management:
 - `anr init`: Scaffold the knowledge layer in any existing project.
 - `anr index`: Automatically generate `.agents/context-index.md` from code symbols.
@@ -466,15 +467,15 @@ project/
 ├── README.md
 ├── AGENTS.md
 │
-├── spec/
+├── spec/       # What should exist (Rules & Specification)
 │   └── repository-standard.md
 │
-├── template/
+├── template/   # What to copy (Skeleton & Boilerplate)
 │   ├── AGENTS.md
 │   ├── .agents/
 │   └── docs/
 │
-└── examples/
+└── examples/   # How it actually looks (Evidence & Reference Implementations)
     ├── ios/
     ├── fastapi/
     └── mixed/
@@ -674,7 +675,10 @@ Indexes, symbols, dependencies, and other structural information should be gener
 
 Human-written documentation should focus on intent, rules, and decisions.
 
-### 6. AI context over a new runtime brand
+### 6. Context Budget
+Every context layer should provide the maximum useful understanding with the minimum necessary content. Large context should be earned by task relevance, not read by default.
+
+### 7. AI context over a new runtime brand
 
 Do not invent AI-MVVM. Keep MVC / MVVM / DDD / Clean / Hexagonal / TCA as Runtime Architecture. Add an AI Context Architecture so an agent can use them.
 

@@ -11,35 +11,36 @@
 
 This standard specifies an **AI Context Architecture**. It does **not** specify a single **Runtime Architecture**.
 
-```text
-AI-Friendly Repository
-│
-├── AI Context Architecture
-│       = how an agent understands, navigates, and verifies code
-│
-└── Software Architecture
-        = how the program runs
+```mermaid
+flowchart TB
+  repo[AI-Friendly Repository]
+  repo --> ctx["AI Context Architecture<br/>how an agent understands, navigates, and verifies code"]
+  repo --> sw["Software Architecture<br/>how the program runs"]
 ```
 
-```text
-                    AI-Friendly Repo
-                           │
-             ┌─────────────┴─────────────┐
-             │                           │
-             ▼                           ▼
-   AI Context Architecture       Software Architecture
-             │                           │
-      ┌──────┼──────┐              ┌─────┼─────┐
-      │      │      │              │     │     │
-     Rules  Maps  Domain          MVVM  DDD   Clean
-      │      │      │              │     │     │
- Contracts Invariants ADR       Feature DI  Hexagonal
-      │      │      │              │     │     │
-      └──────┼──────┘              └─────┼─────┘
-             │                           │
-             └──────────────┬────────────┘
-                            ▼
-                           Code
+```mermaid
+flowchart TB
+  repo[AI-Friendly Repo]
+  repo --> ctx[AI Context Architecture]
+  repo --> sw[Software Architecture]
+  ctx --> rules[Rules]
+  ctx --> maps[Maps]
+  ctx --> domain[Domain]
+  rules --> contracts[Contracts]
+  maps --> invariants[Invariants]
+  domain --> adr[ADR]
+  sw --> mvvm[MVVM]
+  sw --> ddd[DDD]
+  sw --> clean[Clean]
+  mvvm --> feature[Feature]
+  ddd --> di[DI]
+  clean --> hex[Hexagonal]
+  contracts --> code[Code]
+  invariants --> code
+  adr --> code
+  feature --> code
+  di --> code
+  hex --> code
 ```
 
 Existing artifacts in this spec belong to **AI Context Architecture**:
@@ -67,34 +68,16 @@ DI
 
 **Runtime Architecture** — how the program runs:
 
-```text
-View
- ↓
-ViewModel
- ↓
-UseCase
- ↓
-Repository
- ↓
-API
+```mermaid
+flowchart TB
+  V[View] --> VM[ViewModel] --> UC[UseCase] --> RP[Repository] --> API
 ```
 
 **Cognitive Architecture** — how an agent understands the program:
 
-```text
-Task
- ↓
-Map
- ↓
-Domain
- ↓
-Contract
- ↓
-Invariant
- ↓
-Test
- ↓
-Implementation
+```mermaid
+flowchart TB
+  T[Task] --> Map --> Dom[Domain] --> Con[Contract] --> Inv[Invariant] --> Test --> Impl[Implementation]
 ```
 
 ```text
@@ -120,13 +103,38 @@ Vertical Slice
 
 Whatever Runtime Architecture you choose, it must still satisfy the AI Context Architecture.
 
-Rules 01–38 below implement the AI Context Architecture. They do not replace MVC / MVVM / DDD.
+Rules 01–39 below implement the AI Context Architecture. They do not replace MVC / MVVM / DDD.
 
 ---
 
-# I. Core Principles
+# I. Tiered Adoption (Context Depth)
 
-## Rule 01 — Repositories must be divided into a "Knowledge Layer" and a "Code Layer"
+Not every project requires every rule. AI-Friendly Repositories should scale their context depth based on project size.
+
+## Rule 01 — Adopt context standards progressively
+### Minimal Standard
+Small projects or initial migrations should focus on:
+- **`AGENTS.md`** (Router)
+- **`PROJECT_MAP.md`** (Structure)
+
+### Standard
+Medium projects should add feature-focused layers:
+- **`DOMAIN`** (Domain Knowledge)
+- **`CONTRACT`** (Interfaces)
+- **`TEST`** (Executable behavior)
+
+### Large Standard
+Complex, enterprise systems require the full AI Context Architecture:
+- **`ADR`** (Architecture Decisions)
+- **`DEPENDENCY`** / **`IMPACT`** (Maps)
+- **`CONTEXT INDEX`** (Generated references)
+- **`AGENT WORKFLOWS`** (Specialized tasks/guardrails)
+
+---
+
+# II. Core Principles
+
+## Rule 02 — Repositories must be divided into a "Knowledge Layer" and a "Code Layer"
 
 The Knowledge Layer **is** the AI Context Architecture. The Code Layer holds Software Architecture plus implementation:
 
@@ -155,15 +163,15 @@ Repository
 
 ---
 
-# II. Progressive Disclosure
+# III. Progressive Disclosure
 
-## Rule 02 — AI must adopt a hierarchical reading strategy
+## Rule 03 — AI must adopt a hierarchical reading strategy
 
 Standard reading order:
 `AGENTS.md` → `PROJECT_MAP` → `DOMAIN_MAP` / `Architecture` → `Interface` / `Contract` → `Invariant` / `ADR` / `Tests` → `Implementation`
 Only proceed to the next level when the current level provides insufficient information.
 
-## Rule 03 — Implementation is not "default correct", but "default unexpanded"
+## Rule 04 — Implementation is not "default correct", but "default unexpanded"
 By default, prioritize Interfaces, Contracts, Architecture, Domains, and Tests over Implementations.
 However, AI should actively drill down into the implementation when:
 - The contract cannot explain the issue
@@ -175,9 +183,9 @@ However, AI should actively drill down into the implementation when:
 
 ---
 
-# III. AI Instructions
+# IV. AI Instructions
 
-## Rule 04 — The root directory must have an `AGENTS.md`
+## Rule 05 — The root directory must have an `AGENTS.md`
 `AGENTS.md` is the agent's working contract for the entire repository. It serves as a router to guide the AI, not a giant encyclopedia.
 
 ## Rule 05 — Platforms/sub-projects can have their own `AGENTS.md`
