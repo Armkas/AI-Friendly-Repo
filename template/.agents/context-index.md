@@ -1,9 +1,9 @@
 # Context Index
 
-这是一个供 AI Coding Agent 快速查找对应上下文的机器可读索引。
+This is a machine-readable index for AI Coding Agents to quickly find the corresponding context.
 
 ## Domains
-- **[待定业务]**: `docs/domains/[待定业务].md` -> 具体实现位于 `[对应代码目录]/`
+- **[TBD Business]**: `docs/domains/[TBD_Business].md` -> Specific implementation located at `[Corresponding Code Directory]/`
 
 ## Architecture & Infrastructure
 - **System Overview**: `docs/architecture/overview.md`
@@ -11,4 +11,4 @@
 - **Dependency Map**: `docs/architecture/dependency-map.md`
 
 ## Key Interfaces
-- **[待定接口]**: `[对应代码目录]/interface/[待定接口_文件]`
+- **[TBD Interface]**: `[Corresponding Code Directory]/interface/[TBD_Interface_File]`

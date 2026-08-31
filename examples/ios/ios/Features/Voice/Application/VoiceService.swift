@@ -1,10 +1,10 @@
 import Foundation
 
-/// VoiceService 具体实现 (Implementation)
-/// AI 在未遇到 Bug 或无相关任务时，无需深入阅读此类。
+/// VoiceService Concrete Implementation (Implementation)
+/// AI does not need to drill down into this class unless encountering a bug or a relevant task.
 class VoiceService: VoiceServiceProtocol {
     func transcribe(audioFileURL: URL) async throws -> String {
-        // TODO: 具体识别逻辑实现
+        // TODO: Concrete transcription logic implementation
         return "Dummy Transcription"
     }
 }

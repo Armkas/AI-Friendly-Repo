@@ -1,14 +1,14 @@
 # 🤖 AGENTS.md (Root)
 
-## 项目简介
-本项目是一个大型混合应用，包含 iOS (SwiftUI), Android (Compose), Web Frontend, 以及 Backend (FastAPI)。
-本仓库展示了《AI-Native Project Standard 1.0》如何完美解耦“认知层 (Knowledge Layer)”与“代码层 (Code Layer)”。
+## Project Introduction
+This project is a large-scale mixed application containing iOS (SwiftUI), Android (Compose), Web Frontend, and Backend (FastAPI).
+This repository demonstrates how the "AI-Friendly Repo Standard 1.0" perfectly decouples the "Knowledge Layer" and the "Code Layer".
 
-## AI 导航指南
-不论你要修改哪个端，请务必从以下路径获取项目知识：
-1. **宏观地图**: [docs/PROJECT_MAP.md](file:///Users/puyue/main/标准项目仓库设计/Example_Mixed_Project/docs/PROJECT_MAP.md) - 定位你要修改的端和对应模块
-2. **跨端领域知识**: `docs/domains/` - 理解业务本质（这部分与具体代码端无关，各端通用）
-3. **各端独立规则**: 进入对应端目录前，必读该目录下的 `AGENTS.md` (例如 `ios/AGENTS.md`)
+## AI Navigation Guide
+Regardless of which client/end you are modifying, you must obtain project knowledge from the following paths:
+1. **Macro Map**: [docs/PROJECT_MAP.md](docs/PROJECT_MAP.md) - Locate the end and corresponding module you want to modify.
+2. **Cross-Platform Domain Knowledge**: `docs/domains/` - Understand the essence of the business (this part is agnostic to the specific code end and is common to all platforms).
+3. **Independent Rules per Platform**: Before entering a specific platform's directory, you must read the `AGENTS.md` in that directory (e.g., `ios/AGENTS.md`).
 
-## 全局约束 (Invariants)
-- **文档唯一事实来源**: 跨端的业务规则（如错误码、核心状态机）统一定义在 `docs/domains/` 中，各端必须严格遵守，不允许各自为政。
+## Global Invariants
+- **Single Source of Truth for Documentation**: Cross-platform business rules (e.g., error codes, core state machines) are uniformly defined in `docs/domains/`. All platforms must strictly adhere to them; fragmentation is not allowed.

@@ -1,16 +1,16 @@
 # 🤖 AGENTS.md (Root)
 
-## 项目简介
-本项目是一个纯 iOS (SwiftUI) 应用项目。它展示了如何采用《AI-Native Project Standard 1.0》规范构建项目知识层。
+## Project Introduction
+This project is a pure iOS (SwiftUI) application project. It demonstrates how to build a project knowledge layer using the "AI-Friendly Repo Standard 1.0".
 
-## AI 导航指南
-请严格遵循以下顺序了解项目上下文：
+## AI Navigation Guide
+Please strictly follow this order to understand the project context:
 
-1. **宏观地图**: [docs/PROJECT_MAP.md](file:///Users/puyue/main/标准项目仓库设计/Example_iOS_Project/docs/PROJECT_MAP.md) - 了解整体构成
-2. **领域知识**: `docs/domains/*.md` - 遇到具体业务（如 Voice）时，先阅读对应的 Domain 文档
-3. **架构与决策**: `docs/architecture/` 和 `docs/adr/`
-4. **具体实现**: 只有在排查 Bug 或执行修改任务时，再深入 `ios/` 目录的具体代码
+1. **Macro Map**: [docs/PROJECT_MAP.md](file:///Users/puyue/main/标准项目仓库设计/examples/ios/docs/PROJECT_MAP.md) - Understand the overall structure.
+2. **Domain Knowledge**: `docs/domains/*.md` - When encountering specific business logic (e.g., Voice), read the corresponding Domain document first.
+3. **Architecture & Decisions**: `docs/architecture/` and `docs/adr/`.
+4. **Concrete Implementation**: Only dive into the concrete code in the `ios/` directory when troubleshooting bugs or executing modification tasks.
 
-## 全局不变量 (Invariants)
-- `ios/` 中的所有业务模块必须以 Feature 为边界划分，严禁使用纯横向分层（如 `Controllers/`, `Models/` 混杂存放所有业务）。
-- 不要在这个文件中解释所有细节，这里只是地图的入口！
+## Global Invariants
+- All business modules in `ios/` must be divided by Feature boundaries. Pure horizontal layering (like mixing all business logic in `Controllers/`, `Models/`) is strictly prohibited.
+- Do not explain all details in this file; this is just the map entrance!

@@ -1,14 +1,14 @@
 # Project Map
 
-本文件说明项目的构成与核心目录结构。
+This document explains the composition and core directory structure of the project.
 
-## 顶层结构
-- `AGENTS.md` - 全局向导
-- `.agents/` - 机器可读索引与 AI 工作流
-- `docs/` - **系统认知层**（领域知识、架构、不变量、ADR）
-- `[源代码目录]/` - **代码实现层**
+## Top-Level Structure
+- `AGENTS.md` - Global navigation guide
+- `.agents/` - Machine-readable indices and AI workflows
+- `docs/` - **System Knowledge Layer** (Domain knowledge, Architecture, Invariants, ADRs)
+- `[Source Code Directory]/` - **Code Implementation Layer**
 
-## 主要子系统与位置
-1. **[业务 A]**
-   - 知识层：[docs/domains/[业务A].md]
-   - 代码层：[[源代码目录]/features/[业务A]/]
+## Major Subsystems and Locations
+1. **[Business A]**
+   - Knowledge Layer: [docs/domains/[Business A].md]
+   - Code Layer: [[Source Code Directory]/features/[Business A]/]

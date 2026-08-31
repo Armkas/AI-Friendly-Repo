@@ -1,16 +1,16 @@
 # DOMAIN: Voice
 
-## 职责
-负责所有与语音录入、识别、合成相关的能力，是 App 与用户语音交互的核心。
+## Responsibilities
+Responsible for all capabilities related to voice recording, recognition, and synthesis. It is the core of the app's voice interaction with users.
 
-## 关键流程
-- 录音 -> 语音转文字 (STT) -> 意图识别 (可交由 Navigation 处理)
+## Key Workflows
+- Record -> Speech-to-Text (STT) -> Intent Recognition (can be delegated to Navigation)
 
-## 强约束 (Invariants)
-- **静默检测**: 如果连续 20 秒无语音输入，自动退出连续对话模式。
-- **降级策略**: 网络失败时，必须切回本地 STT 进行基础识别。
-- **持久化**: 绝不允许将用户的原始录音文件永久保存在本地，只允许存在临时目录，处理完立刻删除。
+## Strong Constraints (Invariants)
+- **Silence Detection**: If there is no voice input for 20 consecutive seconds, automatically exit continuous dialogue mode.
+- **Fallback Strategy**: When the network fails, it must fall back to local STT for basic recognition.
+- **Persistence**: It is strictly forbidden to permanently save user's raw audio files locally. They are only allowed in temporary directories and must be deleted immediately after processing.
 
-## 映射
-- **代码实现位置**: `ios/Features/Voice/`
-- **主要协议**: `VoiceServiceProtocol`
+## Mappings
+- **Code Implementation Location**: `ios/Features/Voice/`
+- **Main Protocol**: `VoiceServiceProtocol`

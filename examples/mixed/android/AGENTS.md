@@ -1,9 +1,9 @@
 # 🤖 Android AGENTS.md
 
-## 局部规则 (Local Rules)
-当在 `android/` 目录下工作时，遵守以下 Android 开发约定：
+## Local Rules
+When working in the `android/` directory, adhere to the following Android development conventions:
 
-1. **UI 框架**: 全部使用 Jetpack Compose。严禁使用旧版 XML 布局。
-2. **架构模式**: 采用 Clean Architecture 和 MVI。
-3. **依赖注入**: 统一使用 Hilt 进行依赖注入。
-4. **并发模型**: 使用 Kotlin Coroutines 和 Flows。
+1. **UI Framework**: Exclusively use Jetpack Compose. Using legacy XML layouts is strictly forbidden.
+2. **Architectural Pattern**: Adopt Clean Architecture and MVI.
+3. **Dependency Injection**: Use Hilt uniformly for dependency injection.
+4. **Concurrency Model**: Use Kotlin Coroutines and Flows.

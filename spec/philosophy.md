@@ -1,0 +1,545 @@
+# AI-Friendly Project — Philosophy
+
+[🇨🇳 简体中文](philosophy.zh-CN.md) | [🇯🇵 日本語](philosophy.ja.md)
+
+> **Don't give AI more code. Give AI better structure.**
+
+This document explains the *reasoning* behind the [AI-Friendly Repo Standard](repository-standard.md).
+The Standard tells you **what rules to follow**. This document tells you **why they exist**.
+
+---
+
+## One-sentence definition
+
+> An **AI-Friendly Project** is a repository architecture designed for AI coding agents.
+> Through a structured knowledge layer, progressive context, explicit domain boundaries,
+> interfaces / contracts, invariants, ADRs, dependency indexes, and verifiable tests,
+> it lets an AI correctly understand, navigate, modify, and maintain a large codebase
+> **using the least possible context**.
+
+The goal is not:
+
+> Let the AI read the entire project.
+
+The goal is:
+
+> **Let the AI understand the entire project without reading all of it.**
+
+---
+
+# I. Core Ideas
+
+## 1. A project is not only code — it is also knowledge
+
+A traditional project is roughly:
+
+```text
+code + a short README + comments
+```
+
+An AI-Friendly project is:
+
+```text
+Knowledge Layer + Code Layer
+```
+
+```text
+project
+├── knowledge layer
+│   ├── agent rules
+│   ├── project map
+│   ├── architecture
+│   ├── domain knowledge
+│   ├── interfaces & contracts
+│   ├── invariants
+│   ├── ADRs
+│   └── indexes
+│
+└── code layer
+    ├── iOS
+    ├── backend
+    ├── web
+    ├── worker
+    └── other systems
+```
+
+## 2. The goal is understanding, not ingestion
+
+Wrong goal: make the context window big enough to fit the whole project.
+
+Right goal:
+
+> **Small Context → Large Understanding**
+
+## 3. Do not rely on an ever-larger context window
+
+A bigger window does not mean better understanding. A project should actively **reduce**
+irrelevant, duplicated, hidden, and redundant information, and **increase** information
+density, structure, locatability, and verifiability.
+
+## 4. The AI should *navigate* the project, not *scan* it
+
+Ideal:
+
+```text
+question → map → locate domain → locate module → read interface
+        → read rules → read tests → (only if needed) read implementation
+```
+
+Not:
+
+```text
+question → grep the whole repo → read many files → guess the architecture
+```
+
+---
+
+# II. The Knowledge Layer
+
+## 5. Knowledge Layer and Code Layer must be logically separated
+
+- Knowledge Layer: *what* the project is, *why* it is designed this way, *where* things are, *which* rules apply.
+- Code Layer: *how* it is implemented.
+
+Each must be understandable on its own.
+
+## 6. Documentation is not a copy of the code
+
+Code describes **How**. Documentation describes **What / Why / Where**. Documentation should
+not narrate every line of a function; it should state what the function is, why it exists,
+what constrains it, and where to find it.
+
+## 7. Documentation acts as a router
+
+`AGENTS.md` is a navigator — it tells the AI *where to go next*. `PROJECT_MAP.md`,
+`ARCHITECTURE.md`, and domain docs hold the actual knowledge.
+
+---
+
+# III. Layered Context
+
+## 8. Progressive Disclosure
+
+The AI should not get everything at once. It should descend level by level:
+
+```text
+L0  Agent Rules        →  how should the AI work?
+L1  Project Map        →  what is the project? where are things?
+L2  Architecture/Domain →  what is this business?
+L3  Interface/Contract →  what can this module do?
+L4  Invariant/ADR/Tests →  what must not break? why is it this way? how must it behave?
+L5  Implementation     →  how exactly is it done?
+```
+
+Only go deeper when the current level is insufficient.
+
+## 9. Each level answers exactly one kind of question
+
+(See the mapping in Rule 8.) Do not merge them into one super-document.
+
+## 10. Each level has a context budget
+
+> **Don't spend 1000 lines to convey 10 facts.**
+
+Prefer a short map, short rules, precise interfaces, and precise indexes over one giant document.
+
+---
+
+# IV. Agent Rules
+
+## 11. The root must have a single agent working contract
+
+`AGENTS.md` defines: what the project is, where to start reading, the default reading order,
+architecture principles, test rules, modification rules, and prohibitions.
+
+## 12. `AGENTS.md` must not become a mega-prompt
+
+It is not thousands of lines of technical detail. It only tells the agent *how to work* and
+*where to find detail*.
+
+## 13. Agent rules may be scoped
+
+```text
+AGENTS.md
+ios/AGENTS.md
+backend/AGENTS.md
+```
+
+Rules closer to the code are more specific. Working inside `backend/features/voice/`, the AI
+stacks: global rules + backend rules + voice-domain rules.
+
+---
+
+# V. The Project Map
+
+## 14. There must be a global Project Map
+
+It establishes first-level awareness: purpose, top-level directories, subsystems, main domains,
+main entry points, core data flow, and where the important documents live.
+
+## 15. The Project Map must be short
+
+Its job is to tell the AI where to go next — not to explain every line. Aim for ~100 lines.
+
+## 16. There must be a Context Index
+
+It answers: **where is X?**
+
+```text
+VoiceService   → backend/features/voice/application/
+SpeechService  → backend/features/voice/interface/
+VoiceSession   → ios/features/voice/interface/
+```
+
+## 17. The Context Index should be auto-generated where possible
+
+Machines generate: files, symbols, classes, protocols, functions, references, imports,
+dependencies, test ↔ implementation links.
+Humans maintain: business meaning, architectural intent, design rationale, business rules.
+
+---
+
+# VI. Code Architecture
+
+## 18. Organize by feature / domain, not by file type
+
+```text
+features/            NOT   controllers/
+├── voice/                 services/
+├── navigation/            models/
+├── account/               utils/
+└── billing/
+```
+
+## 19. The feature is the AI's primary context boundary
+
+A task should ideally land inside `features/voice/` rather than touching dozens of scattered
+files across `services/`, `models/`, `controllers/`, `utils/`.
+
+## 20. Domain boundaries must be explicit
+
+Each domain defines: what it owns, what it does not own, what it depends on, who uses it,
+what interfaces it exposes, its rules, and its tests.
+
+---
+
+# VII. Interface / Contract
+
+## 21. Important business capabilities must be explicitly abstracted
+
+Swift `protocol`, Python `Protocol`, or the equivalent interface / trait / abstract type.
+
+## 22. Interfaces are read before implementations
+
+First: *what can this do?* Then: *how does it do it?*
+
+## 23. An interface is more than method signatures
+
+A good interface expresses: responsibility, input, output, errors, side effects, constraints.
+
+```text
+SpeechService
+  Responsibility: Audio → Text
+  Errors:         provider error → domain error
+  Side effects:   must NOT execute user commands
+  Constraints:    network failure may fall back
+```
+
+## 24. Separate the API contract from the domain contract
+
+HTTP request/response is not the same thing as a domain service interface.
+
+---
+
+# VIII. Implementation
+
+## 25. Implementation is separated from interface
+
+```text
+voice/
+├── interface/        defines the capability
+├── application/      orchestrates it
+├── domain/           models it
+└── infrastructure/   provides it
+```
+
+## 26. Default is "not expanded" — not "assumed correct"
+
+Do not read the implementation when you don't need it. But do **not** assume it is always
+correct. Drill down when: tests fail, behavior is abnormal, the contract can't explain it, or a
+bug is suspected in the implementation.
+
+---
+
+# IX. Business Rules
+
+## 27. Business rules must exist independently
+
+Not buried only in implementation code:
+
+```text
+silence > 20s        → end continuous voice
+network disconnected  → fall back
+high-risk action      → require user confirmation
+```
+
+## 28. Invariants are cross-implementation constraints
+
+Implementations may be swapped. Invariants should not change unless the product requirement
+changes. Before modifying code, the AI checks the invariants first: *do they still hold?*
+
+---
+
+# X. ADRs
+
+## 29. Every important architectural decision records its "why"
+
+Why WebSocket? Why a Repository? Why can't the router call the database directly? Why this
+caching strategy?
+
+## 30. An ADR records the alternatives
+
+Problem, decision, rationale, rejected alternatives, cost, and the conditions under which it
+should be revisited. This stops an AI from mistaking **deliberate complexity** for
+**code that can be freely simplified**.
+
+---
+
+# XI. Dependencies
+
+## 31–33. The project can answer three questions
+
+```text
+Who does X depend on?      VoiceService → SpeechService, LLMService, Validator
+Who uses X?                SpeechService ← VoiceService, VoiceSession
+What breaks if I change X? SpeechService → VoiceService, VoiceRouter, VoiceSessionTests, ...
+```
+
+## 34. Dependency / impact maps should be auto-generated
+
+`SYMBOL_INDEX`, `DEPENDENCY_GRAPH`, and `IMPACT_GRAPH` are machine-knowable. Don't ask humans
+to maintain them by hand.
+
+---
+
+# XII. Naming
+
+## 35. Names are the AI's index
+
+Prefer `SpeechRecognitionService`, `NavigationRouteCalculator`, `VoiceCommandRouter`.
+Avoid `Manager`, `Helper`, `Utils`, `Common`, `Worker`, `Handler` unless they carry a real,
+specific meaning.
+
+## 36. One file, one core responsibility
+
+No 2000-line `MegaManager.swift` that owns network, database, navigation, voice, analytics, and
+UI. File boundaries *are* context boundaries.
+
+---
+
+# XIII. Tests
+
+## 37. Tests bridge the Knowledge Layer and the Code Layer
+
+They are both a verification mechanism and **executable knowledge**.
+
+## 38. Test names express behavior
+
+`testNetworkFailureFallsBackToLocalRecognition()`, not `test1()`.
+
+## 39. Verify locally first, then globally
+
+```text
+change → focused unit test → integration test → (when needed) full suite
+```
+
+Do not permanently run only a single script just to save tokens.
+
+---
+
+# XIV. Generated Content
+
+## 40. The source of truth must be singular
+
+If something is generated (`generated/`), mark it **DO NOT EDIT**. Change the source, then
+regenerate.
+
+---
+
+# XV. Doc / Code Conflicts
+
+## 41. Documentation is not absolute truth
+
+It can be stale. The hierarchy of truth:
+
+```text
+actual test / actual behavior
+ → current implementation
+ → contract
+ → documentation
+ → comments
+```
+
+On a conflict, do not silently patch one side. Identify the conflict and fix the correct
+source of truth.
+
+---
+
+# XVI. Avoiding Meaningless Context
+
+## 42. Ignore large irrelevant trees by default
+
+`build/`, `DerivedData/`, `Pods/`, `node_modules/`, `.venv/`, `cache/`, `logs/`, binaries,
+bulk generated files — unless the task is about them.
+
+---
+
+# XVII. AI Workflow
+
+## 43. Locate first, then go deep
+
+```text
+task → Agent Rules → Project Map → Domain → Interface → Invariant/ADR
+     → relevant tests → dependency/impact → implementation → modify → verify → update knowledge
+```
+
+## 44. Do not scan the whole repo without a reason
+
+Full-repo context is for tasks that genuinely need it (e.g. "analyze every dependency in the
+project").
+
+## 45. Context expands progressively with the question
+
+```text
+L0 don't know where the problem is
+L1 know it's Voice
+L2 know it's VoiceSession
+L3 know it's SpeechService
+L4 found a test failure
+L5 read only that implementation
+```
+
+This is **Progressive Context Expansion**.
+
+---
+
+# XVIII. Knowledge is organized around questions
+
+## 46. Docs should let the AI answer concrete questions
+
+```text
+change voice        → voice.md
+know the interface  → interface
+know why            → ADR
+know what's frozen  → invariants
+know what's impacted → dependency / impact
+confirm behavior    → tests
+```
+
+This beats "dump everything into `architecture.md`".
+
+---
+
+# XIX. Cross-Platform Projects
+
+## 47. The Knowledge Layer is platform-independent
+
+iOS-only, FastAPI-only, or iOS + FastAPI — the knowledge-layer thinking does not change.
+
+## 48. The Code Layer grows and shrinks with the actual systems
+
+```text
+iOS only:   docs/ ios/
+backend:    docs/ backend/
+full-stack: docs/ ios/ backend/ web/
+```
+
+## 49. Cross-system business shares one domain
+
+`docs/domains/voice.md` can describe `iOS Voice → API → FastAPI Voice → LLM` in one place.
+Domain knowledge is not bound to one language.
+
+---
+
+# XX. Automation
+
+## 50. If a machine can know it, let the machine own it
+
+Machine: symbols, references, imports, dependencies, file locations, call graphs, test mapping.
+Human: why, intent, business rules, architecture decisions.
+
+## 51. The doc system should be auto-verifiable
+
+Future `anr validate`: do interfaces exist? does every domain have a doc? is `AGENTS.md` valid?
+are ADRs complete? does any directory violate the architecture? do dependencies cross layers?
+
+## 52. The doc system should be auto-generatable
+
+Future `anr index`: generate `context-index.md`, `symbol-index.md`, `dependency-map.md`.
+
+## 53. Provide an init capability
+
+Future `anr init`: scaffold `AGENTS.md`, `.agents/`, `docs/` so any project can enter the
+AI-friendly structure immediately.
+
+---
+
+# XXI. The Most Important Architectural Idea
+
+## 54–58. Don't make the AI guess
+
+| Traditional | AI-Friendly |
+|---|---|
+| code → AI guesses → architecture | architecture → code |
+| business rules hidden in code | invariants + domain knowledge |
+| "why is this like this?" — nobody knows | ADR |
+| global search for where something is | Context Index |
+| large context to understand a small problem | Progressive Disclosure |
+
+---
+
+# XXII. The Final Model
+
+```text
+                         AI TASK
+                            │
+                            ▼
+                  ┌──────────────────┐
+                  │   AGENTS.md       │  working rules
+                  └────────┬─────────┘
+                           ▼
+                  ┌──────────────────┐
+                  │   PROJECT MAP     │  global map
+                  └────────┬─────────┘
+                           ▼
+                  ┌──────────────────┐
+                  │   DOMAIN MAP      │  the business
+                  └────────┬─────────┘
+                           ▼
+                  ┌──────────────────┐
+                  │ Interface/Contract│  what a module does
+                  └────────┬─────────┘
+                           ▼
+                  ┌──────────────────┐
+                  │  Invariant / ADR  │  what must not break, and why
+                  └────────┬─────────┘
+                           ▼
+                  ┌──────────────────┐
+                  │      Tests        │  what must actually hold
+                  └────────┬─────────┘
+                           ▼
+                  ┌──────────────────┐
+                  │ Dependency/Impact │  who affects whom
+                  └────────┬─────────┘
+                           ▼
+                  ┌──────────────────┐
+                  │  Implementation   │  how it is done
+                  └────────┬─────────┘
+                           ▼
+                        MODIFY → TEST → UPDATE KNOWLEDGE
+```
+
+---
+
+> **AI-Friendly Repo is not about giving AI more code.
+> It is about giving AI better structure.**

@@ -1,8 +1,12 @@
 # AI-Friendly Repo
 
+[🇨🇳 简体中文](README.zh-CN.md) | [🇯🇵 日本語](README.ja.md)
+
 > Don't give AI more context. Give it better structure.
 
 A practical repository architecture for building software that is easier for AI coding agents to understand, navigate, modify, and maintain.
+
+📖 **Read the full rationale: [AI-Friendly Project — Philosophy](spec/philosophy.md)** ([简体中文](spec/philosophy.zh-CN.md) · [日本語](spec/philosophy.ja.md))
 
 AI coding agents are becoming a normal part of software development. But most repositories were designed before agents existed: architecture is implicit, important knowledge is scattered across files, and agents often have to read large amounts of code before they can safely make a small change.
 
@@ -117,6 +121,33 @@ Modify
  ↓
 Verify
 ```
+
+---
+
+## Usage Modes
+
+This repository offers two distinct usage modes depending on your needs:
+
+### Mode A: Knowledge-only Template
+**Use case**: You already have an existing codebase and only want to make it AI-Friendly.
+- Copy `template/AGENTS.md`, `template/.agents/`, and `template/docs/` to your root directory.
+- You don't need to restructure your entire code layer immediately. Just map it using the knowledge layer.
+
+### Mode B: New Project Template
+**Use case**: Starting a project from scratch with an AI-Native architecture.
+- Copy the entire structure from `examples/mixed/` (or your preferred platform).
+- The knowledge layer and code layer are perfectly decoupled from day one.
+
+---
+
+## Future Vision: The AI-Friendly Toolchain
+Currently, AI-Friendly Repo is a philosophy and template. The next phase is to turn it into an automated system.
+We envision a CLI tool (`anr`) that will automate context management:
+- `anr init`: Scaffold the knowledge layer in any existing project.
+- `anr index`: Automatically generate `.agents/context-index.md` from code symbols.
+- `anr map`: Auto-generate dependency graphs and impact maps.
+- `anr validate`: Verify that the codebase adheres to the rules in `spec/`.
+
 
 ---
 
