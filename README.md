@@ -4,6 +4,27 @@
 
 > Don't give AI more context. Give it better structure.
 
+**Before:**
+```text
+README.md
+Source code
+```
+
+**After:**
+```text
+AGENTS.md
+PROJECT_MAP
+Context Index
+Domain Knowledge
+Contracts
+Invariants
+ADR
+Tests
+Dependency / Impact
+Source code
+```
+*Your AI agent no longer explores blindly.*
+
 A practical repository architecture for building software that is easier for AI coding agents to understand, navigate, modify, and maintain.
 
 📖 **Read the full rationale: [AI-Friendly Project — Philosophy](spec/philosophy.md)** ([简体中文](spec/philosophy.zh-CN.md) · [日本語](spec/philosophy.ja.md))
