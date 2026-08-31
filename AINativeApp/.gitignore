@@ -1,0 +1,14 @@
+# Xcode / Swift
+build/
+DerivedData/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+.swiftpm/
+Package.resolved
+
+# macOS
+.DS_Store
+
+# Do NOT ignore AI/generated/ — it is committed so agents and reviewers
+# can diff it. Regenerate with ./Scripts/generate_ai_index.sh
