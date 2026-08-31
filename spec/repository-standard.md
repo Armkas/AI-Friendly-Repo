@@ -1,4 +1,4 @@
-# AI-Native Project Standard 1.0
+# AI-Friendly Project Standard 1.0
 ## 面向 AI Coding Agent 的项目设计规范
 
 ---
@@ -930,7 +930,7 @@ Implementation
 
 # 二十三、最低标准
 
-一个合格的 AI-Native 项目至少应该拥有：
+一个合格的 AI-Friendly 项目至少应该拥有：
 
 ```text
 AGENTS.md
@@ -1411,7 +1411,7 @@ Comments
 AI 必须自己猜架构
 ```
 
-而 AI-Native Project：
+而 AI-Friendly Project：
 
 ```text
 Rules

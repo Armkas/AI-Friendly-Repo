@@ -1,8 +1,8 @@
 # AI-Friendly Repo
 
-> A practical repository architecture designed for AI coding agents.
+> Don't give AI more context. Give it better structure.
 
-Build software that is easy for **humans to understand** and **AI agents to navigate**.
+A practical repository architecture for building software that is easier for AI coding agents to understand, navigate, modify, and maintain.
 
 AI coding agents are becoming a normal part of software development. But most repositories were designed before agents existed: architecture is implicit, important knowledge is scattered across files, and agents often have to read large amounts of code before they can safely make a small change.
 
@@ -385,33 +385,21 @@ A typical AI-Friendly Repo may look like:
 ```text
 project/
 │
+├── README.md
 ├── AGENTS.md
 │
-├── .agents/
-│   ├── context-index.md
-│   ├── skills/
-│   ├── workflows/
-│   └── guardrails/
+├── spec/
+│   └── repository-standard.md
 │
-├── docs/
-│   ├── PROJECT_MAP.md
-│   ├── ARCHITECTURE.md
-│   ├── DATA_FLOW.md
-│   ├── DEPENDENCY_MAP.md
-│   ├── INVARIANTS.md
-│   │
-│   ├── domains/
-│   │   ├── voice.md
-│   │   ├── navigation.md
-│   │   └── account.md
-│   │
-│   └── adr/
-│       ├── ADR-001.md
-│       └── ADR-002.md
+├── template/
+│   ├── AGENTS.md
+│   ├── .agents/
+│   └── docs/
 │
-├── ios/
-│
-└── backend/
+└── examples/
+    ├── ios/
+    ├── fastapi/
+    └── mixed/
 ```
 
 The exact implementation is not mandatory.
@@ -432,9 +420,9 @@ Example:
 
 ```text
 examples/
-└── ios-fastapi/
-    ├── ios/
-    └── backend/
+├── ios/
+├── fastapi/
+└── mixed/
 ```
 
 The example demonstrates:
