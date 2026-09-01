@@ -468,19 +468,36 @@ X 依赖谁？        VoiceService → SpeechService, LLMService, Validator
 不要 2000 行的 `MegaManager.swift` 同时负责网络、数据库、导航、语音、分析、UI。
 文件边界本身就是上下文边界。
 
+## 37. 源文件大小
+
+AI-Friendly 仓库应避免大型手动维护的源文件。
+
+作为指导原则：
+
+- **≤ 300 行**：理想
+- **301–500 行**：正常，但开始关注职责
+- **501–800 行**：应该检查是否需要拆分
+- **801–1000 行**：不推荐，应认真考虑重构
+- **> 1000 行**：原则上禁止新建
+- **> 1500 行**：强烈要求拆分，通常已经属于 God File 风险
+
+生成文件、快照、迁移、schema 和其他机器生成的工件在适当时可以豁免。
+
+**目标不是机械地减少代码行数，而是缩小 AI 的认知边界。**
+
 ---
 
 # 十三、测试
 
-## 37. 测试是知识层与代码层的桥梁
+## 38. 测试是知识层与代码层的桥梁
 
 它既是验证机制，也是 **可执行的知识（executable knowledge）**。
 
-## 38. 测试名称表达行为
+## 39. 测试名称表达行为
 
 `testNetworkFailureFallsBackToLocalRecognition()`，而不是 `test1()`。
 
-## 39. 先局部验证，再全局验证
+## 40. 先局部验证，再全局验证
 
 ```text
 修改 → focused unit test → integration test → （必要时）full suite
@@ -492,7 +509,7 @@ X 依赖谁？        VoiceService → SpeechService, LLMService, Validator
 
 # 十四、Generated 内容
 
-## 40. Source of Truth 必须唯一
+## 41. Source of Truth 必须唯一
 
 如果某个东西是自动生成的（`generated/`），标记 **DO NOT EDIT**。修改源，再重新生成。
 
@@ -500,7 +517,7 @@ X 依赖谁？        VoiceService → SpeechService, LLMService, Validator
 
 # 十五、文档与代码冲突
 
-## 41. 文档不是绝对真理
+## 42. 文档不是绝对真理
 
 它可能过期。事实层级：
 
@@ -518,7 +535,7 @@ X 依赖谁？        VoiceService → SpeechService, LLMService, Validator
 
 # 十六、避免无意义上下文
 
-## 42. 默认忽略大规模无关目录
+## 43. 默认忽略大规模无关目录
 
 `build/`、`DerivedData/`、`Pods/`、`node_modules/`、`.venv/`、`cache/`、`logs/`、
 二进制文件、大量生成文件——除非任务本身涉及它们。
@@ -527,18 +544,18 @@ X 依赖谁？        VoiceService → SpeechService, LLMService, Validator
 
 # 十七、AI 工作流程
 
-## 43. 先定位，再深入
+## 44. 先定位，再深入
 
 ```text
 task → Agent Rules → Project Map → Domain → Interface → Invariant/ADR
      → 相关测试 → 依赖/影响 → 实现 → 修改 → 验证 → 更新知识
 ```
 
-## 44. 没有理由不要扫描整个仓库
+## 45. 没有理由不要扫描整个仓库
 
 全仓库上下文只留给确实需要的任务（例如“分析整个项目的所有依赖关系”）。
 
-## 45. 上下文随问题逐步扩大
+## 46. 上下文随问题逐步扩大
 
 ```text
 L0 不知道问题在哪
@@ -555,7 +572,7 @@ L5 只读那一处实现
 
 # 十八、知识以“问题”为中心组织
 
-## 46. 文档应让 AI 能回答具体问题
+## 47. 文档应让 AI 能回答具体问题
 
 ```text
 改语音        → voice.md
@@ -572,11 +589,11 @@ L5 只读那一处实现
 
 # 十九、跨平台项目
 
-## 47. 知识层独立于平台
+## 48. 知识层独立于平台
 
 只有 iOS、只有 FastAPI、或 iOS + FastAPI——知识层的思想都不变。
 
-## 48. 代码层随实际系统增减
+## 49. 代码层随实际系统增减
 
 ```text
 只有 iOS:   docs/ ios/
@@ -584,7 +601,7 @@ L5 只读那一处实现
 全栈:       docs/ ios/ backend/ web/
 ```
 
-## 49. 跨系统业务共用一个 Domain
+## 50. 跨系统业务共用一个 Domain
 
 `docs/domains/voice.md` 可以在一处描述 `iOS Voice → API → FastAPI Voice → LLM`。
 领域知识不被某种语言绑死。
@@ -593,21 +610,21 @@ L5 只读那一处实现
 
 # 二十、自动化
 
-## 50. 机器能知道的，尽量交给机器
+## 51. 机器能知道的，尽量交给机器
 
 机器：Symbol、Reference、Import、Dependency、文件位置、Call Graph、测试映射。
 人：Why、Intent、业务规则、架构决策。
 
-## 51. 文档系统应可自动验证
+## 52. 文档系统应可自动验证
 
 未来 `anr validate`：Interface 是否存在？每个 Domain 是否有文档？`AGENTS.md` 是否有效？
 ADR 是否完整？目录是否违反架构？依赖是否跨层？
 
-## 52. 文档系统应可自动生成
+## 53. 文档系统应可自动生成
 
 未来 `anr index`：生成 `context-index.md`、`symbol-index.md`、`dependency-map.md`。
 
-## 53. 提供初始化能力
+## 54. 提供初始化能力
 
 未来 `anr init`：生成 `AGENTS.md`、`.agents/`、`docs/`，让任何项目立即进入
 AI-Friendly 结构。
@@ -616,7 +633,7 @@ AI-Friendly 结构。
 
 # 二十一、最重要的架构思想
 
-## 54–58. 不要让 AI 猜
+## 55–59. 不要让 AI 猜
 
 | 传统 | AI-Friendly |
 |---|---|

@@ -296,38 +296,54 @@ Avoid generic names like `Manager`, `Helper`, `Utils` unless specifically approp
 ## Rule 25 — Huge God Files are forbidden
 Files should have a clear, single responsibility to prevent context overflow and confusion.
 
+## Rule 26 — Source File Size
+AI-Friendly repositories should avoid large manually maintained source files.
+
+As a guideline:
+
+- **≤ 300 lines**: preferred
+- **301–500 lines**: acceptable
+- **501–800 lines**: review responsibility boundaries
+- **801–1000 lines**: refactoring should be considered
+- **> 1000 lines**: should normally be split
+- **> 1500 lines**: should normally be treated as an architectural smell
+
+Generated files, snapshots, migrations, schemas, and other machine-generated artifacts may be exempt when appropriate.
+
+**The goal is not fewer lines; the goal is smaller cognitive boundaries.**
+
 ---
 
 # XV. Tests
 
-## Rule 26 — Tests must become one of AI's sources of truth
+## Rule 27 — Tests must become one of AI's sources of truth
 System behavior is defined by: Contract + Invariant + Test + Implementation.
 
-## Rule 27 — Test names must express business behavior
+## Rule 28 — Test names must express business behavior
 E.g., `testNetworkFailureFallsBackToLocalRecognition()` instead of `test1()`.
 
-## Rule 28 — Test locally first, but always verify globally
+## Rule 29 — Test locally first, but always verify globally
 AI workflows should start with relevant unit tests, expand to integration tests, and run full test suites when necessary.
 
 ---
 
 # XVI. Generated Files
 
-## Rule 29 — Generated content must be separated from the Source of Truth
+## Rule 30 — Generated content must be separated from the Source of Truth
 Generated files (e.g., in a `generated/` dir) must be marked `DO NOT EDIT`. Only the source is maintained.
 
 ---
 
 # XVII. AI Rules / Skills / Workflows
 
-## Rule 30 — General rules, workflows, and domain knowledge should be separated
+## Rule 31 — General rules, workflows, and domain knowledge should be separated
 Store them logically under `.agents/` (e.g., `skills/`, `workflows/`, `guardrails/`).
 
 ---
 
 # XVIII. New Additions (v1.1)
 
-## Rule 35 — Documentation is a Routing Layer, Not the Source of Executable Truth
+## Rule 36 — Documentation is a Routing Layer, Not the Source of Executable Truth
 Documentation exists to guide the AI to the right place quickly. It is not a second copy of the code.
 To understand the *actual* behavior, the hierarchy of truth is:
 1. Executed Test / Actual System Behavior
@@ -336,7 +352,7 @@ To understand the *actual* behavior, the hierarchy of truth is:
 4. Documentation
 5. Comments
 
-## Rule 36 — Context Budget
+## Rule 37 — Context Budget
 Every knowledge layer should be designed to answer one specific class of questions with minimal context.
 The default context should remain small. Large files should not be treated as the default source of project understanding.
 Recommended (but flexible) budgets:
@@ -346,10 +362,10 @@ Recommended (but flexible) budgets:
 - **L3 (Interface/Contract)**: Highly targeted
 - **L4/L5**: Fetched on demand as needed
 
-## Rule 37 — This standard does not prescribe a single runtime architecture
+## Rule 38 — This standard does not prescribe a single runtime architecture
 AI-Friendly Repo does not invent AI-MVVM or replace Clean Architecture / DDD. Any runtime architecture is valid if the AI Context Architecture can still locate, constrain, and verify changes.
 
-## Rule 38 — Explicit structure, not excessive abstraction
+## Rule 39 — Explicit structure, not excessive abstraction
 
 AI-Friendly ≠ Abstraction-Heavy.
 
