@@ -1,13 +1,13 @@
-# 🌐 后端接口与 RPC 契约 (Backend RPC Contracts)
+# 🌐 Backend API & RPC Contracts (backend_rpc.md)
 
-> **原则**：后端 API / RPC 契约是跨端协作的硬性合同。
-> 新增或修改接口前，**必须先在此文档中登记出入参模式**，并在代码中严格遵循。
+> **Principle**: Backend API and RPC schemas are firm cross-platform contracts.
+> Register request/response payloads here before implementing endpoints.
 
 ---
 
-## 通用响应封装格式 (Standard Response Envelope)
+## Standard Response Envelope
 
-所有 API / RPC 接口统一返回以下顶层结构：
+All API / RPC endpoints return a standardized envelope structure:
 
 ```json
 {
@@ -20,11 +20,11 @@
 
 ---
 
-## 接口清单与规格示例
+## Endpoint Specifications
 
-### 1. 用户登录 / 认证 (`POST /api/v1/auth/login`)
-- **权限**：公开访问 (`Public`)
-- **请求头 (Headers)**：
+### 1. User Authentication (`POST /api/v1/auth/login`)
+- **Access**: Public
+- **Headers**:
   - `Content-Type: application/json`
 - **Request Body**:
   ```json
@@ -33,7 +33,7 @@
     "password": "hashed_password"
   }
   ```
-- **Success Response (Data)**:
+- **Success Response Data**:
   ```json
   {
     "token": "jwt_token_string",
@@ -44,14 +44,14 @@
     }
   }
   ```
-- **业务错误码**:
-  - `40101`: 账号或密码错误
-  - `40302`: 账号已被封禁或处于冷却期
+- **Error Codes**:
+  - `40101`: Invalid account or password
+  - `40302`: Account suspended or in cooldown
 
 ---
 
-### 2. [业务接口名] (`POST /api/v1/...`)
-- **权限**：需要 Bearer Token
+### 2. [Feature Action Endpoint] (`POST /api/v1/...`)
+- **Access**: Bearer Token required
 - **Request Body**:
   ```json
   {}

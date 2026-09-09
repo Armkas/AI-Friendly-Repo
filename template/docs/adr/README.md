@@ -1,21 +1,21 @@
-# 📜 架构决策记录 (Architectural Decision Records - ADR)
+# 📜 Architectural Decision Records (ADR)
 
-> **目的**：记录项目历史关键技术选型背后的“**为什么 (Why)**”、权衡考量 (Trade-offs) 与当时接受的局限性。
+> **Purpose**: Document the **Why** behind critical architectural choices, trade-offs, and accepted constraints.
 >
-> 💡 **对 AI 代理的约束**：
-> 当你认为某处代码实现“不够优雅”或“可以重构精简”时，**必须首先查阅本目录下的 ADR**。
-> 严禁在未确认 ADR 背景的情况下，盲目“重构”或“简化”掉团队经过深思熟虑做出的架构妥协。
+> 💡 **Agent Mandate**:
+> When you believe existing code should be simplified or refactored, **check these ADRs first**.
+> Never arbitrarily undo deliberate architectural decisions without understanding their historical context.
 
 ---
 
-## ADR 索引列表 (ADR Index)
+## ADR Index
 
-| 编号 | 决策标题 (Title) | 状态 (Status) | 决策日期 | 核心影响范围 |
+| ID | Title | Status | Date | Scope |
 | :--- | :--- | :--- | :--- | :--- |
-| [ADR-000](ADR-000-template.md) | ADR 记录标准模版 | 规范标准 | 2026-09-09 | 全项目 |
-| [ADR-001](ADR-001-example.md) | [示例：采用特定状态管理方案] | 已采纳 | 2026-09-09 | 客户端 |
+| [ADR-000](ADR-000-template.md) | Standard ADR Template | Standard | 2026-09-09 | Global |
+| [ADR-001](ADR-001-example.md) | Adopt Feature-First Directory Layout | Accepted | 2026-09-09 | Architecture |
 
 ---
 
-## 如何新增 ADR
-复制 `ADR-000-template.md`，递增编号命名（如 `ADR-002-<kebab-case-title>.md`），并在上表中登记。
+## How to Add an ADR
+Copy `ADR-000-template.md`, increment the number (e.g., `ADR-002-<kebab-case-title>.md`), and record it in the index table above.

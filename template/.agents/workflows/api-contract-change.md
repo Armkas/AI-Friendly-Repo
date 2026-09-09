@@ -1,32 +1,34 @@
-# 🌐 SOP: 接口与网络契约变更工作流 (API Contract Workflow)
+# 🌐 SOP: API Contract Change Workflow (api-contract-change.md)
 
-> **目标**：在新增、修改后端 API / RPC 端点或云函数时，保证跨端出入参契约完备、向后兼容，且端侧调用无缝对齐。
+[简体中文](api-contract-change.zh-CN.md)
+
+> **Objective**: Standard operating procedure for adding or modifying backend API / RPC endpoints or cloud functions, ensuring contract completeness and cross-platform backward compatibility.
 
 ---
 
-## 标准执行步骤
+## Standard Execution Steps
 
-### 步骤 1：契约文档先行 (Contract First)
-在编写服务端或客户端代码前，必须先在 [docs/contracts/backend_rpc.md](../../docs/contracts/backend_rpc.md) 中登记该接口的详细规格：
-1. **端点路径与请求方式**（如 `POST /api/v1/user/profile`）；
-2. **请求 Headers 与鉴权要求**；
-3. **Request Payload Schema**（明确各字段类型、必填性、默认值）；
-4. **Response Payload Schema**（成功响应结构）；
-5. **业务错误码字典**（明确 HTTP 状态码与业务 `error_code`）。
+### Step 1: Contract First
+Before writing server or client code, register the specification in [docs/contracts/backend_rpc.md](../../docs/contracts/backend_rpc.md):
+1. **Endpoint and HTTP Method** (e.g. `POST /api/v1/user/profile`);
+2. **Request Headers and Authentication Requirements**;
+3. **Request Payload Schema** (Field types, required/optional flags, default values);
+4. **Response Payload Schema** (Success response envelope);
+5. **Business Error Codes Dictionary** (HTTP status codes and domain `error_code` values).
 
-### 步骤 2：服务端实现与模式校验
-1. 实现服务端控制器或路由；
-2. 强制使用 Schema 验证器（如 Zod / Pydantic / class-validator）对输入参数做运行时安全校验；
-3. 严禁透传未经过滤的数据库敏感字段（如密码哈希、内部审计密钥）。
+### Step 2: Server Implementation and Schema Validation
+1. Implement route/controller logic;
+2. Enforce runtime schema validation (e.g., Zod, Pydantic, class-validator) on all inputs;
+3. Never expose unparsed database secrets or hashes in API responses.
 
-### 步骤 3：端侧客户端适配 (Client SDK)
-1. 在客户端/前端的 API Client 中更新调用方法；
-2. 保持向后兼容：如果修改了旧接口字段，禁止直接删除旧字段，应采用可选字段或增加新版本端点；
-3. 编写/更新调用方的强类型定义。
+### Step 3: Client SDK Adaptation
+1. Update API client methods across frontend/mobile applications;
+2. Maintain backward compatibility: do not drop fields without deprecation periods;
+3. Update strong type definitions for callers.
 
-### 步骤 4：静态类型检查与联调自检
-运行 `AGENTS.md` 中指定的各端类型检查命令，确保客户端与服务端均 0 报错。
+### Step 4: Verification Commands
+Execute typecheck commands declared in `AGENTS.md` across both client and server to verify zero errors.
 
-### 步骤 5：同步索引 (Doc-Sync)
-- [ ] 在 [.agents/context-index.md](../context-index.md) 中登记新接口映射；
-- [ ] 在 [.agents/dependency-map.md](../dependency-map.md) 中核实对上下游依赖组件的影响。
+### Step 5: Update Indices (Doc-Sync)
+- [ ] Update [.agents/context-index.md](../context-index.md);
+- [ ] Verify impact in [.agents/dependency-map.md](../dependency-map.md).

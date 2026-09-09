@@ -1,29 +1,29 @@
-# ADR-000: [架构决策标题]
+# ADR-000: [Architectural Decision Title]
 
-- **状态 (Status)**: [提议中 (Proposed) | 已采纳 (Accepted) | 已废弃 (Deprecated) | 被取代 (Superseded by ADR-xxx)]
-- **决策者 (Deciders)**: [团队成员 / 架构负责人]
-- **生效日期 (Date)**: 2026-09-09
-
----
-
-## 1. 背景与上下文 (Context & Problem Statement)
-阐述面临的具体工程挑战、业务场景或性能瓶颈。当时系统的约束条件是什么？
+- **Status**: [Proposed | Accepted | Deprecated | Superseded by ADR-xxx]
+- **Deciders**: [Team members / Architecture leads]
+- **Date**: 2026-09-09
 
 ---
 
-## 2. 备选方案对比 (Considered Options)
-- **方案 A**：[方案描述、优势与劣势]
-- **方案 B**：[方案描述、优势与劣势]
-- **方案 C**：[方案描述、优势与劣势]
+## 1. Context & Problem Statement
+Describe the engineering challenge, user need, or performance bottleneck. What were the system constraints?
 
 ---
 
-## 3. 最终决策与理由 (Decision Outcome & Why)
-明确选择的方案，并详细说明为什么选择该方案（性能、团队上手成本、生态成熟度或系统稳定性）。
+## 2. Considered Options
+- **Option A**: [Description, pros and cons]
+- **Option B**: [Description, pros and cons]
+- **Option C**: [Description, pros and cons]
 
 ---
 
-## 4. 权衡与已接受的代价 (Trade-offs & Consequences)
-- **正向收益**：带来哪些好处（如延迟降低 40%、研发效率提升）
-- **负面影响与妥协**：接受了哪些缺点（如包体积增加、不支持某边缘浏览器）
-- **不可违背之约束**：未来 AI 维护该模块时，在什么条件发生变化之前，**严禁私自替换此设计**。
+## 3. Decision Outcome & Rationale
+State the chosen option clearly and explain why it was selected (performance, maintainability, ecosystem maturity, or stability).
+
+---
+
+## 4. Trade-offs & Consequences
+- **Positive Consequences**: Expected benefits (e.g., 40% latency reduction, faster iteration)
+- **Negative Consequences**: Accepted drawbacks (e.g., increased bundle size, extra complexity)
+- **Invariants**: Conditions under which this decision must not be replaced by AI agents.

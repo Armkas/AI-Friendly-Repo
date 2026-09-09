@@ -1,5 +1,7 @@
 # AI-Friendly Repo Standard 1.0
 
+[简体中文](repository-standard.zh-CN.md)
+
 ## Repository Design Specification for AI Coding Agents
 
 > For the reasoning behind these rules, see [Philosophy](philosophy.md)

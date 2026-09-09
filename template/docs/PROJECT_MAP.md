@@ -1,51 +1,53 @@
-# 🗺️ 项目全景地图 (PROJECT_MAP.md)
+# 🗺️ Project Map (PROJECT_MAP.md)
 
-> 本文档为全项目物理结构与技术栈的宏观全景索引。AI 代理可在此迅速了解系统的整体布局与各子系统位置。
+[简体中文](PROJECT_MAP.zh-CN.md)
+
+> This document provides a high-level architectural overview of the system, directory composition, and technology stacks.
 
 ---
 
-## 1. 顶层物理结构 (Top-Level Structure)
+## 1. Top-Level Physical Structure
 
 ```text
 .
-├── .agentsignore       # AI 检索降噪过滤规则
-├── AGENTS.md           # 全局 AI 代理唯一规范源 (Single Source of Truth)
-├── CLAUDE.md           # Claude Code 适配器
-├── GEMINI.md           # Gemini / Antigravity 适配器
-├── MANUAL_TASKS.md     # 待办人工操作与人机职责边界清单
-├── README.md           # 人类开发者项目介绍
+├── .agentsignore       # AI retrieval noise reduction & exclusion rules
+├── AGENTS.md           # Canonical Single Source of Truth for all AI agents
+├── CLAUDE.md           # Claude Code adapter
+├── GEMINI.md           # Gemini / Antigravity adapter
+├── MANUAL_TASKS.md     # Human operational boundaries & manual checklist ([ ])
+├── README.md           # Developer introduction
 │
-├── .agents/            # 机器可读索引与标准研发工作流
-│   ├── context-index.md    # 快速符号与接口索引
-│   ├── dependency-map.md   # 依赖拓扑图与影响评估
-│   ├── rules/              # 细分平台规则
-│   └── workflows/          # 标准化 SOP (Feature, Migration, API)
+├── .agents/            # Machine-readable indices and agent SOPs
+│   ├── context-index.md    # Quick symbol/interface lookup index
+│   ├── dependency-map.md   # Topology graph & impact radius (Mermaid)
+│   ├── rules/              # Platform & global rules
+│   └── workflows/          # Standard SOPs (Feature, Migration, API)
 │
-├── docs/               # 知识层 (AI Context Architecture)
-│   ├── architecture/       # 系统架构与黄金特性样板
-│   ├── contracts/          # API RPC 与数据库契约
-│   ├── invariants/         # 业务不变式与安全红线
-│   ├── adr/                # 架构决策记录
-│   └── domains/            # 业务领域垂直知识
+├── docs/               # Knowledge Layer (AI Context Architecture)
+│   ├── architecture/       # System architecture & golden_feature_template
+│   ├── contracts/          # API RPC & database schema contracts
+│   ├── invariants/         # Inviolable business rules & guardrails
+│   ├── adr/                # Architectural Decision Records
+│   └── domains/            # Vertical business domain knowledge
 │
-└── [src / apps / ...]  # 代码实现运行时层 (Software Runtime Architecture)
-    └── features/           # 业务功能模块 (按 Feature 物理聚合)
+└── [src / apps / ...]  # Software Runtime Architecture & Implementation
+    └── features/           # Feature-based business modules
 ```
 
 ---
 
-## 2. 核心子系统与物理位置映射
+## 2. Core Subsystems & Directory Mappings
 
-| 业务子系统 / 模块 | 职责概述 | 知识层文档 | 代码实现目录 (Code Layer) |
+| Subsystem / Module | Responsibility | Knowledge Layer Document | Code Implementation |
 | :--- | :--- | :--- | :--- |
-| **认证与用户 (Auth)** | 登录、注册、会话鉴权 | [docs/domains/auth.md](domains/auth.md) | `src/features/auth/` |
-| **核心业务特性 (Feature)** | 核心业务主流程与状态流转 | [docs/domains/domain-template.md](domains/domain-template.md) | `src/features/[feature]/` |
-| **通用基础设施 (Core / Shared)** | 网络请求客户端、工具函数库 | [docs/architecture/overview.md](architecture/overview.md) | `src/core/` / `src/shared/` |
+| **Auth & User** | Login, registration, session management | [docs/domains/auth.md](domains/auth.md) | `src/features/auth/` |
+| **Core Feature** | Primary business flow and state machine | [docs/domains/domain-template.md](domains/domain-template.md) | `src/features/[feature]/` |
+| **Common Infrastructure** | HTTP client, common utility functions | [docs/architecture/overview.md](architecture/overview.md) | `src/core/` / `src/shared/` |
 
 ---
 
-## 3. 技术栈声明 (Technology Stack)
+## 3. Technology Stack Declarations
 
-- **前端 / 客户端**：[例如: Next.js / TypeScript / TailwindCSS 或 SwiftUI / MVVM]
-- **服务端 / 后端**：[例如: FastAPI / Python 或 Node.js / Express 或 Supabase Functions]
-- **数据库**：[例如: PostgreSQL / Supabase]
+- **Frontend / Client**: [e.g., Next.js / TypeScript / TailwindCSS or SwiftUI / MVVM]
+- **Backend / Server**: [e.g., FastAPI / Python or Node.js / Express or Supabase Functions]
+- **Database**: [e.g., PostgreSQL / Supabase]

@@ -1,28 +1,28 @@
-# 🔐 环境变量与密钥配置规范 (Env & Secrets Architecture)
+# 🔐 Environment Variables & Secrets Architecture (env_secrets_config.md)
 
 > [!IMPORTANT]
-> **安全红线**：
-> 1. 严禁将真实敏感密钥（私钥、API Secret、数据库密码）提交到 Git 仓库；
-> 2. 严禁在客户端代码或公开前端页面中引用管理级别的高权私钥；
-> 3. 本地开发必须依赖 `.env.example` 模版复制为 `.env` 进行配置。
+> **Security Red Lines**:
+> 1. Never commit real production secrets (private keys, API secrets, database credentials) to Git;
+> 2. Never expose administrative service keys in client-side code or public web pages;
+> 3. Local development must copy `.env.example` to `.env`.
 
 ---
 
-## 1. 环境变量命名与分级规范
+## 1. Environment Variable Tiers
 
-| 级别 / 分类 | 变量命名前缀规则 | 安全属性 | 典型使用场景 |
+| Tier / Category | Prefix Convention | Visibility | Typical Use Case |
 | :--- | :--- | :--- | :--- |
-| **公开客户端变量** | `NEXT_PUBLIC_*` / `VITE_*` / `EXPO_PUBLIC_*` | **公开安全** (打包到客户端) | 客户端 API 地址、公开站点 Key、应用版本号 |
-| **服务端保密变量** | `API_SECRET_*` / `DB_PASSWORD` / `SECRET_KEY` | **严格保密** (仅服务端内存可读) | 数据库连接串、支付商户私钥、第三方高权 Token |
+| **Public Client Variables** | `NEXT_PUBLIC_*` / `VITE_*` / `EXPO_PUBLIC_*` | **Public** (Bundled in client) | Public API URLs, public site keys, app version |
+| **Private Server Secrets** | `API_SECRET_*` / `DB_PASSWORD` / `SECRET_KEY` | **Confidential** (Server memory only) | DB connection strings, merchant secrets, high-privilege tokens |
 
 ---
 
-## 2. 现代规范与历史兼容读取范式 (Modern API & Secrets Mapping)
+## 2. Backward-Compatible Reading Patterns
 
-为了防止 AI 代理生成废弃命名的环境变量，建议在代码读取处采用双向降级兼容写法：
+To prevent agents from hallucinating deprecated environment keys, use dual-fallback reading patterns:
 
 ```typescript
-// 示例：Node.js / Edge Function 服务端保密读取
+// Server-side confidential reading
 const adminSecret = process.env.SERVICE_SECRET_KEY 
   ?? process.env.LEGACY_SERVICE_ROLE_KEY;
 
@@ -32,13 +32,13 @@ if (!adminSecret) {
 ```
 
 ```typescript
-// 示例：Web 客户端公钥读取
+// Web client public key reading
 const publishableKey = import.meta.env.VITE_PUBLISHABLE_KEY 
   ?? import.meta.env.VITE_ANON_KEY;
 ```
 
 ---
 
-## 3. 本地环境变量示例模版 (.env.example)
+## 3. Template Configuration (.env.example)
 
-所有开发者与 AI 代理在新增环境变量时，必须同步在本项目的 `.env.example` 中补充变量名与说明注释。
+When adding a new environment variable, agents must document its name and purpose in the root `.env.example`.
