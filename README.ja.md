@@ -10,20 +10,24 @@ README.md
 ソースコード (Source code)
 ```
 
-**After（AI 友好）:**
+**After（実用的な AI 友好産業モード）:**
 ```text
-AGENTS.md
+.agentsignore (Token 削減とノイズ除外ルール)
+AGENTS.md (唯一の規範源) + CLAUDE.md / GEMINI.md (アダプター)
+MANUAL_TASKS.md (人間と AI の協調責任境界チェックリスト)
 PROJECT_MAP (プロジェクト全体図)
 Context Index (コンテキストインデックス)
 Domain Knowledge (ドメイン知識)
 Contracts (規約・コントラクト)
-Invariants (不変条件)
+Invariants (不変条件・安全ライン)
 ADR (アーキテクチャ決定記録)
-Tests (検証可能なテスト)
+Golden Feature Template (標準機能テンプレート)
+Commands & Verification (検証コマンド)
 Dependency / Impact (依存関係と影響マップ)
+Doc-Sync Checklist (ドキュメント防腐化チェックリスト)
 ソースコード (Source code)
 ```
-*AI エージェントが手探りで迷走することはもうありません。*
+*AI エージェントが手探りで迷走することはもうありません。閉ループ検証と明確な責任境界を持ちます。*
 
 AI コーディングエージェント（Cursor、Claude Code、Windsurf など）が最小限の認知的負荷で大規模ソフトウェアを正しく理解し、ナビゲートし、変更し、保守できるように設計された実用的なリポジトリ設計仕様、ドキュメント体系、およびプロジェクトテンプレートです。
 
@@ -235,6 +239,26 @@ flowchart LR
 
 ## 10. 漸進的な情報開示 (Progressive Disclosure)
 巨大な単一ファイルにすべてを詰め込まず、レイヤーごとに適切な情報を提供します。
+
+---
+
+## 11. Token 削減とノイズ除外 (.agentsignore)
+コンパイル出力、巨大な依存関係（`node_modules/`、`DerivedData/`）、バイナリファイル、`.env*` などを根底から除外し、コンテキストの圧迫と情報漏洩を防ぎます。
+
+---
+
+## 12. マルチ AI アダプター体系 (Multi-Agent Adapters)
+`AGENTS.md` を唯一の真実の源とし、`CLAUDE.md` や `GEMINI.md` などの専用アダプターを通じて各モデルの癖（省略コードの防止やパスの推測防止など）を補正します。
+
+---
+
+## 13. 人間と AI の責任境界 (MANUAL_TASKS.md)
+AI が実行できないクラウドコンソール設定、証明書管理、本番環境の更新、実機検証などをチェックリスト形式で分離します。
+
+---
+
+## 14. 標準機能テンプレートとドキュメント防腐化 (Golden Feature Template & Doc-Sync)
+標準的な機能ディレクトリ構造（`docs/architecture/golden_feature_template.md`）を提供し、インターフェースやデータベース変更時にドキュメントを同期更新する自己検証ルールを徹底します。
 
 ---
 

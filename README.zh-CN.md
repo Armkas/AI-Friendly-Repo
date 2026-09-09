@@ -10,20 +10,24 @@ README.md
 源代码 (Source code)
 ```
 
-**AI 友好模式 (After):**
+**AI 友好工业级模式 (After):**
 ```text
-AGENTS.md
+.agentsignore (Token 降噪与索引隔离规则)
+AGENTS.md (唯一权威真理源) + CLAUDE.md / GEMINI.md (多 Agent 轻量适配器)
+MANUAL_TASKS.md (人机职责边界清单，AI 不越界)
 PROJECT_MAP (项目全景图)
 Context Index (上下文索引)
 Domain Knowledge (领域知识)
-Contracts (契约)
-Invariants (业务不变式)
+Contracts (接口与数据库契约)
+Invariants (业务不变式与红线)
 ADR (架构决策记录)
-Tests (可验证测试)
-Dependency / Impact (依赖与影响图谱)
+Golden Feature Template (黄金特性开发样板)
+Commands & Verification (闭环可执行验证命令)
+Dependency / Impact (依赖拓扑与影响半径图谱)
+Doc-Sync Checklist (文档防腐化自检机制)
 源代码 (Source code)
 ```
-*你的 AI 编程助手将不再像无头苍蝇一样盲目探索。*
+*你的 AI 编程助手将不再像无头苍蝇一样盲目探索，具备工业级闭环验证与人机协作边界。*
 
 一套实用的仓库架构规范、文档体系与工程模板，旨在让 AI Coding Agent（如 Cursor、Claude Code、Windsurf 等）能够以极低的认知负载更轻松地理解、导航、修改和维护大型软件。
 
@@ -382,31 +386,83 @@ Implementation (具体实现代码)
 
 ---
 
+---
+
+## 11. Token 降噪与索引隔离 (.agentsignore)
+
+AI 检索工具（如 ripgrep / glob）极易被构建缓存、依赖库和二进制文件淹没。通过根级 `.agentsignore`，强制过滤 `node_modules/`、`DerivedData/`、`.build/`、`Pods/`、大模型权重（`.gguf`）与环境变量（`.env*`），保护上下文预算并杜绝安全泄密。
+
+---
+
+## 12. 多 Agent 适配器体系 (Multi-Agent Adapters)
+
+在 Claude Code、Gemini/Antigravity、Cursor、Windsurf 等多工具共存的团队中，以 `AGENTS.md` 为**唯一权威规范源**，配套轻量入口适配器：
+* `CLAUDE.md`：通过 `@AGENTS.md` 继承规范，并加入防偷懒折叠、类型严谨性约束；
+* `GEMINI.md`：通过 `@AGENTS.md` 继承规范，并加入防臆测路径、防篡改历史迁移约束；
+* `.cursorrules`：提供针对 Cursor 交互模式的引导。
+
+---
+
+## 13. 人机职责边界清单 (MANUAL_TASKS.md)
+
+明确划清“AI 自主可做”与“人类专属操作”的界限。第三方控制台配置（Cloudflare、Stripe、Apple Developer 证书）、生产密钥注入、真实硬件联调等，全部沉淀在 `MANUAL_TASKS.md`（或 `人工操作.md`）的复选框清单中，防止 AI 越俎代庖或虚假宣称已在外部完成配置。
+
+---
+
+## 14. 黄金特性样板与文档防腐化 (Golden Feature Template & Doc-Sync)
+
+* **黄金样板 (`docs/architecture/golden_feature_template.md`)**：提供标准 Feature 目录范例（`Interface/` 协议先行 -> `Implementation/` 业务实现 -> `Views/` 绑定），避免 Agent 自由发挥产生混乱的分层。
+* **文档防腐化自检 (Doc-Sync Checklist)**：改接口同步 `context-index.md` 与 `dependency-map.md`；改数据库追加递增迁移并同步 `database_schema.md`，防止知识层与代码层脱节。
+
+---
+
 # 典型仓库目录结构
 
-一个标准的 AI-Friendly 仓库大致如下：
+一个标准的 AI-Friendly 工业级工程结构如下：
 
 ```text
 project/
 │
-├── README.md        # 开发者入口说明
-├── AGENTS.md        # AI Agent 认知入口契约
+├── .agentsignore     # AI 检索与 Token 降噪排除规则 (必选)
+├── AGENTS.md         # 全局 AI 代理唯一规范源 (Single Source of Truth)
+├── CLAUDE.md         # Claude Code 专属适配器 (继承 @AGENTS.md)
+├── GEMINI.md         # Gemini / Antigravity 专属适配器 (继承 @AGENTS.md)
+├── MANUAL_TASKS.md   # 人机协作边界与待办人工操作清单 (带 [ ] 复选框)
+├── README.md         # 人类开发者项目说明
 │
-├── spec/            # 规范与法则 (AI-Friendly 标准规范)
+├── .agents/          # 机器可读索引与标准化研发 SOP
+│   ├── context-index.md    # 业务/接口上下文快速定位索引
+│   ├── dependency-map.md   # 跨端依赖拓扑与影响半径评估 (Mermaid)
+│   ├── rules/              # 细分平台规则 (global, ios, web, backend)
+│   └── workflows/          # 标准化 SOP (add-feature, new-migration, etc.)
+│
+├── docs/             # 架构与领域知识层 (AI Context Layer)
+│   ├── PROJECT_MAP.md      # 项目全景图
+│   ├── architecture/       # 系统架构与黄金特性样板 (golden_feature_template)
+│   ├── adr/                # 架构决策记录 (ADR-001, ADR-002...)
+│   ├── contracts/          # 接口与数据库契约 (backend_rpc, database_schema)
+│   ├── invariants/         # 业务不变式与合规红线 (business_invariants)
+│   └── domains/            # 各核心业务领域逻辑说明
+│
+├── spec/             # 规范标准与设计哲学 (AI-Friendly Repo Standard)
 │   ├── repository-standard.md
 │   ├── philosophy.md
 │   ├── philosophy.zh-CN.md
 │   └── philosophy.ja.md
 │
-├── template/        # 可开箱即用的脚手架模板
+├── template/         # 工业级开箱即用脚手架模板 (可直接复制到新项目中)
+│   ├── .agentsignore
 │   ├── AGENTS.md
+│   ├── CLAUDE.md
+│   ├── GEMINI.md
+│   ├── MANUAL_TASKS.md
 │   ├── .agents/
 │   └── docs/
 │
-└── examples/        # 多语言完整实战参考
-    ├── ios/         # iOS (Feature + MVVM / Clean)
-    ├── fastapi/     # FastAPI (Feature + DDD / Clean / DI)
-    └── mixed/       # 跨端综合架构示例
+└── examples/         # 多端实战参考代码
+    ├── ios/          # iOS (Feature + MVVM / Clean)
+    ├── fastapi/      # FastAPI (Feature + DDD / Clean / DI)
+    └── mixed/        # 跨端全栈综合架构示例
 ```
 
 ---
@@ -442,8 +498,9 @@ examples/mixed/
 
 将模板复制到你的项目中开始改造：
 
-```text
-cp -r template/AGENTS.md template/.agents template/docs <你的项目路径>/
+```bash
+# 将工业级脚手架复制到你的项目根目录：
+cp -r template/.agentsignore template/AGENTS.md template/CLAUDE.md template/GEMINI.md template/MANUAL_TASKS.md template/.agents template/docs <你的项目路径>/
 ```
 
 ---

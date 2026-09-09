@@ -10,20 +10,24 @@ README.md
 Source code
 ```
 
-**After:**
+**Industrial AI-Friendly Mode (After):**
 ```text
-AGENTS.md
-PROJECT_MAP
-Context Index
-Domain Knowledge
-Contracts
-Invariants
-ADR
-Tests
-Dependency / Impact
+.agentsignore (Token Noise Reduction & Filtering)
+AGENTS.md (Canonical Single Source of Truth) + CLAUDE.md / GEMINI.md (Adapters)
+MANUAL_TASKS.md (Human-Agent Operational Boundaries)
+PROJECT_MAP (System Map)
+Context Index (Machine-Readable Index)
+Domain Knowledge (Business Domains)
+Contracts (Interface & Database Contracts)
+Invariants (Business Guardrails)
+ADR (Architectural Decision Records)
+Golden Feature Template (Canonical Feature Architecture)
+Commands & Verification (Closed-Loop Verification)
+Dependency / Impact (Dependency Graph & Radius)
+Doc-Sync Checklist (Anti-Corruption Discipline)
 Source code
 ```
-*Your AI agent no longer explores blindly.*
+*Your AI agent no longer explores blindly, equipped with closed-loop verification and explicit human collaboration boundaries.*
 
 A practical repository architecture for building software that is easier for AI coding agents to understand, navigate, modify, and maintain.
 
@@ -478,28 +482,83 @@ Each layer should answer a different question.
 
 ---
 
+---
+
+## 11. Token Noise Reduction (.agentsignore)
+
+AI retrieval tools (ripgrep, globbing) are easily contaminated by compiler outputs, massive dependencies, and binary caches. A root `.agentsignore` rigorously filters `node_modules/`, `DerivedData/`, `.build/`, `Pods/`, model weights (`.gguf`), and environment secrets (`.env*`) to protect context budgets and prevent secret leaks.
+
+---
+
+## 12. Multi-Agent Adapter Pattern
+
+In a heterogeneous tooling setup (Claude Code, Gemini/Antigravity, Cursor, Windsurf), `AGENTS.md` is maintained as the **Canonical Single Source of Truth**. Lightweight entry adapters hook into it:
+* `CLAUDE.md`: Inherits `@AGENTS.md` and adds guardrails against lazy truncation (`// ... existing code ...`) and weak types;
+* `GEMINI.md`: Inherits `@AGENTS.md` and adds guardrails against hallucinated paths and mutating historical migrations;
+* `.cursorrules`: Guides Cursor's inline and composer workflows.
+
+---
+
+## 13. Human-in-the-Loop Boundaries (MANUAL_TASKS.md)
+
+Clear contracts between AI autonomy and human responsibilities. Actions requiring administrative web dashboards (Cloudflare Turnstile, Apple Developer certificates, Stripe Webhooks), production database migrations, and real-device testing are quarantined into `MANUAL_TASKS.md` with actionable checkboxes `[ ]`, preventing the AI from falsely claiming administrative completion.
+
+---
+
+## 14. Golden Feature Template & Doc-Sync Anti-Corruption
+
+* **Golden Feature Template (`docs/architecture/golden_feature_template.md`)**: Provides a concrete, canonical template of how features must be organized (Interface -> Implementation -> Presentation) and an acceptance checklist.
+* **Doc-Sync Checklist**: Whenever interfaces, contracts, or database schemas change, AI must synchronously update `context-index.md`, `dependency-map.md`, and contract documents to eliminate documentation rot.
+
+---
+
 # Repository Structure
 
-A typical AI-Friendly Repo may look like:
+A standard production-grade AI-Friendly repository is structured as follows:
 
 ```text
 project/
 │
-├── README.md
-├── AGENTS.md
+├── .agentsignore     # AI retrieval exclusion & noise reduction (Required)
+├── AGENTS.md         # Canonical Single Source of Truth for all AI agents
+├── CLAUDE.md         # Claude Code adapter (imports @AGENTS.md)
+├── GEMINI.md         # Gemini / Antigravity adapter (imports @AGENTS.md)
+├── MANUAL_TASKS.md   # Human operational boundaries & manual checklist ([ ])
+├── README.md         # Human developer documentation
 │
-├── spec/       # What should exist (Rules & Specification)
-│   └── repository-standard.md
+├── .agents/          # Machine-readable indices & standard agent SOPs
+│   ├── context-index.md    # Domain & interface quick-lookup index
+│   ├── dependency-map.md   # Cross-layer topology & impact radius (Mermaid)
+│   ├── rules/              # Platform & global rules (global, ios, web, backend)
+│   └── workflows/          # Standard SOPs (add-feature, new-migration, etc.)
 │
-├── template/   # What to copy (Skeleton & Boilerplate)
+├── docs/             # AI Context Architecture layer
+│   ├── PROJECT_MAP.md      # Macro system overview map
+│   ├── architecture/       # Architecture overviews & golden_feature_template
+│   ├── adr/                # Architectural Decision Records (ADR-001, ADR-002...)
+│   ├── contracts/          # API & schema contracts (backend_rpc, database_schema)
+│   ├── invariants/         # Inviolable business rules & platform guidelines
+│   └── domains/            # Detailed domain business logic & state machines
+│
+├── spec/             # Specification & Philosophy
+│   ├── repository-standard.md
+│   ├── philosophy.md
+│   ├── philosophy.zh-CN.md
+│   └── philosophy.ja.md
+│
+├── template/         # Out-of-the-box scaffolded template
+│   ├── .agentsignore
 │   ├── AGENTS.md
+│   ├── CLAUDE.md
+│   ├── GEMINI.md
+│   ├── MANUAL_TASKS.md
 │   ├── .agents/
 │   └── docs/
 │
-└── examples/   # How it actually looks (Evidence & Reference Implementations)
-    ├── ios/
-    ├── fastapi/
-    └── mixed/
+└── examples/         # Reference implementations across platforms
+    ├── ios/          # iOS (Feature + MVVM / Clean)
+    ├── fastapi/      # FastAPI (Feature + DDD / Clean / DI)
+    └── mixed/        # Multi-platform full-stack reference
 ```
 
 The exact implementation is not mandatory. The principles are.
