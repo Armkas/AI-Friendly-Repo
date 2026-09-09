@@ -322,8 +322,9 @@ System behavior is defined by: Contract + Invariant + Test + Implementation.
 ## Rule 28 — Test names must express business behavior
 E.g., `testNetworkFailureFallsBackToLocalRecognition()` instead of `test1()`.
 
-## Rule 29 — Test locally first, but always verify globally
+## Rule 29 — Test locally first, verify with explicit executable commands
 AI workflows should start with relevant unit tests, expand to integration tests, and run full test suites when necessary.
+Furthermore, the repository's `AGENTS.md` must declare explicit, executable verification commands (such as TypeScript type-checking, production bundle builds, or Edge Function linting). An agent has not finished its task until it executes these commands and confirms a zero-error exit code.
 
 ---
 
@@ -337,7 +338,28 @@ Generated files (e.g., in a `generated/` dir) must be marked `DO NOT EDIT`. Only
 # XVII. AI Rules / Skills / Workflows
 
 ## Rule 31 — General rules, workflows, and domain knowledge should be separated
-Store them logically under `.agents/` (e.g., `skills/`, `workflows/`, `guardrails/`).
+Store agent-specific operational assets logically under `.agents/`:
+- **`rules/`**: Behavioral and architectural constraints (e.g., `global.md`, `ios.md`, `web.md`, `backend.md`).
+- **`workflows/`**: Step-by-step SOPs for frequent tasks (e.g., `add-feature.md`, `new-database-migration.md`, `api-contract-change.md`).
+- **`dependency-map.md`**: Visual topology graphs and impact radius evaluation checklists.
+- **`context-index.md`**: Machine-readable index connecting domain concepts to precise interface and code locations.
+
+## Rule 32 — Token Noise Reduction via `.agentsignore`
+Agent search, globbing, and file-listing tools consume context windows rapidly if exposed to compiler outputs, dependency caches, and binary blobs.
+A repository must provide a root `.agentsignore` file (excluding `node_modules/`, `DerivedData/`, `.build/`, `dist/`, `Pods/`, `*.storekit`, `*.gguf`, `*.bin`, `.env*`, etc.) to prevent context contamination, cost explosion, and secret leakage.
+
+## Rule 33 — Multi-Agent Adapter Pattern (AGENTS.md as Single Source of Truth)
+Different AI tools expect different entry points: Claude Code reads `CLAUDE.md`, Gemini/Antigravity reads `GEMINI.md`, Cursor reads `.cursorrules`.
+To prevent fragmented and conflicting rules across tools, `AGENTS.md` must remain the **Canonical Single Source of Truth**. Tool-specific entry files (`CLAUDE.md`, `GEMINI.md`, `.cursorrules`) should act as thin **Adapters** that import `@AGENTS.md` and append only tool-specific anti-patterns (such as instructions against code folding or hallucinated file paths).
+
+## Rule 34 — Human-in-the-Loop Operational Boundaries (`MANUAL_TASKS.md`)
+AI agents cannot and must not execute operations requiring third-party administrative web dashboards, production secret injections, Apple Developer portal credentials, DNS management, or real-hardware verifications.
+Repositories must explicitly isolate human operational requirements into a dedicated `MANUAL_TASKS.md` (or `人工操作.md`) with actionable checkboxes `[ ]`. This creates a clear contract between what AI can automate and what humans must manually execute.
+
+## Rule 35 — Golden Feature Template & Doc-Sync Anti-Corruption
+To ensure consistency across new features and prevent documentation rot:
+1. **Golden Feature Template**: Projects must maintain a standard feature reference (e.g. `docs/architecture/golden_feature_template.md`) detailing the exact directory layout (Interface -> Implementation -> Presentation) and code patterns.
+2. **Doc-Sync Checklist**: Every modification workflow must mandate a 4-point documentation synchronization check (updating `context-index.md`, `dependency-map.md`, `backend_rpc.md`, and `database_schema.md`) whenever interfaces, contracts, or migrations change.
 
 ---
 

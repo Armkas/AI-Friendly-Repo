@@ -528,23 +528,40 @@ source of truth.
 
 ---
 
-# XVI. Avoiding Meaningless Context
+# XVI. Avoiding Meaningless Context & Token Noise Reduction
 
-## 42. Ignore large irrelevant trees by default
+## 42. Explicitly configure .agentsignore to isolate noise
 
-`build/`, `DerivedData/`, `Pods/`, `node_modules/`, `.venv/`, `cache/`, `logs/`, binaries,
-bulk generated files — unless the task is about them.
+`build/`, `DerivedData/`, `Pods/`, `node_modules/`, `.venv/`, `cache/`, `logs/`,
+binaries (`.gguf`, `.bin`), and secrets (`.env*`) must be explicitly excluded via a root `.agentsignore`.
+Never burn context budget on compiler outputs or binary noise.
+
+## 42.1 Multi-Agent Adapter Pattern
+
+In a heterogeneous AI landscape (Claude Code, Gemini, Windsurf, Cursor), different tools load different root instructions (`CLAUDE.md`, `GEMINI.md`, `.cursorrules`).
+The architectural principle: **Treat `AGENTS.md` as the Canonical Single Source of Truth**. Other tool entry points serve as lightweight "Adapters" that import `@AGENTS.md` and only append model-specific anti-patterns.
+
+## 42.2 Human-in-the-Loop Boundaries (`MANUAL_TASKS.md`)
+
+AI cannot and should not attempt actions requiring third-party administrative web dashboards (Cloudflare, Stripe, Apple Developer Portal), production secrets, or real-device testing.
+Isolate these tasks cleanly in `MANUAL_TASKS.md` with explicit checkboxes to establish a transparent human-agent collaboration contract.
 
 ---
 
 # XVII. AI Workflow
 
-## 43. Locate first, then go deep
+## 43. Locate first, then go deep, verify with commands, and prevent doc rot
 
 ```text
 task → Agent Rules → Project Map → Domain → Interface → Invariant/ADR
-     → relevant tests → dependency/impact → implementation → modify → verify → update knowledge
+     → relevant tests → dependency/impact → implementation → modify → verification commands → doc-sync
 ```
+
+## 43.1 Executable verification commands are mandatory
+After modifying code, AI must execute explicit verification commands (typecheck, build, lint) rather than assuming correctness.
+
+## 43.2 Doc-Sync Anti-Corruption
+Whenever an interface, contract, or database schema changes, the corresponding index, map, and contract documents must be updated synchronously.
 
 ## 44. Do not scan the whole repo without a reason
 

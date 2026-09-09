@@ -533,23 +533,39 @@ AI-Friendly 仓库应避免大型手动维护的源文件。
 
 ---
 
-# 十六、避免无意义上下文
+# 十六、避免无意义上下文与 Token 降噪
 
-## 43. 默认忽略大规模无关目录
+## 43. 显式配置 .agentsignore 隔离无关噪音
 
 `build/`、`DerivedData/`、`Pods/`、`node_modules/`、`.venv/`、`cache/`、`logs/`、
-二进制文件、大量生成文件——除非任务本身涉及它们。
+二进制文件（如 `.gguf`, `.bin`）、敏感配置（`.env*`）必须通过根级 `.agentsignore` 显式排除。
+不要把上下文预算消耗在机器产物或噪音数据上。
+
+## 43.1 多 Agent 适配器体系 (Multi-Agent Adapters)
+
+在异构 AI 工具并存的现实中（Claude Code, Gemini, Windsurf, Cursor），不同的工具默认读取不同的入口（`CLAUDE.md`, `GEMINI.md`, `.cursorrules`）。
+原则是：**以 `AGENTS.md` 为唯一规范源 (Single Source of Truth)**，其余工具入口均作为轻量“适配器（Adapter）”，通过引用 `@AGENTS.md` 保持规范统一，并仅补充各工具专属的避坑防范指令。
+
+## 43.2 人机协作边界 (Human-in-the-Loop & MANUAL_TASKS.md)
+
+AI 并非全能。涉及第三方后台（Cloudflare / Stripe / Apple Developer）、生产密钥注入、真实硬件联调等事项，必须显式隔离在 `MANUAL_TASKS.md`（或 `人工操作.md`）中，形成清晰的人机协作契约。
 
 ---
 
 # 十七、AI 工作流程
 
-## 44. 先定位，再深入
+## 44. 先定位，再深入，闭环验证与文档防腐化
 
 ```text
 task → Agent Rules → Project Map → Domain → Interface → Invariant/ADR
-     → 相关测试 → 依赖/影响 → 实现 → 修改 → 验证 → 更新知识
+     → 相关测试 → 依赖/影响 → 实现 → 修改 → 验证命令(闭环自检) → Doc-Sync(防腐化)
 ```
+
+## 44.1 闭环验证命令必须可执行
+完成代码修改后，AI 必须运行明确声明的验证命令（如编译、类型检查、语法 lint），不可凭空宣称“已修改完毕”。
+
+## 44.2 文档防腐化机制 (Doc-Sync)
+只要改动了接口、契约或数据库结构，必须同步登记到地图与索引中，保持知识层与代码层的实时同构。
 
 ## 45. 没有理由不要扫描整个仓库
 
