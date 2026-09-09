@@ -710,14 +710,14 @@ Do not invent AI-MVVM. Keep MVC / MVVM / DDD / Clean / Hexagonal / TCA as Runtim
 Clone the repository:
 
 ```bash
-git clone https://github.com/<your-name>/ai-friendly-repo.git
-cd ai-friendly-repo
+git clone git@github.com:Armkas/AI-Friendly-Repo.git
+cd AI-Friendly-Repo
 ```
 
 Explore the standard:
 
 ```text
-docs/
+spec/
 ```
 
 Explore the templates:

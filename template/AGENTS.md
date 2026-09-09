@@ -1,7 +1,7 @@
 # 🤖 AGENTS.md (Root)
 
 ## Project Introduction
-This is a project skeleton built on the [AI-Friendly Repo](https://github.com/Armkas/ai-friendly-repo) standard.
+This is a project skeleton built on the [AI-Friendly Repo](https://github.com/Armkas/AI-Friendly-Repo) standard.
 
 The knowledge layer is the **AI Context Architecture**. Declare your **runtime** architecture in `docs/` and in platform `AGENTS.md` (MVVM, DDD, Clean, Hexagonal, TCA, …). Do not replace it with an "AI-*" variant.
 
