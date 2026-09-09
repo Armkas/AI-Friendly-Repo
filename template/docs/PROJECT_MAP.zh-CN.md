@@ -46,6 +46,6 @@
 
 ## 3. 技术栈声明 (Technology Stack)
 
-- **前端 / 客户端**：[例如: Next.js / TypeScript / TailwindCSS 或 SwiftUI / MVVM]
-- **服务端 / 后端**：[例如: FastAPI / Python 或 Node.js / Express 或 Supabase Functions]
-- **数据库**：[例如: PostgreSQL / Supabase]
+- **前端 / 客户端**：[例如: React / Next.js、SwiftUI / MVVM 或 Flutter]
+- **服务端 / 后端**：[例如: FastAPI / Python、Node.js / Express 或 Go]
+- **数据库**：[例如: PostgreSQL、MySQL、SQLite 或云数据库]

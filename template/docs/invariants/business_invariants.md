@@ -21,11 +21,11 @@
 
 ---
 
-## 2. Platform Compliance & App Store Guardrails (If Applicable)
+## 2. Platform Compliance & Security Guardrails (If Applicable)
 
-1. **Apple App Store Review Guidelines**:
-   - Digital goods and virtual currencies must strictly use Apple In-App Purchase (IAP); never link to external payment gateways.
+1. **Store & Platform Policies**:
+   - Digital goods and in-app purchases must comply with designated app store and distribution guidelines.
    - User-Generated Content (UGC) features must include reporting, blocking, and moderation mechanisms.
-2. **Data Privacy**:
-   - Provide an accessible "Delete Account" flow.
-   - Never collect location or audio data in the background without explicit user permission.
+2. **Data Privacy & Compliance**:
+   - Provide an accessible "Delete Account" flow and terms of service.
+   - Never collect background location or device sensors without explicit runtime user consent.

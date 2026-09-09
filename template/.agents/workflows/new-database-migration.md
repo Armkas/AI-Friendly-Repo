@@ -19,7 +19,7 @@
 1. **Idempotency**: Use `CREATE TABLE IF NOT EXISTS` and `ADD COLUMN IF NOT EXISTS`;
 2. **Safe Deprecation**: Avoid destructive `DROP COLUMN` in production; deprecate first and remove in subsequent major versions;
 3. **Row-Level Security (RLS)**:
-   - For multi-tenant databases (PostgreSQL/Supabase), explicitly enable RLS:
+   - For multi-tenant databases with row security policies, explicitly enable RLS:
      ```sql
      ALTER TABLE public.<table_name> ENABLE ROW LEVEL SECURITY;
      ```

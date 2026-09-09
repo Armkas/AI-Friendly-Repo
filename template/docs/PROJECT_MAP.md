@@ -48,6 +48,6 @@
 
 ## 3. Technology Stack Declarations
 
-- **Frontend / Client**: [e.g., Next.js / TypeScript / TailwindCSS or SwiftUI / MVVM]
-- **Backend / Server**: [e.g., FastAPI / Python or Node.js / Express or Supabase Functions]
-- **Database**: [e.g., PostgreSQL / Supabase]
+- **Frontend / Client**: [e.g., React / Next.js, SwiftUI / MVVM, or Flutter]
+- **Backend / Server**: [e.g., FastAPI / Python, Node.js / Express, or Go]
+- **Database**: [e.g., PostgreSQL, MySQL, SQLite, or Cloud DB]

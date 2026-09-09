@@ -1,52 +1,45 @@
-# 📋 Manual Operations Checklist (MANUAL_TASKS.md)
+# 📋 Manual Tasks Checklist (MANUAL_TASKS.md)
 
 [简体中文](MANUAL_TASKS.zh-CN.md) | [日本語](MANUAL_TASKS.ja.md)
 
 > [!NOTE]
-> This document tracks tasks that require **human intervention, external configuration, or manual triggers** (such as third-party cloud consoles, payment gateways, app store certificates, production secret provisioning, and physical device validation).
-> AI Agents must NEVER pretend to have executed actions on external platforms. When encountering such tasks, register them here with actionable `[ ]` checkboxes and notify the user.
+> This document tracks tasks that require **human intervention, external dashboard actions, or manual verification**.
+> AI Agents cannot access external third-party consoles or physical devices. When a task requires human intervention, record it here with an actionable `[ ]` checkbox and notify the user.
 
 ---
 
-## 1. 🔑 Third-Party Cloud Services & Credentials
+## 1. 🌐 Frontend & Web
 
-- [ ] **1.1 Cloud Database / Backend Services (e.g. Supabase / Firebase / AWS)**
-  - [ ] Log in to cloud console and create/link production project
-  - [ ] Copy client public key and server secret key
-  - [ ] Configure CORS allowed origins and redirect URLs in cloud dashboard
-
-- [ ] **1.2 Security & Anti-Abuse (e.g. Cloudflare Turnstile / Captcha)**
-  - [ ] Create site and generate Site Key (client) and Secret Key (server)
-  - [ ] Configure local debugging domains (`localhost` / `127.0.0.1`)
-
-- [ ] **1.3 Payment & Subscription Gateways (e.g. Stripe / Apple In-App Purchase)**
-  - [ ] Create products and pricing plans in merchant dashboard (Price IDs / Product IDs)
-  - [ ] Set up Webhook endpoints and record Webhook Signing Secret
+- [ ] **1.1 Custom Domain & DNS**
+  - [ ] Configure custom domain DNS records (CNAME / A records)
+  - [ ] Verify SSL/TLS certificates in hosting dashboard
+- [ ] **1.2 Third-Party Authentication & OAuth**
+  - [ ] Register OAuth credentials in developer console (Google, GitHub, etc.)
+  - [ ] Add production redirect URLs to OAuth allowlist
 
 ---
 
-## 2. 🚀 Production Deployment & Database Migrations
+## 2. ⚙️ Backend & Cloud Infrastructure
 
-- [ ] **2.1 Production Database Migration Push**
-  - Execute migration command (e.g., `supabase db push` / `npx prisma migrate deploy`)
-  - Review migration logs to verify zero locking issues and complete backwards compatibility
-
-- [ ] **2.2 Production Environment Variables Provisioning**
-  - Inject all required production environment secrets in hosting platform (Vercel / Cloudflare Pages / AWS / K8s)
-
----
-
-## 3. 📱 Mobile & Distribution Consoles (If Applicable)
-
-- [ ] **3.1 Apple Developer & App Store Connect**
-  - [ ] Create App ID and configure required capabilities (Push Notifications, Sign in with Apple)
-  - [ ] Set up In-App Purchase items and review metadata
-  - [ ] Configure Server-to-Server Notifications endpoint (App Store Server Notifications V2)
+- [ ] **2.1 Production Database Migration**
+  - [ ] Review pending migration scripts
+  - [ ] Run production migration command: `<your-migration-command>`
+- [ ] **2.2 Production Secrets & Environment Variables**
+  - [ ] Inject production secrets into cloud hosting platform
+- [ ] **2.3 Webhook Endpoints**
+  - [ ] Register callback URLs in external partner dashboards
+  - [ ] Save webhook signing secret to server environment
 
 ---
 
-## 4. 🧪 Physical Hardware & End-to-End Testing
+## 3. 📱 Mobile App (iOS / Android)
 
-- [ ] **4.1 Real-Device Verification**
-  - [ ] Verify system permission prompts (Camera, Microphone, Bluetooth, Push Notifications)
-  - [ ] Validate graceful degradation under offline and high-latency network conditions
+- [ ] **3.1 Developer Accounts & Certificates**
+  - [ ] Set up App ID, provisioning profiles, and signing certificates
+  - [ ] Configure push notification service keys (APNs / FCM)
+- [ ] **3.2 In-App Purchases & Store Metadata**
+  - [ ] Create products and pricing tiers in App Store Connect / Play Console
+  - [ ] Submit app review credentials (demo account)
+- [ ] **3.3 Physical Device Testing**
+  - [ ] Test hardware permissions on real devices (Camera, Microphone, Location)
+  - [ ] Verify offline behavior and network reconnect flows

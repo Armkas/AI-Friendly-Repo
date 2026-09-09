@@ -18,7 +18,7 @@
 2. **安全撤销与回滚考量**：避免在生产环境执行破坏性的 `DROP COLUMN`，建议先弃用再在下个大版本清理；
 3. **权限与行级安全 (RLS)**：
    - 所有新建表必须显式设置权限；
-   - 若使用 PostgreSQL / Supabase，必须显式开启 RLS：
+   - 若数据库支持行级安全策略（RLS），建议显式开启：
      ```sql
      ALTER TABLE public.<table_name> ENABLE ROW LEVEL SECURITY;
      ```

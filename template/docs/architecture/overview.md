@@ -31,7 +31,7 @@ This project strictly enforces the separation of **Cognitive Architecture** from
 - **Client / Frontend**: [e.g., React / Next.js / SwiftUI / Flutter]
 - **Server / Backend**: [e.g., Node.js / FastAPI / Go / Cloud Functions]
 - **Database**: [e.g., PostgreSQL / SQLite / Redis]
-- **Third-Party Integrations**: [e.g., Stripe / Agora / Apple StoreKit]
+- **Third-Party Integrations**: [e.g., Payment Gateway, Push Notifications, Analytics, Cloud Storage]
 
 ---
 
