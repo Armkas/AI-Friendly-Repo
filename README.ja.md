@@ -1,3 +1,5 @@
+> **⚠️ NOTE: This Japanese translation is currently based on the 1.0 AI-Friendly architecture and is pending an update to the 2.0 AI-Native standard. Please refer to the English README.md for the latest 2.0 structure.**
+
 # AI-Friendly Repo
 
 [🇬🇧 English](README.md) | [🇨🇳 简体中文](README.zh-CN.md)

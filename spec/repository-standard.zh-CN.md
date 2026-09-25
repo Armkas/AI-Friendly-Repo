@@ -31,9 +31,9 @@
 ## 规则 01 — 严防上下文膨胀 (Context Bloat)
 不要在每次任务中都把所有的领域知识、规则和技能一股脑塞给 Agent。全局路由器 (`AGENTS.md`) 必须保持极简（< 2KB）。具体的上下文（例如数据库 Schema 或功能开发 Skill）必须**仅在特定任务需要时才加载**。
 
-## 规则 02 — 渐进式呈现 (Progressive Disclosure)
-标准阅读和调用顺序：
-`Command (触发指令)` → `Workflow (工作流)` → `Skill (技能单元)` → `Context (领域/契约)` → `Tool/Implementation (工具与实现)`
+## 规则 02 — 渐进式呈现是路由策略，而非固定阅读顺序 (Progressive Disclosure)
+Agent 应根据任务动态路由到必要的上下文：
+`Task (任务)` → `Project Map (地图)` → `Domain / Contract (领域/契约)` → `Implementation / Test (实现/验证)`
 
 ---
 
@@ -47,8 +47,8 @@
 
 你仓库里的语义规范（领域知识、契约、工作流）必须是 **Model-Agnostic (与模型无关的)**。然而，因为不同的运行时（Runtime）期望不同的配置结构（`.claude/`, `.cursor/rules/`, `.agents/skills/`），你的项目工程结构必须是 **Runtime-Aware (运行时感知的)**。
 
-**绝对不要在同一个生产环境仓库里塞满所有 AI 工具的配置。**
-团队在一个具体的项目中，必须且只能选择一种主流的 Agent Runtime。业务逻辑（`docs/domains`）是通用的，但工具配置（如 `CLAUDE.md`, `.cursor/rules/`）必须是为你选择的单一运行环境纯粹定制的原生适配器。
+**建立明确的 Runtime 所有权，避免规则漂移。**
+一个生产项目可以同时使用多个 Agent Runtime（例如开发者用 Cursor，CI 用 Claude Code），但你必须明确划分所有权。业务逻辑（`docs/domains`）是通用的，你绝不能在 `.cursor/rules/` 和 `.claude/skills` 中重复维护相同的业务规则。每个工具的 Runtime Adapter 都必须干净地将 Agent 引导回唯一的语义真理。
 
 ---
 

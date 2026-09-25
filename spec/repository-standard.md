@@ -32,8 +32,8 @@ We define the **8-Pillar AI-Native Architecture** that sits alongside your tradi
 Do not bloat the agent's context window by injecting all domains, rules, and skills for every task. The global router (`AGENTS.md`) should remain small (< 2KB). Specific context (e.g., a Database Schema or a Feature Development Skill) must only be loaded when the specific task requires it.
 
 ## Rule 02 — Progressive Disclosure
-Standard reading order:
-`Command` → `Workflow` → `Skill` → `Context (Domain/Contract)` → `Tool/Implementation`
+Progressive Disclosure is a context-routing policy, not a fixed reading order. The agent should dynamically route to the necessary context:
+`Task` → `Project Map` → `Domain / Contract` → `Implementation / Test`
 
 ---
 
@@ -47,8 +47,8 @@ The AI industry requires separating three distinct layers:
 
 Your repository's semantics (Domains, Contracts, Workflows) must be **Model-Agnostic**. However, because different agent runtimes expect configurations in different directories (`.claude/`, `.cursor/rules/`, `.agents/skills/`), your repository's setup must be **Runtime-Aware**.
 
-**Do not force multiple runtime configs into a single production repository.**
-Your team should pick ONE primary agent runtime for a project. The business logic (`docs/domains`) remains universal, but the runtime configuration (`CLAUDE.md`, `.claude/skills`) should be a pure, native adapter specific to your chosen tool (e.g. Cursor).
+**Establish Explicit Runtime Ownership.**
+While a production project can use multiple agent runtimes concurrently (e.g. Cursor for devs + Claude Code for CI scripts), you must explicitly divide ownership. The business logic (`docs/domains`) remains universal, but you must never duplicate identical business rules across `.cursor/rules/` and `.claude/skills`. Each runtime adapter must cleanly route to the single source of semantic truth.
 
 ---
 

@@ -257,9 +257,9 @@ what constrains it, and where to find it.
 
 # III. Layered Context
 
-## 8. Progressive Disclosure
+## 8. Progressive Disclosure is a context-routing policy, not a fixed reading order
 
-The AI should not get everything at once. It should descend level by level:
+The AI should not get everything at once. It should dynamically request the necessary level of context based on the task:
 
 ```text
 L0  Agent Rules        →  how should the AI work?
@@ -530,16 +530,18 @@ source of truth.
 
 # XVI. Avoiding Meaningless Context & Token Noise Reduction
 
-## 42. Explicitly configure .agentsignore to isolate noise
+## 42. Explicitly configure context exclusion to isolate noise
 
 `build/`, `DerivedData/`, `Pods/`, `node_modules/`, `.venv/`, `cache/`, `logs/`,
-binaries (`.gguf`, `.bin`), and secrets (`.env*`) must be explicitly excluded via a root `.agentsignore`.
+binaries (`.gguf`, `.bin`), and secrets (`.env*`) must be explicitly excluded.
+Depending on the Runtime, this might be a root `.agentsignore`, `.cursorignore`, or `.geminiignore`.
 Never burn context budget on compiler outputs or binary noise.
 
-## 42.1 Multi-Agent Adapter Pattern
+## 42.1 Semantic Truth vs Runtime Entry
 
-In a heterogeneous AI landscape (Claude Code, Gemini, Windsurf, Cursor), different tools load different root instructions (`CLAUDE.md`, `GEMINI.md`, `.cursorrules`).
-The architectural principle: **Treat `AGENTS.md` as the Canonical Single Source of Truth**. Other tool entry points serve as lightweight "Adapters" that import `@AGENTS.md` and only append model-specific anti-patterns.
+In a heterogeneous AI landscape (Claude Code, Gemini, Windsurf, Cursor), different tools load different root instructions (`CLAUDE.md`, `GEMINI.md`, `.cursor/rules/*.mdc`).
+The architectural principle: **`docs/` holds the Semantic Truth, while the runtime-specific file acts purely as the Runtime Entry**.
+Do not duplicate business knowledge into `.cursorrules` and `CLAUDE.md`. Instead, those runtime adapters should route the agent into the shared `docs/` repository standard.
 
 ## 42.2 Human-in-the-Loop Boundaries (`MANUAL_TASKS.md`)
 

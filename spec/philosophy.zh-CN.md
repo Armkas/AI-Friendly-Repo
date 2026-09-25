@@ -253,9 +253,9 @@ project
 
 # 三、分层上下文
 
-## 8. 渐进式披露（Progressive Disclosure）
+## 8. 渐进式披露是路由策略，而非死板的阅读顺序 (Progressive Disclosure)
 
-AI 不应一次获得全部信息，而应逐层下钻：
+AI 不应一次获得全部信息。这是一种**动态的上下文路由策略**，而不是固定的阅读流程。AI 应根据任务按需请求上下文：
 
 ```text
 L0  Agent Rules        →  AI 应该怎么工作？
@@ -535,16 +535,18 @@ AI-Friendly 仓库应避免大型手动维护的源文件。
 
 # 十六、避免无意义上下文与 Token 降噪
 
-## 43. 显式配置 .agentsignore 隔离无关噪音
+## 43. 显式配置排除规则以隔离无关噪音
 
 `build/`、`DerivedData/`、`Pods/`、`node_modules/`、`.venv/`、`cache/`、`logs/`、
-二进制文件（如 `.gguf`, `.bin`）、敏感配置（`.env*`）必须通过根级 `.agentsignore` 显式排除。
+二进制文件（如 `.gguf`, `.bin`）、敏感配置（`.env*`）必须显式排除。
+具体配置方式由 Runtime 决定，例如 `.agentsignore`、`.cursorignore` 或 `.geminiignore`。
 不要把上下文预算消耗在机器产物或噪音数据上。
 
-## 43.1 多 Agent 适配器体系 (Multi-Agent Adapters)
+## 43.1 语义真理 vs 运行入口 (Semantic Truth vs Runtime Entry)
 
-在异构 AI 工具并存的现实中（Claude Code, Gemini, Windsurf, Cursor），不同的工具默认读取不同的入口（`CLAUDE.md`, `GEMINI.md`, `.cursorrules`）。
-原则是：**以 `AGENTS.md` 为唯一规范源 (Single Source of Truth)**，其余工具入口均作为轻量“适配器（Adapter）”，通过引用 `@AGENTS.md` 保持规范统一，并仅补充各工具专属的避坑防范指令。
+在异构 AI 工具并存的现实中（Claude Code, Gemini, Windsurf, Cursor），不同的工具默认读取不同的入口（`CLAUDE.md`, `GEMINI.md`, `.cursor/rules/*.mdc`）。
+原则是：**`docs/` 承载项目无关具体工具的语义真理 (Semantic Truth)，而各家特有的配置文件仅作为运行入口 (Runtime Entry)**。
+不要将业务知识复制到 `.cursorrules` 或 `CLAUDE.md` 中。这些 Runtime Adapter 应当将 Agent 引导路由回统一的 `docs/` 标准架构中。
 
 ## 43.2 人机协作边界 (Human-in-the-Loop & MANUAL_TASKS.md)
 
