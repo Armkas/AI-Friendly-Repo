@@ -41,7 +41,7 @@ Standard reading order:
 
 ## Rule 03 — Model-Agnostic, Runtime-Aware
 The AI industry requires separating three distinct layers:
-1. **The Model** (e.g., GPT-4o, Claude 3.5): The underlying reasoning engine.
+1. **The Model** (e.g., GPT-6 Astra, Claude Opus 5.5): The underlying reasoning engine.
 2. **The Agent Runtime** (e.g., Cursor, Claude Code, Windsurf, Codex): *How* files are read, *when* skills are invoked, and *what* hooks execute.
 3. **The Repository Standard** (The semantics): *What* your project is.
 

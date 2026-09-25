@@ -13,7 +13,7 @@
 **“语义是统一的，但运行环境是分裂的。”**
 
 截至 2026 年，业界已经意识到，构建一个真正的 AI-Native 仓库必须区分三个独立的层级：
-1. **The Model (模型层)**（如 GPT-4o, Claude 3.5, Gemini 1.5）：决定核心的理解力与推理智商。
+1. **The Model (模型层)**（如 GPT-6 Astra, Claude Opus 5.5, Gemini 3.8 Flash）：决定核心的理解力与推理智商。
 2. **The Agent Runtime (智能体运行时)**（如 Cursor, Claude Code, Windsurf, Copilot, Gemini CLI）：决定*如何*读取文件、*何时*触发技能、以及*怎样*执行拦截钩子。
 3. **The Repository Standard (仓库标准)**（如 Context, Contracts, Workflows）：你的项目中与具体工具无关的语义真理。
 

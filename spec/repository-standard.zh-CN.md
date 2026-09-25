@@ -41,7 +41,7 @@
 
 ## 规则 03 — Model-Agnostic, Runtime-Aware (标准与模型解耦，运行时与工具适配)
 整个 AI 编码产业必须被拆分为三个独立维度：
-1. **Model (模型层)**（如 GPT-4o, Claude 3.5）：决定底层推理和理解能力。
+1. **Model (模型层)**（如 GPT-6 Astra, Claude Opus 5.5）：决定底层推理和理解能力。
 2. **Agent Runtime (智能体运行时)**（如 Cursor, Claude Code, Windsurf, Codex）：决定*如何*读取文件、*何时*加载技能、*怎样*执行拦截钩子。
 3. **Repository Standard (仓库标准)**（即语义）：定义你的项目*是什么*。
 

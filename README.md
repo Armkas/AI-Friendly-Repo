@@ -13,7 +13,7 @@ A standard, architecture, and set of templates for building repositories that AI
 **"The semantics are unified, but the runtimes are fragmented."**
 
 As of 2026, the industry has realized that building an AI-Native repository requires separating three distinct layers:
-1. **The Model** (e.g., GPT-4o, Claude 3.5, Gemini 1.5): Determines raw intelligence and reasoning.
+1. **The Model** (e.g., GPT-6 Astra, Claude Opus 5.5, Gemini 3.8 Flash): Determines raw intelligence and reasoning.
 2. **The Agent Runtime** (e.g., Cursor, Claude Code, Windsurf, Copilot, Gemini CLI): Determines *how* files are read, *when* skills are invoked, and *what* hooks are executed.
 3. **The Repository Standard** (e.g., Context, Contracts, Workflows): The universal semantic truth of your project.
 

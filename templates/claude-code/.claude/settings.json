@@ -1,1 +1,18 @@
-{"hooks": {"PreToolUse": "echo \"Checking permissions...\"", "PostToolUse": "npm run format"}}
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "commands": ["git push", "git commit"],
+        "type": "command",
+        "command": "echo 'Checking permissions...'"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "commands": ["edit_file", "write_file"],
+        "type": "command",
+        "command": "npm run format"
+      }
+    ]
+  }
+}
