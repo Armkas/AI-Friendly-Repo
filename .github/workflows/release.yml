@@ -2,7 +2,7 @@ name: Release
 
 on:
   push:
-    # 只在推送 v 开头的 tag 时触发 (例如 v1.0.1, v2.0.0)
+    # Trigger only when pushing tags starting with 'v' (e.g., v1.0.1, v2.0.0)
     tags:
       - 'v*'
 
@@ -11,7 +11,7 @@ jobs:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 允许 GitHub Actions 创建 Release
+      contents: write # Allow GitHub Actions to create a Release
 
     steps:
       - name: Checkout code
@@ -25,5 +25,5 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          # 自动根据两个版本之间的 Commit 记录生成更新日志 (Release Notes)
+          # Automatically generate release notes based on commit history
           generate_release_notes: true
