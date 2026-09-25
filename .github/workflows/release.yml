@@ -12,6 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write # Allow GitHub Actions to create a Release
+      packages: write # Allow GitHub Actions to publish to GitHub Packages
 
     steps:
       - name: Checkout code
@@ -21,9 +22,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          registry-url: 'https://npm.pkg.github.com'
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           # Automatically generate release notes based on commit history
           generate_release_notes: true
+
+      - name: Publish to GitHub Packages
+        run: |
+          cd cli
+          # Change package name to scoped name for GitHub Packages
+          sed -i 's/"name": "ai-native-repo"/"name": "@Armkas\/ai-native-repo"/' package.json
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
