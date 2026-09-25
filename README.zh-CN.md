@@ -1,105 +1,116 @@
-# AI-Native Repository Standard (AI 原生仓库标准)
+# AI-Native Repository Standard (AI-Native 仓库标准)
 
 [🇺🇸 English](README.md) | [🇯🇵 日本語](README.ja.md)
 
-> **不要仅仅给 AI 喂更多的上下文。给它一个原生的工作空间。**
+> **不要只是给 AI 提供更多的上下文，给它一个原生的工作区。**
 
-这是一套标准、架构理念和脚手架模板，旨在帮助开发者构建能让 AI 智能体（Coding Agents）自主理解、导航、修改和验证的代码仓库。
-
----
-
-## ⚠️ Model-Agnostic, Runtime-Aware (模型解耦，运行时适配)
-
-**“语义是统一的，但运行环境是分裂的。”**
-
-截至 2026 年，业界已经意识到，构建一个真正的 AI-Native 仓库必须区分三个独立的层级：
-1. **The Model (模型层)**（如 GPT-6 Astra, Claude Opus 5.5, Gemini 3.8 Flash）：决定核心的理解力与推理智商。
-2. **The Agent Runtime (智能体运行时)**（如 Cursor, Claude Code, Windsurf, Copilot, Gemini CLI）：决定*如何*读取文件、*何时*触发技能、以及*怎样*执行拦截钩子。
-3. **The Repository Standard (仓库标准)**（如 Context, Contracts, Workflows）：你的项目中与具体工具无关的语义真理。
-
-尽管你的业务规则和工作流是 **Model-Agnostic (与模型无关的)**（GPT 和 Claude 都能读懂 `docs/domains/voice.md`），但它们必须是 **Runtime-Aware (运行时感知的)**。
-- **Anthropic 的 Claude Code** 期望存在 `.claude/settings.json`（侧重生命周期钩子）。
-- **OpenAI 的 Codex / SDK** 期望存在 `AGENTS.md` 与 `.agents/skills/`（侧重渐进式任务发现）。
-- **Cursor** 期望存在 `.cursor/rules/*.mdc`（侧重多模型动态 glob 匹配）。
-- **GitHub Copilot / Windsurf / Trae** 则有各自原生的路径指令与代理机制。
-
-如果强行在同一个项目里糅合所有这些配置文件，只会导致规则冲突、上下文污染和维护地狱。
-
-因此，本项目提出：
-1. **一套底层规范** (`spec/`)：定义工具无关的纯粹理论（如领域知识、契约、工作流怎么写）。
-2. **纯净运行时模板** (`templates/`)：直接针对你的团队所购买/使用的具体 Runtime（例如 Cursor），提供最贴合其原生能力的适配器脚手架，杜绝多余工具的干扰。
+这是一个标准、命令行脚手架和参考架构，旨在构建让 AI 编程智能体（Agents）能够自主理解、导航、修改和验证的代码仓库。
 
 ---
 
-## 🏗 8 大 AI-Native 架构支柱
+## 🚀 快速开始：CLI 脚手架
 
-本标准将代码仓库从“供 AI 阅读的书”升级为“供 AI 工作的车间”。它定义了 8 个架构层：
+你不再需要手动复制文件了。我们提供了一个强大的命令行工具（CLI），可以根据你偏好的 Agent Runtime（智能体运行时）和项目复杂度，瞬间搭建出一个完整的 AI-Native 工作区。
 
-### 1. Context (认知层：系统是什么)
-*`PROJECT_MAP`, `Domains`, `Architecture`*
-告诉 AI 整个系统的拓扑结构、业务领域知识以及架构设计的初衷。
+**在任何空目录中运行以下命令：**
 
-### 2. Rules (规则层：必须/禁止做什么)
-*`AGENTS.md`, `CLAUDE.md`, `.cursor/rules/`*
-绝对约束。如代码格式化标准、导入规范、以及不可破损的架构底线。
+```bash
+npx ai-native-repo init .
+```
 
-### 3. Contracts (契约层：模块间如何协作)
-*`Protocols`, `Schemas`, `API 契约`*
-组件之间的明确边界。AI 对接口契约的依赖远大于人类。
+### 12 套模板矩阵
+CLI 会以交互的方式让你从我们的 12 套模板矩阵（4 种运行时 × 3 种复杂度层级）中进行选择：
 
-### 4. Skills (技能层：特定任务怎么做)
-*`SKILL.md`*
-可复用的原子能力（例如：“在这个仓库中如何生成一次数据库迁移”）。
+**第一步：选择你的 Agent Runtime**
+- `claude-code`: 纯正的 Anthropic 生态环境，包含特有的 hooks 和 skills。
+- `codex`: 纯正的 OpenAI/Codex 智能体结构。
+- `cursor`: 专为 Cursor 的 `.cursor/rules/*.mdc` 全局匹配机制优化的环境。
+- `gemini-cli`: 纯正的 Google Gemini 环境。
 
-### 5. Workflows (工作流层：如何编排步骤)
-*`SOPs`*
-多步标准作业程序（例如：“计划 -> 检查不变量 -> 实现 -> 测试 -> 验证 -> 更新文档”）。
+**第二步：选择复杂度层级 (Tier)**
+- `light`: 最基础的上下文文件（PROJECT_MAP + 核心规则），适合简单的脚本或原型。
+- `standard`: 默认选项。包含完整的上下文、契约和规则架构，适合生产级服务。
+- `full`: 企业级标准。包含额外的验证（Verification）钩子、MCP 服务器配置，以及智能体行为评估模型。
 
-### 6. Tools (工具层：如何操作世界)
-*`MCP Servers`, `确定性 CLI 脚本`*
-安全、结构化的工具接口。允许 Agent 安全地读取数据库、获取日志或编译代码，防止 LLM 在终端盲目通过幻觉执行危险命令。
-
-### 7. Verification (验证层：如何证明做对了)
-*`Tests`, `Validators`, `Hooks`*
-自动化的闭环验证。只有当校验脚本返回 `exit code 0` 时，Agent 的任务才算真正完成。
-
-### 8. Human / Agent Boundary (边界层：人机信任隔离)
-*`MANUAL_TASKS.md`*
-清晰的权限划分：哪些事 AI 可以全自动做，哪些高危操作必须人类审批（如生产环境部署），哪些事必须人类亲力亲为（如注入安全密钥）。
-
----
-
-## 📂 仓库目录结构
-
-```text
-AI-Native-Repo/
-│
-├── 1️⃣ spec/                            # 【标准层】工具无关的理论与哲学
-│   ├── repository-standard.md         # 8 大支柱架构定义
-│   └── philosophy.md                  # 阐述“Context Must Be Earned”等哲学
-│
-├── 2️⃣ templates/                       # 【模板层】为你所选的 Agent 提供纯净脚手架
-│   ├── claude-code/                   # 纯 Claude 生态环境 (.claude/ 钩子与技能)
-│   ├── codex/                         # 纯 OpenAI 环境 (.agents/skills/)
-│   ├── cursor/                        # 纯 Cursor 环境 (.cursor/rules/)
-│   └── gemini-cli/                    # 纯 Gemini 环境
-│
-└── 3️⃣ examples/                        # 【范例层】真实世界的对比演示（控制变量法）
-    ├── claude-code/                   # 业务代码完全相同的跨平台语音聊天项目，Claude 配置版
-    ├── codex/                         # 同上，Codex 配置版
-    ├── cursor/                        # 同上，Cursor 配置版
-    └── gemini-cli/                    # 同上，Gemini 配置版
+*或者，你也可以通过参数直接一键生成：*
+```bash
+npx ai-native-repo init . --runtime cursor --tier standard
 ```
 
 ---
 
-## 📖 选择你的 Agent Runtime（开始使用）
+## ⚠️ 模型不可知，但运行时感知 (Model-Agnostic, Runtime-Aware)
 
-根据你团队实际使用的运行时环境，拷贝对应的模板开始你的 AI-Native 项目：
+**“语义是统一的，但运行时是分裂的。”**
 
-* **如果你使用 Claude Code** -> 拷贝 `templates/claude-code/`
-* **如果你使用 OpenAI / Codex** -> 拷贝 `templates/codex/`
-* **如果你使用 Cursor** -> 拷贝 `templates/cursor/` (注：Cursor 是一个多模型运行时)
-* **如果你使用 Gemini CLI** -> 拷贝 `templates/gemini-cli/`
+到了 2026 年，业界已经意识到构建一个 AI-Native 的仓库需要分离三个不同的层级：
+1. **模型层 (The Model)**（例如：OpenAI 模型、Anthropic 模型、Google 模型）：决定了原始的智力和推理能力。
+2. **智能体运行时 (The Agent Runtime)**（例如：Cursor, Claude Code, Windsurf, Copilot, Gemini CLI）：决定了智能体*如何*读取文件、*何时*调用技能，以及执行*什么*钩子。
+3. **仓库标准 (The Repository Standard)**（例如：上下文、契约、工作流）：你的项目的通用语义真相（Semantic truth）。
 
-深入了解背后的设计哲学，请阅读 [代码仓库设计规范 (Repository Standard)](spec/repository-standard.zh-CN.md)。
+虽然你项目的业务语义是**模型不可知**的（OpenAI 和 Anthropic 的模型都能读懂 `docs/domains/voice.md` 文件），但它们必须是**运行时感知**的。
+- **Anthropic 的 Claude Code** 期望读取 `.claude/settings.json`（专注于生命周期管理）。
+- **Cursor** 期望读取 `.cursor/rules/*.mdc`（专注于多模型的全局模式匹配）。
+
+### 参考仓库 (Reference) vs 消费者仓库 (Consumer)
+- **本仓库 (Reference)**: 这个 GitHub 仓库是全局的*参考标准仓库*。它包含了多种运行时的适配器、模板生成器以及 CLI 工具的源码。
+- **你的仓库 (Consumer)**: 通过 CLI 生成出来的属于你的仓库是*消费者仓库*。它应该只包含**一种** Runtime 适配器和**一种** Tier 层级，从而确保 AI 智能体永远不会被互相冲突的规则集所困扰。
+
+---
+
+## 🏗 八大支柱架构 (The 8-Pillar Architecture)
+
+本标准将代码仓库从“一本给 AI 读的书”提升为了“一个供 AI 操作的工作区”。它定义了 8 个架构层：
+
+### 1. 语境 (Context) - “这是什么”
+*`PROJECT_MAP`, `Domains`, `Architecture`*
+告诉 AI 这个系统是什么，东西都在哪里，以及为什么这样设计。
+
+### 2. 规则 (Rules) - “指令与约束”
+*`AGENTS.md`, `CLAUDE.md`, `.cursor/rules/`*
+智能体的行为指令与声明性约束。代码必须如何格式化，导入必须如何处理，以及绝对不能打破的架构边界。
+
+### 3. 契约 (Contracts) - “它们如何连接”
+*`Protocols`, `Schemas`, `API Definitions`*
+组件之间的显式边界。AI 智能体比人类更需要依赖在有意义的架构边界上的显式接口（Interfaces）。
+
+### 4. 技能 (Skills) - “如何完成具体任务”
+*`SKILL.md`*
+可复用的、原子化的能力（例如：“在这个仓库中如何生成数据库迁移”）。
+
+### 5. 工作流 (Workflows) - “如何编排流程”
+*`SOPs`*
+多步操作程序（例如：“规划 -> 检查不变量 -> 实现 -> 测试 -> 验证 -> 更新文档”）。
+
+### 6. 工具 (Tools) - “如何触及世界”
+*`MCP Servers`, `Deterministic CLI Scripts`*
+结构化的能力扩展。智能体可以使用它们来安全地读取数据库、获取日志或编译代码。
+
+### 7. 验证 (Verification) - “闭环证据”
+*`Tests`, `Validators`, `Hooks`*
+自动化的工作闭环。包括代码验证 + 智能体行为验证。直到验证脚本返回退出码 `0`，智能体的工作才算真正结束。
+
+### 8. 人机边界 (Human / Agent Boundary) - “信任屏障”
+*`MANUAL_TASKS.md`*
+清晰的权限划分：AI 可以自主做什么，它必须请求许可才能做什么（例如：部署到生产环境），以及哪些事必须由人类手动完成。
+
+---
+
+## 📂 开发者指南
+
+如果你想参与贡献这个 AI-Native 仓库标准本身：
+
+```text
+AI-Native-Repo/ (Reference Repository)
+│
+├── spec/                        # 规范标准：与工具无关的底层理论和哲学
+├── cli/                         # `npx ai-native-repo` 脚手架的源代码
+├── template-source/             # 唯一模板真实源 (Source of Truth)
+│   ├── common/                  # 共享文档 (分为 Light, Standard, Full)
+│   └── runtimes/                # 针对不同运行时的具体适配器 (Claude, Cursor 等)
+│
+├── scripts/
+│   ├── generate-templates.js    # 将上述两部分拼合生成 12 套模板矩阵至 cli/templates/
+│   └── validate.sh              # 确保整个标准仓库的完整性和无漂移的 CI 管道
+└── anr.yaml                     # 机器可读的清单文件
+```

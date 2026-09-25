@@ -1,17 +1,17 @@
-# AI-Friendly Project —— 理念
+# AI-Native Repository Standard —— 哲学
 
 [🇬🇧 English](philosophy.md) | [🇯🇵 日本語](philosophy.ja.md)
 
 > **不要给 AI 更多代码，而是给 AI 更好的结构。**
 
-本文解释 [AI-Friendly Repo 标准](repository-standard.md) 背后的**原因**。
+本文解释 [AI-Native Repo 标准](repository-standard.md) 背后的**原因**。
 标准告诉你**要遵守哪些规则**，本文告诉你**这些规则为什么存在**。
 
 ---
 
 ## 一句话定义
 
-> **AI-Friendly Project** 是一种面向 AI Coding Agent 的软件仓库架构：
+> **AI-Native Repository** 是一种面向 AI Coding Agent 的软件仓库架构：
 > 通过结构化的知识层、渐进式上下文、明确的领域边界、Interface / Contract、
 > Invariant、ADR、依赖索引和可验证测试，使 AI 能够以**最少的上下文**
 > 正确理解、导航、修改和维护大型代码库。
@@ -26,7 +26,7 @@
 
 ## 两个平面：AI Context Architecture + Software Architecture
 
-AI-Friendly Repo **不是**新的 MVC，也不是「AI-MVVM」。传统架构并没有过时。
+AI-Native Repo **不是**新的 MVC，也不是「AI-MVVM」。传统架构并没有过时。
 
 它是在现有软件架构之上增加一个 **Agent Context Layer**。
 
@@ -43,7 +43,7 @@ Implementation
 ```
 
 ```text
-AI-Friendly Repository
+AI-Native Repository
 │
 ├── AI Context Architecture
 │       = AI 如何理解、导航、验证代码
@@ -65,7 +65,7 @@ DDD / Clean / Hexagonal / Dependency Inversion
 完整模型：
 
 ```text
-                    AI-Friendly Repo
+                    AI-Native Repo
                            │
              ┌─────────────┴─────────────┐
              │                           │
@@ -133,7 +133,7 @@ Implementation         Swift / Python / SQL / 基础设施
 
 本标准**不规定**某一种运行时架构。iOS 可以继续用 MVVM 或 TCA；后端可以继续用 DDD、Clean、Hexagonal 或 Vertical Slice。无论 Runtime Architecture 选择什么，都必须满足 AI Context Architecture。
 
-AI-Friendly ≠ Abstraction-Heavy。不要这样：
+AI-Native ≠ Abstraction-Heavy。不要这样：
 
 ```text
 UserService
@@ -173,7 +173,7 @@ UserServiceFacade
 code + a short README + comments
 ```
 
-AI-Friendly 项目是：
+AI-Native 项目是：
 
 ```text
 AI Context Architecture  +  Software Architecture  →  Implementation
@@ -420,9 +420,9 @@ Contract 无法解释、或怀疑实现有 bug 时，就应下钻。
 
 Instruction 不等于 Enforcement。不要以为在 `AGENTS.md` 里写一句“绝对不要删除数据”，就能在物理上阻止 Agent 犯错。规则必须分为三层：
 
-1. **建议性约束 (Advisory Constraint)** (`CLAUDE.md`, `.cursor/rules/`)：口头告诉 Agent 应该怎么做。
+1. **建议性指令 / 声明性约束 (Advisory Constraint)** (`CLAUDE.md`, `.cursor/rules/`)：口头告诉 Agent 应该怎么做。
 2. **强制护栏 (Guardrail / Enforcement)** (`PreToolUse` Hooks, CI, Permissions, 权限控制)：在系统底层物理拦截违规行为。
-3. **验证 (Verification)** (Tests, Lint, Build)：客观证明结果是否正确。
+3. **验证 / 证据 (Verification)** (Tests, Lint, Build)：客观证明结果是否正确。
 
 ## 27.1 业务规则必须独立存在
 
@@ -484,7 +484,7 @@ X 依赖谁？        VoiceService → SpeechService, LLMService, Validator
 
 ## 37. 源文件大小
 
-AI-Friendly 仓库应避免大型手动维护的源文件。
+AI-Native 仓库应避免大型手动维护的源文件。
 
 作为指导原则：
 
@@ -679,7 +679,7 @@ AI-Friendly 结构。
 
 ## 55–59. 不要让 AI 猜
 
-| 传统 | AI-Friendly |
+| 传统 | AI-Native |
 |---|---|
 | 代码 → AI 猜 → 架构 | 架构 → 代码 |
 | 业务规则藏在代码里 | invariants + domain knowledge |
@@ -692,7 +692,7 @@ AI-Friendly 结构。
 # 二十二、最终模型
 
 ```text
-                    AI-Friendly Repo
+                    AI-Native Repo
                            │
              ┌─────────────┴─────────────┐
              │                           │
@@ -740,4 +740,4 @@ Cognitive Architecture（Agent 如何理解）叠在 Runtime Architecture（程�
 
 ---
 
-> **AI-Friendly Repo 不是给 AI 更多代码，而是给 AI 更好的结构。**
+> **AI-Native Repo 不是给 AI 更多代码，而是给 AI 更好的结构。**

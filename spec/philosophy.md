@@ -1,17 +1,17 @@
-# AI-Friendly Project — Philosophy
+# AI-Native Repository Standard — Philosophy
 
 [🇨🇳 简体中文](philosophy.zh-CN.md) | [🇯🇵 日本語](philosophy.ja.md)
 
 > **Don't give AI more code. Give AI better structure.**
 
-This document explains the *reasoning* behind the [AI-Friendly Repo Standard](repository-standard.md).
+This document explains the *reasoning* behind the [AI-Native Repo Standard](repository-standard.md).
 The Standard tells you **what rules to follow**. This document tells you **why they exist**.
 
 ---
 
 ## One-sentence definition
 
-> An **AI-Friendly Project** is a repository architecture designed for AI coding agents.
+> An **AI-Native Repository** is a repository architecture designed for AI coding agents.
 > Through a structured knowledge layer, progressive context, explicit domain boundaries,
 > interfaces / contracts, invariants, ADRs, dependency indexes, and verifiable tests,
 > it lets an AI correctly understand, navigate, modify, and maintain a large codebase
@@ -27,7 +27,7 @@ The goal is:
 
 ## Two planes: AI Context Architecture + Software Architecture
 
-AI-Friendly Repo is **not** a new MVC, and not “AI-MVVM”. Traditional architecture is not obsolete.
+AI-Native Repo is **not** a new MVC, and not “AI-MVVM”. Traditional architecture is not obsolete.
 
 It adds an **Agent Context Layer** on top of existing software architecture.
 
@@ -44,7 +44,7 @@ Implementation
 ```
 
 ```text
-AI-Friendly Repository
+AI-Native Repository
 │
 ├── AI Context Architecture
 │       = how an agent understands, navigates, and verifies code
@@ -66,7 +66,7 @@ DDD / Clean / Hexagonal / Dependency Inversion
 The full model:
 
 ```text
-                    AI-Friendly Repo
+                    AI-Native Repo
                            │
              ┌─────────────┴─────────────┐
              │                           │
@@ -134,7 +134,7 @@ Implementation         Swift / Python / SQL / infrastructure
 
 This standard does **not** prescribe a single runtime architecture. iOS may keep MVVM or TCA; a backend may keep DDD, Clean, Hexagonal, or Vertical Slice. Whatever you choose must still satisfy the AI Context Architecture.
 
-AI-Friendly ≠ Abstraction-Heavy. Not this:
+AI-Native ≠ Abstraction-Heavy. Not this:
 
 ```text
 UserService
@@ -174,7 +174,7 @@ A traditional project is roughly:
 code + a short README + comments
 ```
 
-An AI-Friendly project is:
+An AI-Native project is:
 
 ```text
 AI Context Architecture  +  Software Architecture  →  Implementation
@@ -427,9 +427,9 @@ bug is suspected in the implementation.
 
 Instruction ≠ Enforcement. Do not assume writing "never delete data" in an `AGENTS.md` file will physically prevent an agent from doing it. Rules must be separated into three layers:
 
-1. **Advisory Constraint** (`CLAUDE.md`, `.cursor/rules/`): Tells the agent how it *should* behave.
-2. **Guardrail / Enforcement** (`PreToolUse` Hooks, CI, Permissions, Branch Protection): Physically stops or detects violations.
-3. **Verification** (Tests, Lint, Build): Proves the result is correct.
+1. **Agent Instructions / Declared Constraints** (`CLAUDE.md`, `.cursor/rules/`): Tells the agent how it *should* behave.
+2. **Guardrails / Enforcement** (`PreToolUse` Hooks, CI, Permissions, Branch Protection): Physically stops or detects violations.
+3. **Verification / Evidence** (Tests, Lint, Build): Proves the result is correct.
 
 ## 27.1 Business rules must exist independently
 
@@ -679,7 +679,7 @@ AI-friendly structure immediately.
 
 ## 54–58. Don't make the AI guess
 
-| Traditional | AI-Friendly |
+| Traditional | AI-Native |
 |---|---|
 | code → AI guesses → architecture | architecture → code |
 | business rules hidden in code | invariants + domain knowledge |
@@ -692,7 +692,7 @@ AI-friendly structure immediately.
 # XXII. The Final Model
 
 ```text
-                    AI-Friendly Repo
+                    AI-Native Repo
                            │
              ┌─────────────┴─────────────┐
              │                           │
@@ -740,5 +740,5 @@ Cognitive Architecture sits on Runtime Architecture:
 
 ---
 
-> **AI-Friendly Repo is not about giving AI more code.
+> **AI-Native Repo is not about giving AI more code.
 > It is about giving AI better structure.**
