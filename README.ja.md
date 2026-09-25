@@ -2,7 +2,7 @@
 
 # AI-Friendly Repo
 
-[🇬🇧 English](README.md) | [🇨🇳 简体中文](README.zh-CN.md)
+[🇺🇸 English](README.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇺🇦 Українська](README.uk.md)
 
 > AI にコードを増やすのではなく、より良い構造を与える。
 

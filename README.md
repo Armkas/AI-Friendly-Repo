@@ -1,6 +1,6 @@
 # AI-Native Repository Standard
 
-[🇨🇳 简体中文](README.zh-CN.md) | [🇯🇵 日本語](README.ja.md)
+[🇺🇸 English](README.md) | [🇨🇳 简体中文](README.zh-CN.md) | [🇹🇼 繁體中文](README.zh-TW.md) | [🇯🇵 日本語](README.ja.md) | [🇷🇺 Русский](README.ru.md) | [🇺🇦 Українська](README.uk.md)
 
 > **Don't just give AI more context. Give it a native workspace.**
 
