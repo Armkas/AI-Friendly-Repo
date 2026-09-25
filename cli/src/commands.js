@@ -4,7 +4,7 @@ const readline = require('readline');
 
 const RUNTIMES = ['claude-code', 'codex', 'gemini-cli', 'cursor'];
 const TIERS = ['light', 'standard', 'full'];
-const CLI_VERSION = '1.0.0';
+const CLI_VERSION = require('../package.json').version;
 
 // A simple CLI prompt helper
 function prompt(question) {
@@ -169,7 +169,7 @@ async function initCommand(args) {
     `tier: "${tier}"`,
     `template:`,
     `  version: "${CLI_VERSION}"`
-  ].join('\\n') + '\\n';
+  ].join('\n') + '\n';
 
   if (fs.existsSync(manifestPath)) {
      console.log(`  Conflict : anr.yaml already exists! Skipping...`);

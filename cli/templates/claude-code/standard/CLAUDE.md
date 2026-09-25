@@ -1,3 +1,5 @@
-# Claude Code Project Instructions
-This repository follows the AI-Native Repository Standard. See `docs/PROJECT_MAP.md` to get started.
-Claude-specific instructions: Use .claude/skills and hooks for operations.
+@AGENTS.md
+
+# Claude Code Addendum
+This repository uses the AI-Native Repository Standard. The global semantic truth is loaded above from `AGENTS.md`.
+Claude-specific instructions: Use `.claude/skills` for tasks and `.claude/settings.json` for validation hooks.

@@ -2,6 +2,8 @@
 
 [🇬🇧 English](philosophy.md) | [🇨🇳 简体中文](philosophy.zh-CN.md)
 
+> **⚠️ Notice: This Japanese translation is currently outdated and refers to the older "AI-Friendly Project" terminology instead of the 2.0 "AI-Native Repository Standard". Please refer to the English or Chinese versions for the most up-to-date architecture.**
+
 > **AI にコードを増やすのではなく、より良い構造を与える。**
 
 本書は [AI-Friendly Repo 標準](repository-standard.md) の背後にある**理由**を説明する。

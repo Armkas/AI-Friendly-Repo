@@ -17,7 +17,7 @@ An Adapter must fulfill the following responsibilities:
 
 | Canonical Concept | Claude Code | Codex / OpenAI | Cursor | Gemini CLI |
 | :--- | :--- | :--- | :--- | :--- |
-| **Project Entry Instructions** | `CLAUDE.md` | `AGENTS.md` | `.cursor/rules/core.mdc` | `GEMINI.md` |
+| **Project Entry Instructions** | `CLAUDE.md` | `AGENTS.md` | `AGENTS.md` / `.cursor/rules/core.mdc` | `GEMINI.md` |
 | **Skill (Atomic capability)** | `.claude/skills/` | `.agents/skills/` | `.cursor/rules/*.mdc` | `.gemini/skills/` |
 | **Verification Hook** | `.claude/settings.json` | CI / `.agents/hooks/` | N/A (Manual/CI) | `.gemini/hooks/` |
 | **Subagent Definition** | `.claude/agents/` | `.agents/subagents/` | N/A | `.gemini/agents/` |

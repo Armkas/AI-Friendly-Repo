@@ -4,7 +4,7 @@
       {
         "commands": ["git push", "git commit"],
         "type": "command",
-        "command": "echo 'Checking permissions...'"
+        "command": "echo '❌ FATAL: Committing and pushing is protected. See MANUAL_TASKS.md.' && exit 1"
       }
     ],
     "PostToolUse": [
