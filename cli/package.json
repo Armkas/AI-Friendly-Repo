@@ -1,6 +1,6 @@
 {
   "name": "ai-native-repo",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Scaffolding tool for the AI-Native Repository Standard",
   "bin": {
     "anr": "./bin/anr.js",

@@ -90,18 +90,24 @@ async function initCommand(args) {
 
   const targetDir = path.resolve(process.cwd(), target);
 
-  if (!runtime || !RUNTIMES.includes(runtime)) {
+  while (!runtime || !RUNTIMES.includes(runtime)) {
     console.log("Available Runtimes:");
-    RUNTIMES.forEach((r, i) => console.log(`${i + 1}. ${r}`));
+    RUNTIMES.forEach((r, i) => console.log(`  ${i + 1}. ${r}`));
     let ans = await prompt("Select Runtime (1-4): ");
-    runtime = RUNTIMES[parseInt(ans) - 1] || 'claude-code';
+    runtime = RUNTIMES[parseInt(ans) - 1];
+    if (!runtime) {
+      console.log("❌ Invalid choice. Please select a number between 1 and 4.\n");
+    }
   }
 
-  if (!tier || !TIERS.includes(tier)) {
+  while (!tier || !TIERS.includes(tier)) {
     console.log("Available Tiers:");
-    TIERS.forEach((r, i) => console.log(`${i + 1}. ${r}`));
+    TIERS.forEach((r, i) => console.log(`  ${i + 1}. ${r}`));
     let ans = await prompt("Select Tier (1-3): ");
-    tier = TIERS[parseInt(ans) - 1] || 'standard';
+    tier = TIERS[parseInt(ans) - 1];
+    if (!tier) {
+      console.log("❌ Invalid choice. Please select a number between 1 and 3.\n");
+    }
   }
 
   console.log(`\nInitializing AI-Native Repository...`);
