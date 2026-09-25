@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  push:
+    # 只在推送 v 开头的 tag 时触发 (例如 v1.0.1, v2.0.0)
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 允许 GitHub Actions 创建 Release
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # 自动根据两个版本之间的 Commit 记录生成更新日志 (Release Notes)
+          generate_release_notes: true
