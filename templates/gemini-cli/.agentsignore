@@ -1,0 +1,57 @@
+# .agentsignore - AI Agent 检索与 Token 降噪排除规则
+# 匹配本规则的文件与目录将被 AI 代理搜索、索引及列举工具自动忽略，防止上下文污染与 Token 浪费。
+
+# --- 系统与临时文件 ---
+**/.DS_Store
+**/Thumbs.db
+**/*.log
+**/tmp/
+**/.temp/
+
+# --- 敏感凭据与本地环境变量 ---
+**/.env
+**/.env.*
+!**/.env.example
+!**/.env.*.example
+**/*.pem
+**/*.key
+**/*.keystore
+secrets.properties
+
+# --- 依赖库缓存 ---
+**/node_modules/
+**/Pods/
+**/.venv/
+**/venv/
+**/vendor/
+
+# --- 构建产物与打包输出 ---
+**/dist/
+**/build/
+**/out/
+**/.next/
+**/.turbo/
+**/coverage/
+**/target/
+
+# --- iOS / macOS 构建产物与 Xcode 状态 ---
+**/DerivedData/
+**/*.xcodeproj/xcuserdata/
+**/*.xcodeproj/project.xcworkspace/xcuserdata/
+**/*.xcworkspace/xcuserdata/
+**/*.xcuserstate
+**/Assets.xcassets/
+**/*.storekit
+
+# --- Android 构建产物 ---
+**/.gradle/
+**/captures/
+
+# --- 模型权重与二进制大数据 ---
+**/*.gguf
+**/*.bin
+**/*.onnx
+**/*.pt
+**/*.pth
+**/*.tar.gz
+**/*.zip

@@ -1,4 +1,4 @@
-# AI-Friendly Repo Standard 1.0
+# AI-Native Repository Standard 2.0
 
 [简体中文](repository-standard.zh-CN.md)
 
@@ -9,412 +9,82 @@
 
 ---
 
-# 0. Architecture Model
+# 0. The AI-Native Shift
 
-This standard specifies an **AI Context Architecture**. It does **not** specify a single **Runtime Architecture**.
+This standard elevates the repository from a passive "book for AI to read" into an active "workspace for AI to operate."
 
-```mermaid
-flowchart TB
-  repo[AI-Friendly Repository]
-  repo --> ctx["AI Context Architecture<br/>how an agent understands, navigates, and verifies code"]
-  repo --> sw["Software Architecture<br/>how the program runs"]
-```
+We define the **8-Pillar AI-Native Architecture** that sits alongside your traditional Software Architecture (MVVM, Clean, DDD, etc.):
 
-```mermaid
-flowchart TB
-  repo[AI-Friendly Repo]
-  repo --> ctx[AI Context Architecture]
-  repo --> sw[Software Architecture]
-  ctx --> rules[Rules]
-  ctx --> maps[Maps]
-  ctx --> domain[Domain]
-  rules --> contracts[Contracts]
-  maps --> invariants[Invariants]
-  domain --> adr[ADR]
-  sw --> mvvm[MVVM]
-  sw --> ddd[DDD]
-  sw --> clean[Clean]
-  mvvm --> feature[Feature]
-  ddd --> di[DI]
-  clean --> hex[Hexagonal]
-  contracts --> code[Code]
-  invariants --> code
-  adr --> code
-  feature --> code
-  di --> code
-  hex --> code
-```
-
-Existing artifacts in this spec belong to **AI Context Architecture**:
-
-```text
-Map
-Domain
-Contract
-Invariant
-ADR
-Index
-Test
-```
-
-These belong to **Software Architecture** (chosen per project, not prescribed):
-
-```text
-MVVM
-Clean Architecture
-DDD
-Hexagonal
-Repository
-DI
-```
-
-**Runtime Architecture** — how the program runs:
-
-```mermaid
-flowchart TB
-  V[View] --> VM[ViewModel] --> UC[UseCase] --> RP[Repository] --> API
-```
-
-**Cognitive Architecture** — how an agent understands the program:
-
-```mermaid
-flowchart TB
-  T[Task] --> Map --> Dom[Domain] --> Con[Contract] --> Inv[Invariant] --> Test --> Impl[Implementation]
-```
-
-```text
-Runtime Flow     →  how does the program run?
-Cognitive Flow   →  how does the AI understand the program?
-```
-
-**AI-Friendly Repo does not prescribe a single runtime architecture.**
-
-```text
-iOS:
-MVVM
-TCA
-Clean Architecture
-Feature Architecture
-
-Backend:
-DDD
-Clean Architecture
-Hexagonal Architecture
-Vertical Slice
-```
-
-Whatever Runtime Architecture you choose, it must still satisfy the AI Context Architecture.
-
-Rules 01–39 below implement the AI Context Architecture. They do not replace MVC / MVVM / DDD.
+1. **Context** (Project Map, Domains, Architecture) - *What the system is.*
+2. **Rules** (AGENTS.md, Cursor Rules) - *What the agent must/must not do.*
+3. **Contracts** (Protocols, Schemas) - *How components collaborate.*
+4. **Skills** (SKILL.md) - *How to perform specific atomic tasks.*
+5. **Workflows** (SOPs) - *How to orchestrate a complex development process.*
+6. **Tools** (MCP, CLI, Scripts) - *How the agent touches the world.*
+7. **Verification** (Tests, Validators, Hooks) - *How to prove the agent did it right.*
+8. **Human / Agent Boundary** (MANUAL_TASKS.md) - *What decisions must be made by humans.*
 
 ---
 
-# I. Tiered Adoption (Context Depth)
+# I. Context Must Be Earned
 
-Not every project requires every rule. AI-Friendly Repositories should scale their context depth based on project size.
+## Rule 01 — Context must be loaded on-demand
+Do not bloat the agent's context window by injecting all domains, rules, and skills for every task. The global router (`AGENTS.md`) should remain small (< 2KB). Specific context (e.g., a Database Schema or a Feature Development Skill) must only be loaded when the specific task requires it.
 
-## Rule 01 — Adopt context standards progressively
-### Minimal Standard
-Small projects or initial migrations should focus on:
-- **`AGENTS.md`** (Router)
-- **`PROJECT_MAP.md`** (Structure)
-
-### Standard
-Medium projects should add feature-focused layers:
-- **`DOMAIN`** (Domain Knowledge)
-- **`CONTRACT`** (Interfaces)
-- **`TEST`** (Executable behavior)
-
-### Large Standard
-Complex, enterprise systems require the full AI Context Architecture:
-- **`ADR`** (Architecture Decisions)
-- **`DEPENDENCY`** / **`IMPACT`** (Maps)
-- **`CONTEXT INDEX`** (Generated references)
-- **`AGENT WORKFLOWS`** (Specialized tasks/guardrails)
-
----
-
-# II. Core Principles
-
-## Rule 02 — Repositories must be divided into a "Knowledge Layer" and a "Code Layer"
-
-The Knowledge Layer **is** the AI Context Architecture. The Code Layer holds Software Architecture plus implementation:
-
-```text
-Repository
-├── Knowledge Layer              AI Context Architecture
-│   ├── Agent Rules
-│   ├── Project Map
-│   ├── Architecture
-│   ├── Domain Knowledge
-│   ├── Contracts
-│   ├── Invariants
-│   ├── ADRs
-│   └── Generated Index
-│
-└── Code Layer                   Software Architecture + Implementation
-    ├── iOS
-    ├── Backend
-    ├── Web
-    ├── Worker
-    └── Other Components
-```
-
-- **Knowledge Layer**: Explains what the project is, why it's designed this way, where things are, and the rules.
-- **Code Layer**: The runtime architecture (MVVM, DDD, Clean, …) and the concrete implementations.
-
----
-
-# III. Progressive Disclosure
-
-## Rule 03 — AI must adopt a hierarchical reading strategy
-
+## Rule 02 — Progressive Disclosure
 Standard reading order:
-`AGENTS.md` → `PROJECT_MAP` → `DOMAIN_MAP` / `Architecture` → `Interface` / `Contract` → `Invariant` / `ADR` / `Tests` → `Implementation`
-Only proceed to the next level when the current level provides insufficient information.
-
-## Rule 04 — Implementation is not "default correct", but "default unexpanded"
-By default, prioritize Interfaces, Contracts, Architecture, Domains, and Tests over Implementations.
-However, AI should actively drill down into the implementation when:
-- The contract cannot explain the issue
-- Tests fail
-- Behavior contradicts documentation
-- Dependency relationships are abnormal
-- There is suspicion of a bug in the implementation
-- The implementation explicitly needs modification
+`Command` → `Workflow` → `Skill` → `Context (Domain/Contract)` → `Tool/Implementation`
 
 ---
 
-# IV. AI Instructions
+# II. Standardize Concepts, Isolate Runtimes
 
-## Rule 05 — The root directory must have an `AGENTS.md`
-`AGENTS.md` is the agent's working contract for the entire repository. It serves as a router to guide the AI, not a giant encyclopedia.
+## Rule 03 — Model-Agnostic, Runtime-Aware
+The AI industry requires separating three distinct layers:
+1. **The Model** (e.g., GPT-4o, Claude 3.5): The underlying reasoning engine.
+2. **The Agent Runtime** (e.g., Cursor, Claude Code, Windsurf, Codex): *How* files are read, *when* skills are invoked, and *what* hooks execute.
+3. **The Repository Standard** (The semantics): *What* your project is.
 
-## Rule 05 — Platforms/sub-projects can have their own `AGENTS.md`
-Root rules apply repository-wide. Sub-rules (e.g., `backend/AGENTS.md`) apply to that directory and its subdirectories. AI context is stacked based on the directory hierarchy.
+Your repository's semantics (Domains, Contracts, Workflows) must be **Model-Agnostic**. However, because different agent runtimes expect configurations in different directories (`.claude/`, `.cursor/rules/`, `.agents/skills/`), your repository's setup must be **Runtime-Aware**.
 
----
-
-# IV. Project Map
-
-## Rule 06 — A Project Map must exist
-Typically located at `docs/PROJECT_MAP.md`, answering only "What is the entire project, and where are things located?"
-
-## Rule 07 — The Project Map must be concise
-Aim for 100 lines instead of 500. Its goal is to quickly build global awareness, not to replace all documentation.
+**Do not force multiple runtime configs into a single production repository.**
+Your team should pick ONE primary agent runtime for a project. The business logic (`docs/domains`) remains universal, but the runtime configuration (`CLAUDE.md`, `.claude/skills`) should be a pure, native adapter specific to your chosen tool (e.g. Cursor).
 
 ---
 
-# V. Context Index
+# III. The Human-Agent Boundary
 
-## Rule 08 — A machine/AI readable Context Index must exist
-Typically `.agents/context-index.md`. It answers "Where exactly is this specific item located?"
+## Rule 04 — Clone ≠ Trust
+Agent scripts, Hooks (e.g., `PreToolUse`), and MCP server configurations can be version-controlled in Git to ensure reproducibility. However, **cloning a repository does not equal trust.** Any automated hook or tool that can execute code or modify the environment must require explicit human authorization before being enabled.
 
-## Rule 09 — Context Index information should be auto-generated where possible
-File locations, symbols, dependencies, and test links should ideally be generated. Human maintenance should focus on business meaning, architectural intent, invariants, and ADRs.
-
----
-
-# VI. Feature-Based Organization
-
-## Rule 10 — Use Vertical Slice / Feature-based Architecture
-Organize code by feature (e.g., `features/voice/`, `features/navigation/`) rather than technical type (`routers/`, `services/`, `models/`).
-This is an AI context boundary. It sits **inside** the chosen runtime architecture (MVVM, DDD, Clean, …); it does not replace that architecture.
-
-## Rule 11 — The Feature is the primary context boundary for AI
-An AI working on a task should find most of the relevant interfaces, application logic, infrastructure, APIs, and tests within that feature's boundary.
+## Rule 05 — Explicit Permission Boundaries (`MANUAL_TASKS.md`)
+Every AI-Native repository must define what the AI is allowed to do autonomously versus what requires human intervention.
+- **[Autonomous]**: e.g., Write code, run tests, format files.
+- **[Approval Required]**: e.g., Production database migrations, pushing to the main branch.
+- **[Manual Only]**: e.g., Injecting production secrets, updating DNS records, physical device testing.
 
 ---
 
-# VII. Interface / Contract
+# IV. Cognitive Structure
 
-## Rule 12 — Business capabilities must prioritize Interface definitions
-Use `protocol` in Swift, `typing.Protocol` in Python, or equivalent abstractions.
+## Rule 06 — The Project Map
+A concise `< 100 lines` map (e.g., `docs/PROJECT_MAP.md`) must exist to quickly build global awareness of where major components live.
 
-## Rule 13 — Interfaces must describe Contracts, not just function signatures
-Interfaces must document responsibilities, inputs, outputs, errors, side effects, and critical constraints (e.g., "Must not expose provider-specific exceptions").
+## Rule 07 — Interfaces Before Implementations
+Business capabilities must prioritize Interface definitions (Protocols, abstract classes). Interfaces must document responsibilities, inputs, outputs, errors, and side effects.
 
-## Rule 14 — API Schemas and Domain Interfaces must be separated
-Do not mix network boundaries (Requests/Responses) with domain boundaries (Services/Repositories).
-
----
-
-# VIII. Implementation
-
-## Rule 15 — Implementations should sit at clear Infrastructure/Implementation boundaries
-Keep concrete implementations (e.g., `OpenAISpeechService`) separate from application logic and interfaces (`SpeechService`).
+## Rule 08 — Invariants
+Business rules that must never be broken (e.g., "Network failure → fallback" or "High-risk action → explicit confirmation") must be explicitly documented (e.g., `docs/invariants/`), not just hidden in code.
 
 ---
 
-# IX. Domain Knowledge
+# V. Verification
 
-## Rule 16 — Every important business domain must have domain documentation
-e.g., `docs/domains/voice.md`. Must explain responsibilities, inputs, outputs, capabilities, dependencies, data flow, state machines, and related interfaces/tests.
-
----
-
-# X. Invariants
-
-## Rule 17 — Business rules (Invariants) must be separated from Implementation
-Rules like "Network failure → fallback" or "High-risk action → explicit confirmation" must be explicitly documented (e.g., `docs/INVARIANTS.md`), not just hidden in code.
-
-## Rule 18 — Invariants have higher priority than Implementation
-Implementations can change; invariants cannot be broken casually without explicit product requirement changes.
+## Rule 09 — Closed-Loop Verification
+An AI agent's job is not complete when the code is written. The repository must provide deterministic validators (e.g., `scripts/validate.sh`, linters, type checkers, test suites). The agent must run these tools and confirm a `0` exit code before concluding a task.
 
 ---
 
-# XI. ADR (Architecture Decision Records)
+# VI. Explicit structure, not excessive abstraction
 
-## Rule 19 — Important architectural decisions must have ADRs
-Every ADR must explain the problem, the decision, why it was chosen, rejected alternatives, trade-offs, and conditions for future changes.
-
-## Rule 20 — ADRs answer "Why"
-Implementation = How. Interface = What it can do. Invariant = What must not break. ADR = Why it was designed this way.
-
----
-
-# XII. Dependency & Impact Maps
-
-## Rule 21 — Must be able to answer "Who depends on whom"
-Dependency relationships between components must be documented or auto-generated.
-
-## Rule 22 — Must be able to answer "Who uses this"
-Usage relationships must be documented or auto-generated.
-
-## Rule 23 — Must be able to answer "What does modifying this affect"
-Change impact radiuses should be easily discoverable to help AI estimate the scope of modifications.
-
----
-
-# XIII. Naming
-
-## Rule 24 — Symbol names must have business meaning
-Avoid generic names like `Manager`, `Helper`, `Utils` unless specifically appropriate. Names act as AI search indices.
-
----
-
-# XIV. File Boundaries
-
-## Rule 25 — Huge God Files are forbidden
-Files should have a clear, single responsibility to prevent context overflow and confusion.
-
-## Rule 26 — Source File Size
-AI-Friendly repositories should avoid large manually maintained source files.
-
-As a guideline:
-
-- **≤ 300 lines**: preferred
-- **301–500 lines**: acceptable
-- **501–800 lines**: review responsibility boundaries
-- **801–1000 lines**: refactoring should be considered
-- **> 1000 lines**: should normally be split
-- **> 1500 lines**: should normally be treated as an architectural smell
-
-Generated files, snapshots, migrations, schemas, and other machine-generated artifacts may be exempt when appropriate.
-
-**The goal is not fewer lines; the goal is smaller cognitive boundaries.**
-
----
-
-# XV. Tests
-
-## Rule 27 — Tests must become one of AI's sources of truth
-System behavior is defined by: Contract + Invariant + Test + Implementation.
-
-## Rule 28 — Test names must express business behavior
-E.g., `testNetworkFailureFallsBackToLocalRecognition()` instead of `test1()`.
-
-## Rule 29 — Test locally first, verify with explicit executable commands
-AI workflows should start with relevant unit tests, expand to integration tests, and run full test suites when necessary.
-Furthermore, the repository's `AGENTS.md` must declare explicit, executable verification commands (such as TypeScript type-checking, production bundle builds, or Edge Function linting). An agent has not finished its task until it executes these commands and confirms a zero-error exit code.
-
----
-
-# XVI. Generated Files
-
-## Rule 30 — Generated content must be separated from the Source of Truth
-Generated files (e.g., in a `generated/` dir) must be marked `DO NOT EDIT`. Only the source is maintained.
-
----
-
-# XVII. AI Rules / Skills / Workflows
-
-## Rule 31 — General rules, workflows, and domain knowledge should be separated
-Store agent-specific operational assets logically under `.agents/`:
-- **`rules/`**: Behavioral and architectural constraints (e.g., `global.md`, `ios.md`, `web.md`, `backend.md`).
-- **`workflows/`**: Step-by-step SOPs for frequent tasks (e.g., `add-feature.md`, `new-database-migration.md`, `api-contract-change.md`).
-- **`dependency-map.md`**: Visual topology graphs and impact radius evaluation checklists.
-- **`context-index.md`**: Machine-readable index connecting domain concepts to precise interface and code locations.
-
-## Rule 32 — Token Noise Reduction via `.agentsignore`
-Agent search, globbing, and file-listing tools consume context windows rapidly if exposed to compiler outputs, dependency caches, and binary blobs.
-A repository must provide a root `.agentsignore` file (excluding `node_modules/`, `DerivedData/`, `.build/`, `dist/`, `Pods/`, `*.storekit`, `*.gguf`, `*.bin`, `.env*`, etc.) to prevent context contamination, cost explosion, and secret leakage.
-
-## Rule 33 — Multi-Agent Adapter Pattern (AGENTS.md as Single Source of Truth)
-Different AI tools expect different entry points: Claude Code reads `CLAUDE.md`, Gemini/Antigravity reads `GEMINI.md`, Cursor reads `.cursorrules`.
-To prevent fragmented and conflicting rules across tools, `AGENTS.md` must remain the **Canonical Single Source of Truth**. Tool-specific entry files (`CLAUDE.md`, `GEMINI.md`, `.cursorrules`) should act as thin **Adapters** that import `@AGENTS.md` and append only tool-specific anti-patterns (such as instructions against code folding or hallucinated file paths).
-
-## Rule 34 — Human-in-the-Loop Operational Boundaries (`MANUAL_TASKS.md`)
-AI agents cannot and must not execute operations requiring third-party administrative web dashboards, production secret injections, Apple Developer portal credentials, DNS management, or real-hardware verifications.
-Repositories must explicitly isolate human operational requirements into a dedicated `MANUAL_TASKS.md` (or `人工操作.md`) with actionable checkboxes `[ ]`. This creates a clear contract between what AI can automate and what humans must manually execute.
-
-## Rule 35 — Golden Feature Template & Doc-Sync Anti-Corruption
-To ensure consistency across new features and prevent documentation rot:
-1. **Golden Feature Template**: Projects must maintain a standard feature reference (e.g. `docs/architecture/golden_feature_template.md`) detailing the exact directory layout (Interface -> Implementation -> Presentation) and code patterns.
-2. **Doc-Sync Checklist**: Every modification workflow must mandate a 4-point documentation synchronization check (updating `context-index.md`, `dependency-map.md`, `backend_rpc.md`, and `database_schema.md`) whenever interfaces, contracts, or migrations change.
-
----
-
-# XVIII. New Additions (v1.1)
-
-## Rule 36 — Documentation is a Routing Layer, Not the Source of Executable Truth
-Documentation exists to guide the AI to the right place quickly. It is not a second copy of the code.
-To understand the *actual* behavior, the hierarchy of truth is:
-1. Executed Test / Actual System Behavior
-2. Current Implementation
-3. Contract
-4. Documentation
-5. Comments
-
-## Rule 37 — Context Budget
-Every knowledge layer should be designed to answer one specific class of questions with minimal context.
-The default context should remain small. Large files should not be treated as the default source of project understanding.
-Recommended (but flexible) budgets:
-- **L0 (AGENTS)**: < 2KB
-- **L1 (Project Map)**: < 10KB
-- **L2 (Domain)**: Domain-specific, concise
-- **L3 (Interface/Contract)**: Highly targeted
-- **L4/L5**: Fetched on demand as needed
-
-## Rule 38 — This standard does not prescribe a single runtime architecture
-AI-Friendly Repo does not invent AI-MVVM or replace Clean Architecture / DDD. Any runtime architecture is valid if the AI Context Architecture can still locate, constrain, and verify changes.
-
-## Rule 39 — Explicit structure, not excessive abstraction
-
-AI-Friendly ≠ Abstraction-Heavy.
-
-Not this:
-
-```text
-UserService
-IUserService
-UserServiceProtocol
-BaseUserService
-UserServiceFactory
-UserServiceAdapter
-UserServiceFacade
-```
-
-This:
-
-```text
-one clear responsibility
-        +
-one clear Interface
-        +
-one or few Implementations
-        +
-clear rules
-```
-
-> Explicit structure, not excessive abstraction.
+AI-Native ≠ Abstraction-Heavy. Keep architectural boundaries explicit, files small (< 500 lines preferred), and symbol names meaningful. The goal is smaller cognitive boundaries for the AI.

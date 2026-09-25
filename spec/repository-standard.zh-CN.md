@@ -1,141 +1,90 @@
-# AI-Friendly Repo Standard 1.0 (简体中文)
+# AI-Native Repository Standard 2.0 (AI 原生仓库标准 2.0)
 
-[🇬🇧 English](repository-standard.md)
+[English](repository-standard.md)
 
-## 面向 AI 编程代理的仓库设计规范标准
+## 面向 AI 智能体 (Coding Agents) 的仓库设计规范
 
-> 设计规则背后的深度思考与哲学，请参阅 [Philosophy 设计哲学](philosophy.zh-CN.md)
-> ([English](philosophy.md) · [日本語](philosophy.ja.md))。
-
----
-
-# 0. 架构模型 (Architecture Model)
-
-本标准定义的是 **AI 上下文架构 (AI Context Architecture)**，**绝不限定单一的软件运行时架构 (Runtime Architecture)**。
-
-```mermaid
-flowchart TB
-  repo[AI-Friendly 仓库]
-  repo --> ctx["AI 上下文架构 (AI Context Architecture)<br/>定义 Agent 如何理解、导航和验证代码"]
-  repo --> sw["软件架构 (Software Architecture)<br/>定义程序在运行时如何组织和运行"]
-```
-
-```mermaid
-flowchart TB
-  repo[AI-Friendly Repo]
-  repo --> ctx[AI 上下文架构]
-  repo --> sw[软件运行架构]
-  ctx --> rules[Rules 规则]
-  ctx --> maps[Maps 地图]
-  ctx --> domain[Domain 领域知识]
-  rules --> contracts[Contracts 契约]
-  maps --> invariants[Invariants 不变式]
-  domain --> adr[ADR 决策]
-  sw --> mvvm[MVVM]
-  sw --> ddd[DDD]
-  sw --> clean[Clean]
-  mvvm --> feature[Feature]
-  ddd --> di[DI]
-  clean --> hex[Hexagonal]
-  contracts --> code[代码落地]
-  invariants --> code
-  adr --> code
-  feature --> code
-  di --> code
-  hex --> code
-```
-
-本规范所包含的知识构件属于 **AI 上下文架构**：
-```text
-Map (地图)
-Domain (领域)
-Contract (契约)
-Invariant (业务不变式)
-ADR (架构决策)
-Index (索引)
-Test (验证测试)
-```
-
-以下模式属于 **软件运行时架构**（由各具体项目自行技术选型，本规范不做强行绑定）：
-```text
-MVVM
-Clean Architecture
-DDD (领域驱动设计)
-Hexagonal (六边形架构)
-Repository
-DI (依赖注入)
-```
-
-```text
-运行流 (Runtime Flow)     → 程序如何执行？
-认知流 (Cognitive Flow)   → AI 如何理解该程序？
-```
+> 关于这些规则背后的设计哲学，请参阅 [Philosophy](philosophy.zh-CN.md)
+> ([English](philosophy.md) · [日本語](philosophy.ja.md)).
 
 ---
 
-# I. 分级采用标准 (Tiered Adoption)
+# 0. 走向 AI-Native (AI 原生)
 
-## Rule 01 — 渐进式采用上下文标准
-- **基础标准 (Minimal)**：小项目或初期迁移，优先构建 `AGENTS.md`（路由入口）与 `PROJECT_MAP.md`（宏观结构）；
-- **标准级 (Standard)**：中型项目增加以特性为中心的层级：`DOMAIN`（领域知识）、`CONTRACT`（接口契约）、`TEST`（可验证测试）；
-- **完整企业级 (Large Standard)**：引入完整上下文体系：`ADR`、`DEPENDENCY/IMPACT`、`CONTEXT INDEX`、`AGENT WORKFLOWS`。
+本标准将代码仓库从被动的“供 AI 阅读的书”升级为主动的“供 AI 工作的车间”。
 
----
+我们定义了与传统软件架构（MVVM、Clean、DDD 等）并列的 **8 大 AI-Native 架构支柱**：
 
-# II. 核心原则 (Core Principles)
-
-## Rule 02 — 仓库必须划分为“知识层”与“代码层”
-- **知识层 (Knowledge Layer)**：即 AI 上下文架构，解释项目是什么、为什么这样设计、各模块在哪、以及开发红线；
-- **代码层 (Code Layer)**：具体的软件运行时架构与实现代码。
-
----
-
-# III. 渐进式披露 (Progressive Disclosure)
-
-## Rule 03 — AI 必须采用分层阅读策略
-标准阅读次序：
-`AGENTS.md` → `PROJECT_MAP` → `Domain` / `Architecture` → `Interface` / `Contract` → `Invariant` / `ADR` / `Tests` → `Implementation`。只有当前层级信息不足以解决问题时，才下钻到下一层。
-
-## Rule 04 — 实现代码“默认不展开”，而非“默认正确”
-默认优先阅读接口、契约、架构与测试。但当测试失败、契约无法解释、行为异常或明确需要改动时，主动下钻查看实现。
+1. **Context (认知层)** (Project Map, Domains, Architecture) - *系统是什么。*
+2. **Rules (规则层)** (AGENTS.md, Cursor Rules) - *Agent 必须/禁止做什么。*
+3. **Contracts (契约层)** (Protocols, Schemas) - *组件之间如何协作。*
+4. **Skills (技能层)** (SKILL.md) - *如何执行特定的原子任务。*
+5. **Workflows (工作流层)** (SOPs) - *如何编排复杂的开发流程。*
+6. **Tools (工具层)** (MCP, CLI, Scripts) - *Agent 如何操作物理世界。*
+7. **Verification (验证层)** (Tests, Validators, Hooks) - *如何证明 Agent 做对了。*
+8. **Human / Agent Boundary (边界层)** (MANUAL_TASKS.md) - *哪些决定必须由人类做出。*
 
 ---
 
-# IV. AI 代理工作指令 (AI Instructions)
+# I. Context Must Be Earned (上下文必须按需获取)
 
-## Rule 05 — 根目录必须有 `AGENTS.md`
-作为全库 Agent 的单一权威工作合同与路由入口，而不是冗长的百科全书。
+## 规则 01 — 严防上下文膨胀 (Context Bloat)
+不要在每次任务中都把所有的领域知识、规则和技能一股脑塞给 Agent。全局路由器 (`AGENTS.md`) 必须保持极简（< 2KB）。具体的上下文（例如数据库 Schema 或功能开发 Skill）必须**仅在特定任务需要时才加载**。
 
-## Rule 05.1 — 平台或子项目可拥有独立的局部 `AGENTS.md`
-根规则全局生效，子目录规则（如 `backend/AGENTS.md`）局部生效，上下文基于目录层级叠加。
+## 规则 02 — 渐进式呈现 (Progressive Disclosure)
+标准阅读和调用顺序：
+`Command (触发指令)` → `Workflow (工作流)` → `Skill (技能单元)` → `Context (领域/契约)` → `Tool/Implementation (工具与实现)`
 
 ---
 
-# V. 组织与工程规范 (Rules 06–35)
+# II. Standardize Concepts, Isolate Runtimes (标准跨工具，实例单工具)
 
-- **Rule 06 — 必须存在项目全景图 (`docs/PROJECT_MAP.md`)**
-- **Rule 07 — 项目全景图必须高度浓缩（建议 100 行内）**
-- **Rule 08 — 必须存在机器可读的上下文索引 (`.agents/context-index.md`)**
-- **Rule 10 — 必须采用垂直切片/按特性组织架构 (Feature-Based)**
-- **Rule 11 — Feature 是 AI 的主要上下文边界**
-- **Rule 12 — 业务能力必须接口先行 (Interface First)**
-- **Rule 13 — 接口必须描述契约要素（职责、输入、输出、错误、副作用与约束）**
-- **Rule 14 — API Schemas 与领域 Interface 必须分离**
-- **Rule 16 — 每个核心业务域必须有领域文档 (`docs/domains/`)**
-- **Rule 17 — 业务规则（Invariants）必须独立于实现代码存在**
-- **Rule 18 — Invariants 的优先级高于具体实现**
-- **Rule 19 — 重要技术选型必须沉淀 ADR 记录**
-- **Rule 20 — ADR 负责回答“为什么 (Why)”**
-- **Rule 21–23 — 必须能清晰感知依赖拓扑与改动影响半径 (Impact Radius)**
-- **Rule 25–26 — 严禁巨型上帝文件，控制单个文件认知体积**
-- **Rule 27–29 — 测试是可执行知识资产；AGENTS.md 必须声明明确的闭环验证命令**
-- **Rule 30 — 生成文件必须与单一真理来源 (SoT) 分离**
-- **Rule 31 — 通用规则、工作流 SOP 与领域知识必须在 `.agents/` 中清晰分治**
-- **Rule 32 — 必须配置根级 `.agentsignore` 隔离噪音并保护 Token 预算**
-- **Rule 33 — 确立以 `AGENTS.md` 为真理源、外挂轻量适配器 (`CLAUDE.md`, `GEMINI.md`) 的多 Agent 协作体系**
-- **Rule 34 — 设立 `MANUAL_TASKS.md` 清晰划定 AI 自动化与人类专属操作的职责边界**
-- **Rule 35 — 沉淀黄金特性样板 (`golden_feature_template.md`) 并执行文档防腐化自检机制 (Doc-Sync)**
-- **Rule 36 — 文档是引导路由层，而非可执行代码的重复拷贝**
-- **Rule 37 — 保持严格的上下文预算 (Context Budget)**
-- **Rule 38 — 本标准不强制绑定单一运行时架构**
-- **Rule 39 — 强调清晰显式的结构，反对过度冗余的抽象**
+## 规则 03 — Model-Agnostic, Runtime-Aware (标准与模型解耦，运行时与工具适配)
+整个 AI 编码产业必须被拆分为三个独立维度：
+1. **Model (模型层)**（如 GPT-4o, Claude 3.5）：决定底层推理和理解能力。
+2. **Agent Runtime (智能体运行时)**（如 Cursor, Claude Code, Windsurf, Codex）：决定*如何*读取文件、*何时*加载技能、*怎样*执行拦截钩子。
+3. **Repository Standard (仓库标准)**（即语义）：定义你的项目*是什么*。
+
+你仓库里的语义规范（领域知识、契约、工作流）必须是 **Model-Agnostic (与模型无关的)**。然而，因为不同的运行时（Runtime）期望不同的配置结构（`.claude/`, `.cursor/rules/`, `.agents/skills/`），你的项目工程结构必须是 **Runtime-Aware (运行时感知的)**。
+
+**绝对不要在同一个生产环境仓库里塞满所有 AI 工具的配置。**
+团队在一个具体的项目中，必须且只能选择一种主流的 Agent Runtime。业务逻辑（`docs/domains`）是通用的，但工具配置（如 `CLAUDE.md`, `.cursor/rules/`）必须是为你选择的单一运行环境纯粹定制的原生适配器。
+
+---
+
+# III. The Human-Agent Boundary (人机边界)
+
+## 规则 04 — Clone ≠ Trust (克隆不等于信任)
+Agent 的自动化脚本、生命周期钩子（如 `PreToolUse`）和 MCP 服务器配置可以被 Git 版本控制以保证环境可复现。但是，**Clone 代码并不意味着授予信任。** 任何能够执行代码或修改物理环境的自动化钩子和工具，在被 Agent 调用前，必须经过人类的明确授权。
+
+## 规则 05 — 显式的权限边界 (`MANUAL_TASKS.md`)
+每个 AI-Native 仓库必须明确定义 AI 允许自主执行的边界和人类介入的边界：
+- **[Autonomous (自主执行)]**：例如写代码、跑单测、格式化。
+- **[Approval Required (需审批)]**：例如生产库迁移、推送到主分支。
+- **[Manual Only (仅限人类)]**：例如注入生产密钥、更新 DNS 记录、真机物理调试。
+
+---
+
+# IV. 认知结构 (Cognitive Structure)
+
+## 规则 06 — 项目地图 (Project Map)
+必须存在一个紧凑的（< 100 行）全局地图（如 `docs/PROJECT_MAP.md`），让 AI 快速建立大局观，知道核心组件的位置。
+
+## 规则 07 — 接口先于实现 (Interfaces Before Implementations)
+业务能力必须优先定义接口（Protocols, abstract classes）。接口必须详尽说明职责、输入输出、错误处理和副作用。
+
+## 规则 08 — 业务不变量 (Invariants)
+绝对不能被破坏的业务规则（例如“断网必须降级”或“高危操作必须二次确认”）必须被显式文档化（如 `docs/invariants/`），而不能仅仅隐藏在代码逻辑中。
+
+---
+
+# V. 验证闭环 (Verification)
+
+## 规则 09 — 必须进行闭环验证
+AI Agent 写完代码并不意味着任务结束。仓库必须提供确定性的验证工具（例如 `scripts/validate.sh`、Linters、类型检查器、测试套件）。Agent 必须主动运行这些工具，并在确认返回 `exit code 0` 后才能结束任务。
+
+---
+
+# VI. 显式结构，拒绝过度抽象
+
+AI-Native 不等于重度抽象。保持架构边界清晰、源文件体积小（建议 < 500 行）、符号命名具有明确业务意义。目标是为 AI 创造极小的认知边界。

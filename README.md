@@ -1,839 +1,105 @@
-# AI-Friendly Repo
+# AI-Native Repository Standard
 
 [🇨🇳 简体中文](README.zh-CN.md) | [🇯🇵 日本語](README.ja.md)
 
-> Don't give AI more context. Give it better structure.
+> **Don't just give AI more context. Give it a native workspace.**
 
-**Before:**
-```text
-README.md
-Source code
-```
-
-**Industrial AI-Friendly Mode (After):**
-```text
-.agentsignore (Token Noise Reduction & Filtering)
-AGENTS.md (Canonical Single Source of Truth) + CLAUDE.md / GEMINI.md (Adapters)
-MANUAL_TASKS.md (Human-Agent Operational Boundaries)
-PROJECT_MAP (System Map)
-Context Index (Machine-Readable Index)
-Domain Knowledge (Business Domains)
-Contracts (Interface & Database Contracts)
-Invariants (Business Guardrails)
-ADR (Architectural Decision Records)
-Golden Feature Template (Canonical Feature Architecture)
-Commands & Verification (Closed-Loop Verification)
-Dependency / Impact (Dependency Graph & Radius)
-Doc-Sync Checklist (Anti-Corruption Discipline)
-Source code
-```
-*Your AI agent no longer explores blindly, equipped with closed-loop verification and explicit human collaboration boundaries.*
-
-A practical repository architecture for building software that is easier for AI coding agents to understand, navigate, modify, and maintain.
-
-📖 **Read the full rationale: [AI-Friendly Project — Philosophy](spec/philosophy.md)** ([简体中文](spec/philosophy.zh-CN.md) · [日本語](spec/philosophy.ja.md))
-
-AI coding agents are becoming a normal part of software development. But most repositories were designed before agents existed: architecture is implicit, important knowledge is scattered across files, and agents often have to read large amounts of code before they can safely make a small change.
-
-**AI-Friendly Repo** is a practical architecture, documentation system, and project template for building repositories that are easier for AI coding agents to understand, navigate, modify, and verify.
+A standard, architecture, and set of templates for building repositories that AI coding agents can understand, navigate, modify, and verify autonomously.
 
 ---
 
-## The Problem
+## ⚠️ Model-Agnostic, Runtime-Aware (The "Adapter" Pattern)
 
-Traditional repositories are optimized primarily for human developers.
+**"The semantics are unified, but the runtimes are fragmented."**
 
-A developer may already know:
+As of 2026, the industry has realized that building an AI-Native repository requires separating three distinct layers:
+1. **The Model** (e.g., GPT-4o, Claude 3.5, Gemini 1.5): Determines raw intelligence and reasoning.
+2. **The Agent Runtime** (e.g., Cursor, Claude Code, Windsurf, Copilot, Gemini CLI): Determines *how* files are read, *when* skills are invoked, and *what* hooks are executed.
+3. **The Repository Standard** (e.g., Context, Contracts, Workflows): The universal semantic truth of your project.
 
-* where the important code lives
-* which service owns a feature
-* why a strange implementation exists
-* which files are safe to modify
-* which business rules must never be broken
+While your project's business rules and workflows are **Model-Agnostic** (both GPT and Claude can understand a `docs/domains/voice.md` file), they must be **Runtime-Aware**. 
+- **Anthropic's Claude Code** expects `.claude/settings.json` (focusing on lifecycle hooks).
+- **OpenAI's Codex / SDK** expects `AGENTS.md` and `.agents/skills/` (focusing on progressive task discovery).
+- **Cursor** expects `.cursor/rules/*.mdc` (focusing on multi-model glob matching).
+- **GitHub Copilot / Windsurf / Trae** have their own native path-specific instructions.
 
-An AI coding agent usually does not know any of this.
+Forcing all these runtime configurations into a single project root creates rule drift and context pollution. 
 
-So a simple task can become:
-
-```mermaid
-flowchart TB
-  T[Task] --> S[Search the repository]
-  S --> R[Read many unrelated files]
-  R --> I[Infer the architecture]
-  I --> G[Guess hidden business rules]
-  G --> F[Find the implementation]
-  F --> M[Modify code]
-  M --> D[Discover a forgotten dependency]
-  D --> B[Break something else]
-```
-
-This wastes context, increases cost, and makes AI-assisted development less reliable.
+Therefore, this repository provides:
+1. **One Universal Standard** (`spec/`): Defines the concepts (Domains, Contracts, Skills, Workflows) independent of any tool.
+2. **Native Runtime Templates** (`templates/`): Choose the exact Runtime your company uses (e.g., Cursor) and get a pure, native adapter without the clutter of other tools.
 
 ---
 
-## The Idea
+## 🏗 The 8-Pillar AI-Native Architecture
 
-> **AI-Friendly Repo does not replace traditional software architecture.** It adds an **Agent Context Layer** on top of it.
+This standard elevates the repository from a "book for AI to read" into a "workspace for AI to operate". It defines 8 architectural layers:
 
-It is not “AI-MVVM”. Traditional architecture is not obsolete. The upgrade is:
+### 1. Context (The "What")
+*`PROJECT_MAP`, `Domains`, `Architecture`*
+Tells the AI what the system is, where things are, and why they were built that way.
 
-```mermaid
-flowchart TB
-  old["Knowledge Layer + Code Layer"] --> neu["AI Context Architecture + Software Architecture"]
-  neu --> impl[Implementation]
-```
+### 2. Rules (The "Must/Must Not")
+*`AGENTS.md`, `CLAUDE.md`, `.cursor/rules/`*
+The absolute constraints. How code must be formatted, how imports must be handled, and what architectural rules cannot be broken.
 
-```mermaid
-flowchart TB
-  repo[AI-Friendly Repository]
-  repo --> ctx["AI Context Architecture<br/>how an agent understands, navigates, and verifies code"]
-  repo --> sw["Software Architecture<br/>how the program runs"]
-```
+### 3. Contracts (The "How they connect")
+*`Protocols`, `Schemas`, `API Definitions`*
+Explicit boundaries between components. AI agents rely on interfaces far more heavily than humans do.
 
-Software architecture stays conventional:
+### 4. Skills (The "How to do a specific task")
+*`SKILL.md`*
+Reusable, atomic capabilities (e.g., "How to generate a database migration in this repo").
 
-```mermaid
-flowchart LR
-  subgraph ios["iOS"]
-    MVVM
-    TCA
-    Clean
-    Feature
-  end
-  subgraph backend["Backend"]
-    DDD
-    Clean2[Clean]
-    Hexagonal
-    DI["Dependency Inversion"]
-  end
-```
+### 5. Workflows (The "How to orchestrate")
+*`SOPs`*
+Multi-step procedures (e.g., "Plan -> Check Invariants -> Implement -> Test -> Verify -> Update Docs").
 
-The full model:
+### 6. Tools (The "How to touch the world")
+*`MCP Servers`, `Deterministic CLI Scripts`*
+Safe, structured tools the agent can use to read the database, fetch logs, or compile code, preventing LLM hallucination in terminal commands.
 
-```mermaid
-flowchart TB
-  repo[AI-Friendly Repo]
-  repo --> ctx[AI Context Architecture]
-  repo --> sw[Software Architecture]
-  ctx --> rules[Rules]
-  ctx --> maps[Maps]
-  ctx --> domain[Domain]
-  rules --> contracts[Contracts]
-  maps --> invariants[Invariants]
-  domain --> adr[ADR]
-  sw --> mvvm[MVVM]
-  sw --> ddd[DDD]
-  sw --> clean[Clean]
-  mvvm --> feature[Feature]
-  ddd --> di[DI]
-  clean --> hex[Hexagonal]
-  contracts --> code[Code]
-  invariants --> code
-  adr --> code
-  feature --> code
-  di --> code
-  hex --> code
-```
+### 7. Verification (The "How to prove it's right")
+*`Tests`, `Validators`, `Hooks`*
+Automated closing of the loop. An agent's job isn't done until the validator script returns exit code 0.
 
-On a task, the agent walks the context layer first, then the runtime layer:
-
-```mermaid
-flowchart TB
-  task[AI TASK]
-  task --> ctx["AI Context Layer<br/>Rules · Maps · Domain · Contract<br/>Invariants · ADR · Index · Tests"]
-  ctx --> runtime["Runtime Layer<br/>MVVM / TCA / Clean<br/>DDD / Hexagonal / DI"]
-  runtime --> code[Actual Code]
-```
-
-See [Philosophy](spec/philosophy.md).
+### 8. Human / Agent Boundary (The "Trust barrier")
+*`MANUAL_TASKS.md`*
+A clear delineation of permissions: What the AI can do autonomously, what it must ask permission for (e.g., production deploys), and what humans must do manually (e.g., secret injection).
 
 ---
 
-## Core Principle
-
-> **Small Context → Large Understanding**
-
-Instead of:
-
-```mermaid
-flowchart TB
-  A[Read everything] --> B[Try to understand everything]
-```
-
-This project names a second architecture plane: **Cognitive Architecture**.
-
-```mermaid
-flowchart LR
-  subgraph runtime["Runtime Architecture — how the program runs"]
-    direction TB
-    V[View] --> VM[ViewModel] --> UC[UseCase] --> RP[Repository] --> API
-  end
-  subgraph cognitive["Cognitive Architecture — how an agent understands the program"]
-    direction TB
-    T[Task] --> Map --> Dom[Domain] --> Con[Contract] --> Inv[Invariant] --> Test --> Impl[Implementation]
-  end
-```
+## 📂 Repository Structure
 
 ```text
-Runtime Flow     →  how does the program run?
-Cognitive Flow   →  how does the AI understand the program?
-```
-
----
-
-## Usage Modes
-
-This repository offers two distinct usage modes depending on your needs:
-
-### Mode A: Knowledge-only Template
-**Use case**: You already have an existing codebase and only want to make it AI-Friendly.
-- Copy `template/AGENTS.md`, `template/.agents/`, and `template/docs/` to your root directory.
-- You don't need to replace MVVM / DDD / Clean. Map the existing runtime architecture with the knowledge layer.
-
-### Mode B: New Project Template
-**Use case**: Starting a project from scratch with an AI-Native architecture.
-- Copy the entire structure from `examples/mixed/` (or your preferred platform).
-- The knowledge layer and code layer are perfectly decoupled from day one.
-
----
-
-## Future Vision: The AI-Friendly Toolchain
-Currently, AI-Friendly Repo is a specification, philosophy, and template. **The Specification defines how the Context Index and maps should work; the tooling automation is planned but not yet implemented.**
-
-We envision a CLI tool (`anr`) that will automate context management:
-- `anr init`: Scaffold the knowledge layer in any existing project.
-- `anr index`: Automatically generate `.agents/context-index.md` from code symbols.
-- `anr map`: Auto-generate dependency graphs and impact maps.
-- `anr validate`: Verify that the codebase adheres to the rules in `spec/`.
-
-
----
-
-# What Makes a Repository AI-Friendly?
-
-## 1. A Repository Map
-
-Every project should have a compact map describing:
-
-* what the project does
-* where major components live
-* what the major domains are
-* where the important entry points are
-* where to find deeper documentation
-
-The map is a navigation layer, not a giant manual.
-
----
-
-## 2. Layered Context
-
-Information is organized by depth:
-
-```mermaid
-flowchart TB
-  L0["L0 Agent instructions"] --> L1["L1 Project map"]
-  L1 --> L2["L2 Architecture + domain map"]
-  L2 --> L3["L3 Interfaces / contracts"]
-  L3 --> L4["L4 Invariants + ADRs + tests"]
-  L4 --> L5["L5 Implementation"]
-```
-
-Agents expand the context only when necessary.
-
----
-
-## 3. Feature-Based Architecture
-
-Business code is organized by domain or feature rather than by technical type.
-
-Prefer:
-
-```text
-features/
-├── voice/
-├── navigation/
-├── account/
-└── billing/
-```
-
-over:
-
-```text
-routers/
-services/
-models/
-controllers/
-utils/
-```
-
-The goal is to make a business task map to a small, coherent part of the repository.
-
----
-
-## 4. Interfaces Before Implementations
-
-Important capabilities should have explicit interfaces.
-
-Swift:
-
-```swift
-protocol SpeechRecognizer {
-    func start() async throws
-    func stop() async
-}
-```
-
-Python:
-
-```python
-class SpeechService(Protocol):
-    async def transcribe(
-        self,
-        audio: bytes,
-    ) -> str:
-        ...
-```
-
-The interface describes what a component can do.
-
-The implementation describes how it does it.
-
-Agents should normally understand the interface before opening the implementation.
-
-AI-Friendly is **not** abstraction-heavy. This is not AI-friendly:
-
-```text
-UserService
-IUserService
-UserServiceProtocol
-BaseUserService
-UserServiceFactory
-UserServiceAdapter
-UserServiceFacade
-```
-
-This is:
-
-```text
-one clear responsibility
-        +
-one clear Interface
-        +
-one or few Implementations
-        +
-clear rules
-```
-
-> **Explicit structure, not excessive abstraction.**
-
----
-
-## 5. Contracts
-
-Interfaces should describe more than method signatures.
-
-A useful contract may specify:
-
-```text
-Responsibility
-Input
-Output
-Errors
-Side effects
-Constraints
-```
-
-This gives an agent a compact and reliable model of a component.
-
----
-
-## 6. Invariants
-
-Important business rules should exist outside implementation details.
-
-Example:
-
-```text
-20 seconds of silence ends the voice session.
-
-Network failure must trigger fallback.
-
-Unvalidated commands must never execute.
-
-High-risk actions require explicit user confirmation.
-```
-
-Implementation can change.
-
-The invariant should not change unless the product requirement changes.
-
----
-
-## 7. Architecture Decision Records
-
-Important architectural decisions should explain **why** the system works the way it does.
-
-Example:
-
-```text
-ADR-001
-
-Decision:
-Use WebSocket as the primary voice transport.
-
-Why:
-Low latency and bidirectional communication.
-
-Fallback:
-REST streaming → local processing.
-
-Do not replace WebSocket unless:
-The latency and reliability requirements are reconsidered.
-```
-
-This prevents an AI agent from “simplifying” a deliberate architectural decision.
-
----
-
-## 8. Tests as Executable Knowledge
-
-Tests are not only verification.
-
-They also communicate expected system behavior.
-
-Prefer:
-
-```text
-testNetworkFailureFallsBackToLocalRecognition()
-```
-
-over:
-
-```text
-test1()
-```
-
-The agent should use:
-
-```text
-Contract
-+
-Invariant
-+
-Test
-+
-Implementation
-```
-
-to understand the actual behavior of the system.
-
----
-
-## 9. Dependency and Impact Awareness
-
-An AI-friendly repository should make it possible to answer:
-
-```text
-Who depends on this?
-
-Who calls this?
-
-What will be affected if I change this?
-```
-
-Example:
-
-```text
-VoiceService
-├── SpeechService
-├── LLMService
-└── CommandValidator
-
-Used by:
-├── VoiceSession
-└── ConversationService
-```
-
-Where possible, this information should be generated automatically.
-
----
-
-## 10. Progressive Disclosure
-
-Do not put every piece of information into one giant `AGENTS.md`.
-
-Instead:
-
-```text
-AGENTS.md
-      ↓
-context index
-      ↓
-architecture
-      ↓
-domain knowledge
-      ↓
-contract
-      ↓
-implementation
-```
-
-Each layer should answer a different question.
-
----
-
----
-
-## 11. Token Noise Reduction (.agentsignore)
-
-AI retrieval tools (ripgrep, globbing) are easily contaminated by compiler outputs, massive dependencies, and binary caches. A root `.agentsignore` rigorously filters `node_modules/`, `DerivedData/`, `.build/`, `Pods/`, model weights (`.gguf`), and environment secrets (`.env*`) to protect context budgets and prevent secret leaks.
-
----
-
-## 12. Multi-Agent Adapter Pattern
-
-In a heterogeneous tooling setup (Claude Code, Gemini/Antigravity, Cursor, Windsurf), `AGENTS.md` is maintained as the **Canonical Single Source of Truth**. Lightweight entry adapters hook into it:
-* `CLAUDE.md`: Inherits `@AGENTS.md` and adds guardrails against lazy truncation (`// ... existing code ...`) and weak types;
-* `GEMINI.md`: Inherits `@AGENTS.md` and adds guardrails against hallucinated paths and mutating historical migrations;
-* `.cursorrules`: Guides Cursor's inline and composer workflows.
-
----
-
-## 13. Human-in-the-Loop Boundaries (MANUAL_TASKS.md)
-
-Clear contracts between AI autonomy and human responsibilities. Actions requiring administrative web dashboards (Cloudflare Turnstile, Apple Developer certificates, Stripe Webhooks), production database migrations, and real-device testing are quarantined into `MANUAL_TASKS.md` with actionable checkboxes `[ ]`, preventing the AI from falsely claiming administrative completion.
-
----
-
-## 14. Golden Feature Template & Doc-Sync Anti-Corruption
-
-* **Golden Feature Template (`docs/architecture/golden_feature_template.md`)**: Provides a concrete, canonical template of how features must be organized (Interface -> Implementation -> Presentation) and an acceptance checklist.
-* **Doc-Sync Checklist**: Whenever interfaces, contracts, or database schemas change, AI must synchronously update `context-index.md`, `dependency-map.md`, and contract documents to eliminate documentation rot.
-
----
-
-# Repository Structure
-
-A standard production-grade AI-Friendly repository is structured as follows:
-
-```text
-project/
+AI-Native-Repo/
 │
-├── .agentsignore     # AI retrieval exclusion & noise reduction (Required)
-├── AGENTS.md         # Canonical Single Source of Truth for all AI agents
-├── CLAUDE.md         # Claude Code adapter (imports @AGENTS.md)
-├── GEMINI.md         # Gemini / Antigravity adapter (imports @AGENTS.md)
-├── MANUAL_TASKS.md   # Human operational boundaries & manual checklist ([ ])
-├── README.md         # Human developer documentation
+├── 1️⃣ spec/                            # The Standard: Tool-agnostic theories & philosophy
+│   ├── repository-standard.md         # The 8-pillar architecture
+│   └── philosophy.md                  # "Context Must Be Earned" & "Clone ≠ Trust"
 │
-├── .agents/          # Machine-readable indices & standard agent SOPs
-│   ├── context-index.md    # Domain & interface quick-lookup index
-│   ├── dependency-map.md   # Cross-layer topology & impact radius (Mermaid)
-│   ├── rules/              # Platform & global rules (global, ios, web, backend)
-│   └── workflows/          # Standard SOPs (add-feature, new-migration, etc.)
+├── 2️⃣ templates/                       # The Templates: Empty boilerplates for your agent
+│   ├── claude-code/                   # Pure Claude environment (.claude/ hooks & skills)
+│   ├── codex/                         # Pure OpenAI environment (.agents/skills/)
+│   ├── cursor/                        # Pure Cursor environment (.cursor/rules/)
+│   └── gemini-cli/                    # Pure Gemini environment
 │
-├── docs/             # AI Context Architecture layer
-│   ├── PROJECT_MAP.md      # Macro system overview map
-│   ├── architecture/       # Architecture overviews & golden_feature_template
-│   ├── adr/                # Architectural Decision Records (ADR-001, ADR-002...)
-│   ├── contracts/          # API & schema contracts (backend_rpc, database_schema)
-│   ├── invariants/         # Inviolable business rules & platform guidelines
-│   └── domains/            # Detailed domain business logic & state machines
-│
-├── spec/             # Specification & Philosophy
-│   ├── repository-standard.md
-│   ├── philosophy.md
-│   ├── philosophy.zh-CN.md
-│   └── philosophy.ja.md
-│
-├── template/         # Out-of-the-box scaffolded template
-│   ├── .agentsignore
-│   ├── AGENTS.md
-│   ├── CLAUDE.md
-│   ├── GEMINI.md
-│   ├── MANUAL_TASKS.md
-│   ├── .agents/
-│   └── docs/
-│
-└── examples/         # Reference implementations across platforms
-    ├── ios/          # iOS (Feature + MVVM / Clean)
-    ├── fastapi/      # FastAPI (Feature + DDD / Clean / DI)
-    └── mixed/        # Multi-platform full-stack reference
+└── 3️⃣ examples/                        # The Examples: Real-world comparison (Control Variables)
+    ├── claude-code/                   # Same Voice-Chat project, using Claude ecosystem
+    ├── codex/                         # Same Voice-Chat project, using Codex ecosystem
+    ├── cursor/                        # Same Voice-Chat project, using Cursor ecosystem
+    └── gemini-cli/                    # Same Voice-Chat project, using Gemini ecosystem
 ```
-
-The exact implementation is not mandatory. The principles are.
-
-**AI-Friendly Repo does not prescribe a single runtime architecture.**
-
-```text
-iOS:
-MVVM
-TCA
-Clean Architecture
-Feature Architecture
-
-Backend:
-DDD
-Clean Architecture
-Hexagonal Architecture
-Vertical Slice
-```
-
-All of these are valid. Whatever **Runtime Architecture** you choose, it must still satisfy the **AI Context Architecture**.
 
 ---
 
-# Example Project
+## 📖 Choose Your Agent Runtime (Getting Started)
 
-This repository contains a complete example project combining:
+Start your AI-Native project by copying the template that matches your team's tooling:
 
-```text
-iOS + FastAPI
-```
+* **Using Claude Code?** -> Copy `templates/claude-code/`
+* **Using OpenAI / Codex?** -> Copy `templates/codex/`
+* **Using Cursor?** -> Copy `templates/cursor/` (Note: Cursor is a multi-model runtime)
+* **Using Gemini CLI?** -> Copy `templates/gemini-cli/`
 
-Example:
-
-```text
-examples/
-├── ios/
-├── fastapi/
-└── mixed/
-```
-
-The examples show **traditional software architecture plus an AI Context Layer**, not a replacement architecture:
-
-### iOS (`examples/ios/`)
-
-```mermaid
-flowchart TB
-  A[AI Context Layer] --> B[Feature-based Architecture]
-  B --> C[MVVM / Clean]
-  C --> D[Swift Implementation]
-```
-
-### FastAPI (`examples/fastapi/`)
-
-```mermaid
-flowchart TB
-  A[AI Context Layer] --> B[Feature / Domain]
-  B --> C[DDD / Clean / Dependency Inversion]
-  C --> D[FastAPI Implementation]
-```
-
-### Mixed (`examples/mixed/`)
-
-```text
-                     AI Context Layer
-                            │
-             ┌──────────────┴──────────────┐
-             ↓                             ↓
-      iOS Architecture              Backend Architecture
-       MVVM / Clean                  DDD / Clean
-             │                             │
-             └──────────────┬──────────────┘
-                            ↓
-                       System Domain
-```
-
-They also demonstrate:
-
-* Feature-based architecture
-* AI-readable documentation
-* Interface / implementation separation (without abstraction-for-its-own-sake)
-* Domain contracts
-* Business invariants
-* ADRs
-* Dependency mapping
-* Focused testing
-* AI agent workflows
-
----
-
-# AI Agent Workflow
-
-When an agent receives a task such as:
-
-> Fix continuous voice mode when the network disconnects.
-
-The intended workflow is:
-
-```text
-AGENTS.md
-    ↓
-PROJECT_MAP
-    ↓
-Voice Domain
-    ↓
-Voice Contract
-    ↓
-Voice Invariants
-    ↓
-Relevant Tests
-    ↓
-Dependency / Impact
-    ↓
-Implementation
-    ↓
-Focused Tests
-    ↓
-Integration Tests
-```
-
-The agent does not need to scan the entire repository.
-
----
-
-# What This Project Is Not
-
-AI-Friendly Repo is not:
-
-* a replacement for Cursor
-* a replacement for Claude Code
-* a prompt collection
-* a specific programming framework
-* a single application architecture (not AI-MVVM, not a replacement for Clean / DDD)
-* a requirement to use one specific AI provider
-* a requirement to add more abstractions
-
-It is a **repository design methodology**: an Agent Context Layer on top of conventional software architecture.
-
-It can be used with different languages, frameworks, runtime architectures, and coding agents.
-
----
-
-# Supported Project Types
-
-The architecture can be used for:
-
-```text
-iOS
-Android
-FastAPI
-Django
-Node.js
-Go
-Rust
-React
-Full-stack applications
-Monorepos
-Libraries
-CLI tools
-Backend services
-```
-
-The knowledge layer remains conceptually the same.
-
-Only the code layer changes.
-
----
-
-# Design Philosophy
-
-### 1. Structure over prompts
-
-Prompts are temporary.
-
-Repository structure is persistent.
-
-### 2. Context over context window size
-
-A larger context window does not automatically produce a better understanding of a codebase.
-
-Good structure reduces the amount of context an agent needs.
-
-### 3. Explicit knowledge over implicit knowledge
-
-If an important rule exists only in the original developer's memory, the agent cannot reliably use it.
-
-### 4. Progressive disclosure over full-code ingestion
-
-Agents should discover information as needed.
-
-### 5. Machine-readable where possible
-
-Indexes, symbols, dependencies, and other structural information should be generated automatically whenever practical.
-
-Human-written documentation should focus on intent, rules, and decisions.
-
-### 6. Context Budget
-Every context layer should provide the maximum useful understanding with the minimum necessary content. Large context should be earned by task relevance, not read by default.
-
-### 7. AI context over a new runtime brand
-
-Do not invent AI-MVVM. Keep MVC / MVVM / DDD / Clean / Hexagonal / TCA as Runtime Architecture. Add an AI Context Architecture so an agent can use them.
-
----
-
-# Quick Start
-
-Clone the repository:
-
-```bash
-git clone git@github.com:Armkas/AI-Friendly-Repo.git
-cd AI-Friendly-Repo
-```
-
-Explore the standard:
-
-```text
-spec/
-```
-
-Explore the templates:
-
-```text
-template/
-```
-
-Explore the complete examples:
-
-```text
-examples/ios/
-examples/fastapi/
-examples/mixed/
-```
-
-Copy the template into a new project and adapt:
-
-```text
-AGENTS.md
-docs/
-.agents/
-```
-
-Then begin development.
-
----
-
-# Project Status
-
-AI-Friendly Repo is an evolving open-source standard.
-
-The goal is not to define a single “correct” runtime architecture.
-
-The goal is to specify a cross-architecture **AI Context Architecture** — practical patterns that make repositories easier for both humans and AI coding agents to understand and maintain.
-
-Contributions, experiments, examples, and alternative approaches are welcome.
-
----
-
-# Contributing
-
-We welcome contributions that improve:
-
-* repository structure
-* AI context management
-* documentation patterns
-* agent workflows
-* language-specific examples
-* architecture patterns
-* testing strategies
-* automated context generation
-
-Please keep proposals general enough to be useful beyond a single AI tool.
-
----
-
-# License
-
-MIT
+Read the [Repository Standard Specification](spec/repository-standard.md) to understand the design philosophy.
