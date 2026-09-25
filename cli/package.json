@@ -16,6 +16,10 @@
     "repository",
     "scaffold"
   ],
-  "author": "AI-Friendly-Repo",
-  "license": "MIT"
+  "author": "Armkas",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Armkas/AI-Native-Repo.git"
+  }
 }
