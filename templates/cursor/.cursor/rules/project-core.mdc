@@ -1,7 +1,0 @@
----
-description: Global project rules
-globs: *
-alwaysApply: true
----
-Follow the AI-Native Repository Standard.
-Check `docs/PROJECT_MAP.md` for context.

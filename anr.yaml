@@ -1,0 +1,21 @@
+spec_version: "2.0"
+standard: "AI-Native Repository Standard"
+runtime:
+  primary: "claude-code" # Should be overridden by specific template in real usage
+  supported:
+    - claude-code
+    - codex
+    - gemini-cli
+    - cursor
+capabilities:
+  context_routing: true
+  explicit_contracts: true
+  agent_skills: true
+  deterministic_verification: true
+  human_boundary: true
+maturity_level: 4 # 0=Basic, 1=Map, 2=Contracts, 3=Workflows, 4=Verification, 5=Full
+entrypoints:
+  semantic_truth: "docs/"
+  runtime_adapter: "AGENTS.md" # Change to CLAUDE.md / GEMINI.md based on runtime
+validation:
+  command: "./scripts/validate.sh"

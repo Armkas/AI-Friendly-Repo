@@ -364,13 +364,20 @@ what interfaces it exposes, its rules, and its tests.
 
 ---
 
-# VII. Interface / Contract
+# VII. Interface / Contract (Boundary-Driven)
 
-## 21. Important business capabilities must be explicitly abstracted
+## 21. Explicit boundaries, not abstraction for abstraction's sake
+
+Do not force an interface on every internal function. Interfaces should be introduced at meaningful architectural boundaries where they provide:
+- dependency direction
+- isolation
+- substitution or mocking for tests
+- provider abstraction
+- external system boundary
+- explicit domain boundary
 
 Swift `protocol`, Python `Protocol`, or the equivalent interface / trait / abstract type.
-
-Explicit structure, not excessive abstraction: one responsibility → one interface → few implementations. A pile of unused adapters is harder for an agent, not easier.
+Explicit structure means: one clear responsibility → one interface → few implementations. A pile of unused adapters is harder for an agent, not easier.
 
 ## 22. Interfaces are read before implementations
 
@@ -414,9 +421,17 @@ bug is suspected in the implementation.
 
 ---
 
-# IX. Business Rules
+# IX. Business Rules & Enforcement
 
-## 27. Business rules must exist independently
+## 27. Rules must be classified: Advisory vs Enforced
+
+Instruction ≠ Enforcement. Do not assume writing "never delete data" in an `AGENTS.md` file will physically prevent an agent from doing it. Rules must be separated into three layers:
+
+1. **Advisory Constraint** (`CLAUDE.md`, `.cursor/rules/`): Tells the agent how it *should* behave.
+2. **Guardrail / Enforcement** (`PreToolUse` Hooks, CI, Permissions, Branch Protection): Physically stops or detects violations.
+3. **Verification** (Tests, Lint, Build): Proves the result is correct.
+
+## 27.1 Business rules must exist independently
 
 Not buried only in implementation code:
 
@@ -480,9 +495,14 @@ UI. File boundaries *are* context boundaries.
 
 ---
 
-# XIII. Tests
+# XIII. Tests & Verification
 
-## 37. Tests bridge the Knowledge Layer and the Code Layer
+## 37. Verification must be Deterministic and Closed-Loop
+
+Do not accept an agent's self-assertion that "the code looks correct."
+Verification must be split into two categories:
+1. **Code Verification**: Unit tests, integration tests, builds, static analysis.
+2. **Agent Behavior Verification**: Tests that ensure the agent successfully activates required workflows, handles forbidden actions correctly, and respects context limits.
 
 They are both a verification mechanism and **executable knowledge**.
 
@@ -543,10 +563,19 @@ In a heterogeneous AI landscape (Claude Code, Gemini, Windsurf, Cursor), differe
 The architectural principle: **`docs/` holds the Semantic Truth, while the runtime-specific file acts purely as the Runtime Entry**.
 Do not duplicate business knowledge into `.cursorrules` and `CLAUDE.md`. Instead, those runtime adapters should route the agent into the shared `docs/` repository standard.
 
-## 42.2 Human-in-the-Loop Boundaries (`MANUAL_TASKS.md`)
+## 42.2 Human-in-the-Loop Boundaries & Tools (`MANUAL_TASKS.md`)
 
-AI cannot and should not attempt actions requiring third-party administrative web dashboards (Cloudflare, Stripe, Apple Developer Portal), production secrets, or real-device testing.
-Isolate these tasks cleanly in `MANUAL_TASKS.md` with explicit checkboxes to establish a transparent human-agent collaboration contract.
+AI cannot and should not attempt actions requiring third-party administrative web dashboards, production secrets, or real-device testing.
+Isolate these tasks cleanly in `MANUAL_TASKS.md` with explicit checkboxes to establish a transparent human-agent collaboration contract. When delegating a task to a human, the document should explain *why* it is human-owned.
+
+## 42.3 Tools & MCP are Structured Capabilities, Not Inherent Safety
+
+Do not assume MCP (Model Context Protocol) is inherently "safe". Tools must be **Structured, Permissioned, and Capability-Bounded**.
+Assign risk levels to tools:
+- **Read Only**: (e.g. read DB schema)
+- **Local Mutation**: (e.g. format code, run local test)
+- **External Mutation**: (e.g. call development API)
+- **Production / Destructive**: (e.g. production DB write, publish release) - Requires strict guardrails or human escalation.
 
 ---
 

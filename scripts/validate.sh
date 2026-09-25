@@ -1,6 +1,93 @@
 #!/bin/bash
-echo "Validating AI-Native Standard..."
-# basic checks
-if [ ! -d "spec" ]; then echo "Missing spec/"; exit 1; fi
-if [ ! -d "templates" ]; then echo "Missing templates/"; exit 1; fi
-echo "Success!"
+# AI-Native Repository Validator
+# Validates structure, links, and integrity of the repository standard.
+
+set -e
+echo "Starting AI-Native Repository Validation..."
+
+FAILS=0
+
+function check_dir() {
+    if [ ! -d "$1" ]; then
+        echo "❌ FAIL: Required directory '$1' is missing."
+        FAILS=$((FAILS+1))
+    else
+        echo "✅ PASS: Directory '$1' exists."
+    fi
+}
+
+function check_file() {
+    if [ ! -f "$1" ]; then
+        echo "❌ FAIL: Required file '$1' is missing."
+        FAILS=$((FAILS+1))
+    else
+        echo "✅ PASS: File '$1' exists."
+    fi
+}
+
+function check_no_string() {
+    local str="$1"
+    local path="$2"
+    if grep -r "$str" "$path" 2>/dev/null; then
+        echo "❌ FAIL: Found deprecated string '$str' in $path."
+        FAILS=$((FAILS+1))
+    else
+        echo "✅ PASS: Deprecated string '$str' is clean in $path."
+    fi
+}
+
+# 1. Structural Checks
+echo "--- Structural Checks ---"
+check_dir "spec"
+check_dir "examples/claude-code"
+check_dir "examples/codex"
+check_dir "examples/gemini-cli"
+check_dir "examples/cursor"
+check_dir "template-source"
+check_dir "cli"
+
+check_file "AGENTS.md"
+check_file "anr.yaml"
+check_file "spec/repository-standard.md"
+check_file "spec/philosophy.md"
+check_file "spec/adapters.md"
+check_file "spec/tiers.md"
+check_file "cli/package.json"
+
+# 2. Template Integrity Checks (Testing generated templates)
+echo "--- Template Integrity ---"
+if [ ! -d "cli/templates" ]; then
+    echo "❌ FAIL: cli/templates missing. Run 'node scripts/generate-templates.js' first."
+    FAILS=$((FAILS+1))
+else
+    check_dir "cli/templates/claude-code/light"
+    check_dir "cli/templates/claude-code/standard"
+    check_dir "cli/templates/claude-code/full"
+    check_dir "cli/templates/codex/light"
+    check_dir "cli/templates/codex/standard"
+    check_dir "cli/templates/codex/full"
+    check_dir "cli/templates/gemini-cli/light"
+    check_dir "cli/templates/gemini-cli/standard"
+    check_dir "cli/templates/gemini-cli/full"
+    check_dir "cli/templates/cursor/light"
+    check_dir "cli/templates/cursor/standard"
+    check_dir "cli/templates/cursor/full"
+    
+    check_file "cli/templates/claude-code/standard/CLAUDE.md"
+    check_file "cli/templates/codex/standard/AGENTS.md"
+    check_file "cli/templates/gemini-cli/standard/GEMINI.md"
+    check_file "cli/templates/cursor/standard/.cursor/rules/core.mdc"
+fi
+
+# 3. Drift & Stale Path Checks
+echo "--- Stale Content Detection ---"
+check_no_string "template/" "AGENTS.md"
+check_no_string "examples/ios" "AGENTS.md"
+
+if [ $FAILS -gt 0 ]; then
+    echo "❌ VALIDATION FAILED with $FAILS errors."
+    exit 1
+else
+    echo "🎉 VALIDATION PASSED! The repository meets the AI-Native structural standard."
+    exit 0
+fi

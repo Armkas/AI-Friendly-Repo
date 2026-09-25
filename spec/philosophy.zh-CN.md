@@ -359,11 +359,17 @@ features/            不要   controllers/
 
 ---
 
-# 七、Interface / Contract
+# 七、Interface / Contract (边界驱动 Boundary-Driven)
 
-## 21. 重要业务能力必须显式抽象
+## 21. 基于明确的边界，而非为抽象而抽象
 
-Swift `protocol`、Python `Protocol`，或等价的 interface / trait / abstract type。
+不要为所有的内部函数强行增加 Interface。Interface 应当建立在有意义的架构边界处，并且它能提供以下价值：
+- 定义依赖方向 (dependency direction)
+- 模块隔离 (isolation)
+- 为测试提供 Mock 替换 (substitution or mocking)
+- 提供商抽象 (provider abstraction)
+- 外部系统边界 (external system boundary)
+- 明确的领域边界 (explicit domain boundary)
 
 要的是明确结构，不是过量抽象：一个职责 → 一个接口 → 少量实现。一堆用不上的 Adapter 会让 Agent 更难，而不是更容易。
 
@@ -408,9 +414,17 @@ Contract 无法解释、或怀疑实现有 bug 时，就应下钻。
 
 ---
 
-# 九、业务规则
+# 九、业务规则与强制拦截 (Rules & Enforcement)
 
-## 27. 业务规则必须独立存在
+## 27. 规则必须分级：建议 (Advisory) vs 拦截 (Enforced)
+
+Instruction 不等于 Enforcement。不要以为在 `AGENTS.md` 里写一句“绝对不要删除数据”，就能在物理上阻止 Agent 犯错。规则必须分为三层：
+
+1. **建议性约束 (Advisory Constraint)** (`CLAUDE.md`, `.cursor/rules/`)：口头告诉 Agent 应该怎么做。
+2. **强制护栏 (Guardrail / Enforcement)** (`PreToolUse` Hooks, CI, Permissions, 权限控制)：在系统底层物理拦截违规行为。
+3. **验证 (Verification)** (Tests, Lint, Build)：客观证明结果是否正确。
+
+## 27.1 业务规则必须独立存在
 
 不能只埋在实现代码里：
 
@@ -487,9 +501,13 @@ AI-Friendly 仓库应避免大型手动维护的源文件。
 
 ---
 
-# 十三、测试
+# 十三、测试与验证 (Tests & Verification)
 
-## 38. 测试是知识层与代码层的桥梁
+## 38. 验证必须是确定性闭环的 (Deterministic and Closed-Loop)
+
+不能接受 Agent 自己声称“代码看起来没问题”的结论。验证应该分为两类：
+1. **代码验证 (Code Verification)**: 单元测试、集成测试、构建、静态分析。
+2. **Agent 行为验证 (Agent Behavior Verification)**: 测试 Agent 是否能成功触发技能、是否能遵守工作流、是否能拒绝危险操作。
 
 它既是验证机制，也是 **可执行的知识（executable knowledge）**。
 
@@ -548,9 +566,17 @@ AI-Friendly 仓库应避免大型手动维护的源文件。
 原则是：**`docs/` 承载项目无关具体工具的语义真理 (Semantic Truth)，而各家特有的配置文件仅作为运行入口 (Runtime Entry)**。
 不要将业务知识复制到 `.cursorrules` 或 `CLAUDE.md` 中。这些 Runtime Adapter 应当将 Agent 引导路由回统一的 `docs/` 标准架构中。
 
-## 43.2 人机协作边界 (Human-in-the-Loop & MANUAL_TASKS.md)
+## 43.2 人机协作边界与工具 (`MANUAL_TASKS.md`)
 
-AI 并非全能。涉及第三方后台（Cloudflare / Stripe / Apple Developer）、生产密钥注入、真实硬件联调等事项，必须显式隔离在 `MANUAL_TASKS.md`（或 `人工操作.md`）中，形成清晰的人机协作契约。
+AI 并非全能。涉及第三方后台（Cloudflare / Stripe / Apple Developer）、生产密钥注入、真实硬件联调等事项，必须显式隔离在 `MANUAL_TASKS.md`（或 `人工操作.md`）中，形成清晰的人机协作契约。在让人类接手任务时，必须解释“为什么这个操作需要人来做”。
+
+## 43.3 Tools 与 MCP 是结构化能力，而非天然安全
+
+不要认为 MCP (Model Context Protocol) 是一种“绝对安全”的协议。所有的工具都必须是 **结构化 (Structured)、权限校验 (Permissioned)、能力封顶 (Capability-Bounded)** 的。建议为工具划分风险等级：
+- **只读 (Read Only)**: (如读取数据库 Schema)
+- **本地修改 (Local Mutation)**: (如格式化代码，运行本地测试)
+- **外部修改 (External Mutation)**: (如调用开发环境 API)
+- **生产/破坏性 (Production / Destructive)**: (如修改生产数据、发布版本) —— 这必须强制配置人类授权护栏。
 
 ---
 
