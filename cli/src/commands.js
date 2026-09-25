@@ -123,6 +123,8 @@ async function initCommand(args) {
     process.exit(1);
   }
 
+  let hasConflict = false;
+
   // Recursive copy with conflict detection
   function copyDir(src, dest) {
     if (!fs.existsSync(dest)) {
@@ -143,6 +145,7 @@ async function initCommand(args) {
             console.log(`  Skip     : ${path.relative(targetDir, destPath)} (identical)`);
           } else {
             console.log(`  Conflict : ${path.relative(targetDir, destPath)} already exists! Skipping...`);
+            hasConflict = true;
           }
         } else {
           console.log(`  Create   : ${path.relative(targetDir, destPath)}`);
@@ -156,15 +159,32 @@ async function initCommand(args) {
   
   // Write the manifest
   const manifestPath = path.join(targetDir, 'anr.yaml');
-  const manifestContent = `standard_version: "2.0"\ntemplate_version: "${CLI_VERSION}"\nruntime: "${runtime}"\ntier: "${tier}"\n`;
+  const manifestContent = [
+    `schema_version: "2.0"`,
+    `repository:`,
+    `  kind: "consumer-repository"`,
+    `  standard: "AI-Native Repository Standard"`,
+    `runtime:`,
+    `  name: "${runtime}"`,
+    `tier: "${tier}"`,
+    `template:`,
+    `  version: "${CLI_VERSION}"`
+  ].join('\\n') + '\\n';
+
   if (fs.existsSync(manifestPath)) {
      console.log(`  Conflict : anr.yaml already exists! Skipping...`);
+     hasConflict = true;
   } else {
      console.log(`  Create   : anr.yaml (Machine-readable manifest)`);
      if (!isDryRun) fs.writeFileSync(manifestPath, manifestContent);
   }
 
   if (!isDryRun) console.log(`\n✅ Success! Your repository is now an AI-Native workspace.`);
+  
+  if (hasConflict) {
+    console.log(`\n⚠️ Note: Some files were skipped due to conflicts. Please review them manually.`);
+    process.exit(2);
+  }
 }
 
 module.exports = {

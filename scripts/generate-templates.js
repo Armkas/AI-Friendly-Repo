@@ -10,7 +10,10 @@ const srcDir = path.join(__dirname, '..', 'template-source');
 const outDir = path.join(__dirname, '..', 'cli', 'templates');
 
 function copyRecursive(src, dest) {
-  if (!fs.existsSync(src)) return;
+  if (!fs.existsSync(src)) {
+    console.error(`❌ FATAL: Required template source missing: ${src}`);
+    process.exit(1);
+  }
   if (!fs.existsSync(dest)) {
     fs.mkdirSync(dest, { recursive: true });
   }

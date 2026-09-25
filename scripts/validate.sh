@@ -56,6 +56,16 @@ check_file "cli/package.json"
 
 # 2. Template Integrity Checks (Testing generated templates)
 echo "--- Template Integrity ---"
+
+echo "Checking for template drift..."
+node scripts/generate-templates.js > /dev/null
+if ! git diff --exit-code cli/templates > /dev/null; then
+    echo "❌ FAIL: cli/templates is out of sync with template-source! Commit the changes after running generate-templates.js."
+    FAILS=$((FAILS+1))
+else
+    echo "✅ PASS: Generated templates are in sync."
+fi
+
 if [ ! -d "cli/templates" ]; then
     echo "❌ FAIL: cli/templates missing. Run 'node scripts/generate-templates.js' first."
     FAILS=$((FAILS+1))
