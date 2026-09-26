@@ -55,8 +55,24 @@ function doctorCommand() {
 function validateCommand(args) {
   const isCI = args.includes('--ci');
   const cwd = process.cwd();
-  let fails = 0;
   
+  // 1. If we are in the Reference Repository, call the canonical bash validator
+  const canonicalScript = path.join(cwd, 'scripts', 'validate.sh');
+  if (fs.existsSync(canonicalScript)) {
+    if (!isCI) console.log("Running canonical validator (scripts/validate.sh)...");
+    try {
+      const { execSync } = require('child_process');
+      execSync(`bash "${canonicalScript}"`, { stdio: 'inherit' });
+      if (!isCI) console.log("\n🎉 VALIDATION PASSED!");
+      process.exit(0);
+    } catch (err) {
+      if (!isCI) console.log(`\n❌ VALIDATION FAILED.`);
+      process.exit(1);
+    }
+  }
+
+  // 2. Otherwise (Consumer Repository), do standard manifest checks
+  let fails = 0;
   const manifestPath = path.join(cwd, 'anr.yaml');
   if (!fs.existsSync(manifestPath)) {
     console.error("❌ FAIL: anr.yaml missing.");
@@ -65,7 +81,6 @@ function validateCommand(args) {
     if (!isCI) console.log("✅ PASS: anr.yaml exists.");
   }
 
-  // Very basic check for CI integration
   if (fails > 0) {
     if (!isCI) console.log(`\n❌ VALIDATION FAILED with ${fails} errors.`);
     process.exit(1);

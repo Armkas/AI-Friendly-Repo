@@ -39,22 +39,27 @@ npx ai-native-repo init . --runtime cursor --tier standard
 
 ---
 
-## ⚠️ 模型不可知，但运行时感知 (Model-Agnostic, Runtime-Aware)
+## ⚠️ 语义不可知，运行时感知，模型可调 (Semantic-Agnostic, Runtime-Aware, Model-Tunable)
 
 **“语义是统一的，但运行时是分裂的。”**
 
 到了 2026 年，业界已经意识到构建一个 AI-Native 的仓库需要分离三个不同的层级：
-1. **模型层 (The Model)**（例如：OpenAI 模型、Anthropic 模型、Google 模型）：决定了原始的智力和推理能力。
-2. **智能体运行时 (The Agent Runtime)**（例如：Cursor, Claude Code, Windsurf, Copilot, Gemini CLI）：决定了智能体*如何*读取文件、*何时*调用技能，以及执行*什么*钩子。
+1. **模型 / 模型提供商 (The Model / Model Provider)**（例如：OpenAI、Anthropic、Google、DeepSeek、Qwen、Meta、Moonshot、智谱 (Zhipu)、MiniMax）：决定了底层模型的原始能力和推理水平。这里绝不要写死具体的模型版本号——完整的运行时 × 模型提供商映射请见[模型兼容性矩阵](spec/model-compatibility.md)。
+2. **智能体运行时 (The Agent Runtime)**（例如：Claude Code, Codex, Gemini CLI, Cursor）：决定了智能体*如何*读取文件、*何时*调用技能，以及执行*什么*钩子。
 3. **仓库标准 (The Repository Standard)**（例如：上下文、契约、工作流）：你的项目的通用语义真相（Semantic truth）。
 
 虽然你项目的业务语义是**模型不可知**的（OpenAI 和 Anthropic 的模型都能读懂 `docs/domains/voice.md` 文件），但它们必须是**运行时感知**的。
 - **Anthropic 的 Claude Code** 期望读取 `.claude/settings.json`（专注于生命周期管理）。
 - **Cursor** 期望读取 `.cursor/rules/*.mdc`（专注于多模型的全局模式匹配）。
 
+**Model Provider ≠ Agent Runtime，两者不能合并成一个维度。** 一个 Runtime 从不专属于某一个 Model Provider——Cursor 和 Claude Code 都可以由 Anthropic、OpenAI，或 DeepSeek 这样的兼容 API 提供商驱动；同一个提供商的模型也可能出现在多个 Runtime 里。这正是 Model Provider 被单独记录在[模型兼容性矩阵](spec/model-compatibility.md)、而不是变成一个独立 Template 的原因。
+
 ### 参考仓库 (Reference) vs 消费者仓库 (Consumer)
 - **本仓库 (Reference)**: 这个 GitHub 仓库是全局的*参考标准仓库*。它包含了多种运行时的适配器、模板生成器以及 CLI 工具的源码。
 - **你的仓库 (Consumer)**: 通过 CLI 生成出来的属于你的仓库是*消费者仓库*。它应该只包含**一种** Runtime 适配器和**一种** Tier 层级，从而确保 AI 智能体永远不会被互相冲突的规则集所困扰。
+
+### 当前的参考运行时 (Reference Runtimes) vs 新兴运行时 (Emerging Runtimes)
+本仓库目前为四种**参考运行时**提供开箱即用的模板：`claude-code`、`codex`、`gemini-cli`、`cursor`。其他真实存在的运行时——Qwen Code、DeepSeek Harness、Windsurf、GitHub Copilot 等——被记录为[模型兼容性矩阵](spec/model-compatibility.md)中的**新兴运行时**，待其约定稳定后可能升级为参考运行时。
 
 ---
 

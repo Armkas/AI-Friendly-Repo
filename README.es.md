@@ -40,22 +40,27 @@ npx ai-native-repo init . --runtime cursor --tier standard
 
 ---
 
-## ⚠️ Agnóstico al modelo, Consciente del entorno
+## ⚠️ Agnóstico a la semántica, Consciente del entorno, Ajustable al modelo
 
 **"La semántica está unificada, pero los entornos están fragmentados."**
 
 A partir de 2026, la industria se ha dado cuenta de que construir un repositorio nativo de IA requiere separar tres capas distintas:
-1. **El Modelo** (p. ej., OpenAI, Anthropic, Google): Determina la inteligencia bruta y el razonamiento.
-2. **El entorno del agente (Runtime)** (p. ej., Cursor, Claude Code, Windsurf, Copilot, Gemini CLI): Determina *cómo* se leen los archivos, *cuándo* se invocan las habilidades y *qué* ganchos se ejecutan.
+1. **El Modelo / Proveedor del Modelo** (p. ej., OpenAI, Anthropic, Google, DeepSeek, Qwen, Meta, Moonshot, Zhipu, MiniMax): Determina la capacidad bruta y el razonamiento del modelo subyacente. Nunca fijes aquí una versión específica de un modelo — consulta la [Matriz de Compatibilidad de Modelos](spec/model-compatibility.md) para el mapeo completo de Runtime × Proveedor de Modelo.
+2. **El entorno del agente (Runtime)** (p. ej., Claude Code, Codex, Gemini CLI, Cursor): Determina *cómo* se leen los archivos, *cuándo* se invocan las habilidades y *qué* ganchos se ejecutan.
 3. **El Estándar del Repositorio** (Contexto, Contratos, Flujos de trabajo): La verdad semántica universal de tu proyecto.
 
 Aunque la semántica de negocio de tu proyecto es **Agnóstica al modelo** (tanto los modelos de OpenAI como los de Anthropic pueden entender un archivo `docs/domains/voice.md`), deben ser **Conscientes del entorno**.
 - **Claude Code de Anthropic** espera `.claude/settings.json` (enfocándose en los ganchos de ciclo de vida).
 - **Cursor** espera `.cursor/rules/*.mdc` (enfocándose en la coincidencia de archivos globales).
 
+**Proveedor del Modelo ≠ Entorno del Agente — no los combines en un solo eje.** Ningún entorno pertenece a un único proveedor de modelo (Cursor y Claude Code pueden ejecutarse con Anthropic, OpenAI, o proveedores compatibles como DeepSeek). Por eso el Proveedor del Modelo se registra por separado en la [Matriz de Compatibilidad de Modelos](spec/model-compatibility.md) en lugar de convertirse en una plantilla propia.
+
 ### Repositorios de Referencia vs Consumidores
 - **Este repositorio (Referencia)**: Este repositorio de GitHub es el *Repositorio de Referencia* global. Contiene múltiples adaptadores, el generador de plantillas y el código CLI.
 - **Tu repositorio (Consumidor)**: El repositorio generado por la CLI es un *Repositorio Consumidor*. Debe contener exactamente **un** adaptador de entorno y **un** nivel de complejidad, para asegurar que el agente de IA nunca se confunda con reglas en conflicto.
+
+### Runtimes de Referencia actuales vs Runtimes emergentes
+Este repositorio ofrece plantillas de primera clase para cuatro **Runtimes de Referencia** hoy: `claude-code`, `codex`, `gemini-cli`, `cursor`. Otros entornos reales — Qwen Code, DeepSeek Harness, Windsurf, GitHub Copilot, entre otros — se registran como **Runtimes Emergentes** en la [Matriz de Compatibilidad de Modelos](spec/model-compatibility.md) y podrían pasar a ser de Referencia cuando sus convenciones se estabilicen.
 
 ---
 

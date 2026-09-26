@@ -40,16 +40,25 @@ npx ai-native-repo init . --runtime cursor --tier standard
 
 ---
 
-## ⚠️ Modellunabhängig, Laufzeitabhängig
+## ⚠️ Semantikunabhängig, Laufzeitabhängig, Modellanpassbar
 
 Ab 2026 hat die Branche erkannt, dass der Aufbau eines KI-nativen Repositories die Trennung von drei verschiedenen Ebenen erfordert:
-1. **Das Modell** (z. B. OpenAI, Anthropic, Google): Bestimmt die rohe Intelligenz.
-2. **Die Agent Runtime** (z. B. Cursor, Claude Code, Gemini CLI): Bestimmt, *wie* Dateien gelesen werden und *wann* Hooks ausgeführt werden.
+1. **Das Modell / der Model Provider** (z. B. OpenAI, Anthropic, Google, DeepSeek, Qwen, Meta, Moonshot, Zhipu, MiniMax): Bestimmt die rohe Fähigkeit und das Schlussfolgern des zugrunde liegenden Modells. Schreibe hier niemals eine konkrete Modellversion fest — siehe die [Model Compatibility Matrix](spec/model-compatibility.md) für die vollständige Runtime × Model Provider Zuordnung.
+2. **Die Agent Runtime** (z. B. Claude Code, Codex, Gemini CLI, Cursor): Bestimmt, *wie* Dateien gelesen werden und *wann* Hooks ausgeführt werden.
 3. **Der Repository Standard**: Die universelle semantische Wahrheit deines Projekts.
 
 Während die Geschäftssemantik deines Projekts **modellunabhängig** ist, muss sie **laufzeitabhängig** sein.
 - **Anthropics Claude Code** erwartet `.claude/settings.json`.
 - **Cursor** erwartet `.cursor/rules/*.mdc`.
+
+**Model Provider ≠ Agent Runtime — verschmelze sie nicht zu einer Achse.** Keine Runtime gehört einem einzigen Model Provider (Cursor und Claude Code lassen sich beide mit Anthropic, OpenAI oder API-kompatiblen Anbietern wie DeepSeek betreiben). Deshalb wird der Model Provider separat in der [Model Compatibility Matrix](spec/model-compatibility.md) erfasst, statt zu einer eigenen Template-Dimension zu werden.
+
+### Referenz- vs. Consumer-Repositories
+- **Dieses Repository (Referenz)**: Dieses GitHub-Repository ist das globale *Referenz-Repository*. Es enthält mehrere Adapter, den Vorlagengenerator und den CLI-Code.
+- **Dein Repository (Consumer)**: Das von der CLI erzeugte Repository ist ein *Consumer-Repository*. Es sollte genau **einen** Runtime-Adapter und **einen** Tier enthalten, damit der KI-Agent nie durch widersprüchliche Regelsätze verwirrt wird.
+
+### Aktuelle Referenz-Runtimes vs. entstehende Runtimes
+Dieses Repository bietet heute erstklassige Vorlagen für vier **Referenz-Runtimes**: `claude-code`, `codex`, `gemini-cli`, `cursor`. Andere reale Runtimes — Qwen Code, DeepSeek Harness, Windsurf, GitHub Copilot und weitere — werden als **entstehende Runtimes** in der [Model Compatibility Matrix](spec/model-compatibility.md) geführt und können zu Referenz-Runtimes aufsteigen, sobald sich ihre Konventionen stabilisiert haben.
 
 ---
 

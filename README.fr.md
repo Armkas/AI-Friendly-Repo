@@ -40,20 +40,25 @@ npx ai-native-repo init . --runtime cursor --tier standard
 
 ---
 
-## ⚠️ Agnostique au Modèle, Conscient de l'Environnement
+## ⚠️ Agnostique à la sémantique, Conscient de l'environnement, Ajustable au Modèle
 
 À partir de 2026, l'industrie a réalisé que la construction d'un dépôt IA natif nécessite de séparer trois couches distinctes :
-1. **Le Modèle** (ex. modèles OpenAI, Anthropic, Google) : Détermine l'intelligence brute.
-2. **Le Runtime de l'Agent** (ex. Cursor, Claude Code, Gemini CLI) : Détermine *comment* les fichiers sont lus et *quand* les hooks sont exécutés.
+1. **Le Modèle / Fournisseur de Modèle** (ex. OpenAI, Anthropic, Google, DeepSeek, Qwen, Meta, Moonshot, Zhipu, MiniMax) : Détermine la capacité brute et le raisonnement du modèle sous-jacent. Ne codez jamais en dur une version de modèle spécifique ici — voir la [Matrice de Compatibilité des Modèles](spec/model-compatibility.md) pour le mapping complet Runtime × Fournisseur de Modèle.
+2. **Le Runtime de l'Agent** (ex. Claude Code, Codex, Gemini CLI, Cursor) : Détermine *comment* les fichiers sont lus et *quand* les hooks sont exécutés.
 3. **Le Standard du Dépôt** : La vérité sémantique universelle de votre projet.
 
 Bien que la sémantique métier de votre projet soit **Agnostique au Modèle**, elle doit être **Consciente de l'Environnement**. 
 - **Claude Code d'Anthropic** attend `.claude/settings.json`.
 - **Cursor** attend `.cursor/rules/*.mdc`.
 
+**Fournisseur de Modèle ≠ Runtime de l'Agent — ne les fusionnez pas en un seul axe.** Aucun runtime n'appartient à un seul fournisseur de modèle (Cursor et Claude Code peuvent tous deux être pilotés par Anthropic, OpenAI, ou des fournisseurs compatibles comme DeepSeek). C'est pourquoi le Fournisseur de Modèle est consigné séparément dans la [Matrice de Compatibilité des Modèles](spec/model-compatibility.md) plutôt que de devenir un Template à part entière.
+
 ### Dépôts de Référence vs Dépôts Consommateurs
 - **Ce dépôt (Référence)** : Ce dépôt GitHub est le *dépôt de référence* global.
 - **Votre Dépôt (Consommateur)** : Le dépôt généré par la CLI. Il doit contenir exactement **un** adaptateur d'environnement et **un** niveau, garantissant que l'agent IA n'est jamais confus par des règles concurrentes.
+
+### Runtimes de Référence actuels vs Runtimes émergents
+Ce dépôt fournit dès aujourd'hui des templates de première classe pour quatre **Runtimes de Référence** : `claude-code`, `codex`, `gemini-cli`, `cursor`. D'autres runtimes bien réels — Qwen Code, DeepSeek Harness, Windsurf, GitHub Copilot, etc. — sont recensés comme **Runtimes Émergents** dans la [Matrice de Compatibilité des Modèles](spec/model-compatibility.md) et pourront devenir des Runtimes de Référence une fois leurs conventions stabilisées.
 
 ---
 

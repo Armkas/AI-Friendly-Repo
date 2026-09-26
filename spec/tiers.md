@@ -1,7 +1,7 @@
 # AI-Native Repository Tiers
 
 The AI-Native Repository Standard introduces **Tiers** to define the complexity, maturity, and automation profile of a repository. 
-Tier is completely orthogonal to the Agent Runtime (e.g., Claude Code, Cursor) and the Model (e.g., GPT-6, Opus).
+Tier is completely orthogonal to the Agent Runtime (e.g., Claude Code, Cursor) and the Model Provider (e.g., Anthropic, OpenAI, DeepSeek) — see [Model Compatibility Matrix](model-compatibility.md).
 
 You choose a Tier based on your team's needs, not the tool you use.
 

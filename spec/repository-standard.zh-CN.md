@@ -39,13 +39,15 @@ Agent 应根据任务动态路由到必要的上下文：
 
 # II. Standardize Concepts, Isolate Runtimes (标准跨工具，实例单工具)
 
-## 规则 03 — Model-Agnostic, Runtime-Aware (标准与模型解耦，运行时与工具适配)
+## 规则 03 — Semantic-Agnostic, Runtime-Aware, Model-Tunable (语义与模型解耦，运行时感知，模型可调)
 整个 AI 编码产业必须被拆分为三个独立维度：
-1. **Model (模型层)**（如 GPT-6 Astra, Claude Opus 5.5）：决定底层推理和理解能力。
-2. **Agent Runtime (智能体运行时)**（如 Cursor, Claude Code, Windsurf, Codex）：决定*如何*读取文件、*何时*加载技能、*怎样*执行拦截钩子。
+1. **Model / Model Provider (模型 / 模型提供商)**（如 OpenAI、Anthropic、Google、DeepSeek、Qwen、Meta、Moonshot、Zhipu、MiniMax）：决定底层推理引擎所属的提供商或模型家族。这里绝不要写死具体的模型版本号——提供商和模型家族的更替远比具体版本号缓慢。
+2. **Agent Runtime (智能体运行时)**（如 Claude Code、Codex、Gemini CLI、Cursor、Qwen Code、DeepSeek Harness）：决定*如何*读取文件、*何时*加载技能、*怎样*执行拦截钩子。
 3. **Repository Standard (仓库标准)**（即语义）：定义你的项目*是什么*。
 
-你仓库里的语义规范（领域知识、契约、工作流）必须是 **Model-Agnostic (与模型无关的)**。然而，因为不同的运行时（Runtime）期望不同的配置结构（`.claude/`, `.cursor/rules/`, `.agents/skills/`），你的项目工程结构必须是 **Runtime-Aware (运行时感知的)**。
+你仓库里的语义规范（领域知识、契约、工作流）必须是 **Model-Agnostic (与模型无关的)**。然而，因为不同的运行时（Runtime）期望不同的配置结构（`.claude/`, `.cursor/rules/`, `.agents/skills/`），你的项目工程结构必须是 **Runtime-Aware (运行时感知的)**。可选地，极小一部分 prompt / skill 措辞可以是 **Model-Tunable (模型可调的)**——针对特定模型的上下文窗口或指令风格做微调——但这类调整绝不能渗透进 Repository Standard 的核心语义。
+
+**Model Provider ≠ Agent Runtime，切勿把它们合并成一个维度。** 一个 Runtime 并不专属于某一个 Model Provider（Cursor 和 Claude Code 都可以由 Anthropic、OpenAI 或 DeepSeek 等兼容 API 的模型驱动）；反过来，同一个提供商的模型也可能出现在多个 Runtime 里（Qwen Code 原生运行 Qwen，但也支持将 DeepSeek、OpenAI、Anthropic 配置为第三方 provider）。正因如此，**Model Provider 绝不能成为 Template 的一个维度**（不存在 `templates/deepseek/` 或 `templates/qwen/`），它被单独记录在 [Model Compatibility Matrix（模型兼容性矩阵）](model-compatibility.md) 中。
 
 **建立明确的 Runtime 所有权，避免规则漂移。**
 一个生产项目可以同时使用多个 Agent Runtime（例如开发者用 Cursor，CI 用 Claude Code），但你必须明确划分所有权。业务逻辑（`docs/domains`）是通用的，你绝不能在 `.cursor/rules/` 和 `.claude/skills` 中重复维护相同的业务规则。每个工具的 Runtime Adapter 都必须干净地将 Agent 引导回唯一的语义真理。

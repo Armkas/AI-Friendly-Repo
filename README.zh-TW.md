@@ -40,22 +40,27 @@ npx ai-native-repo init . --runtime cursor --tier standard
 
 ---
 
-## ⚠️ 模型無關，運行時感知 (Model-Agnostic, Runtime-Aware)
+## ⚠️ 語義無關，運行時感知，模型可調 (Semantic-Agnostic, Runtime-Aware, Model-Tunable)
 
 **"語義是統一的，但運行時是碎片化的。"**
 
 截至 2026 年，業界已經意識到，構建一個 AI-Native 代碼庫需要分離三個不同的層次：
-1. **模型 (The Model)**（例如 OpenAI 模型、Anthropic 模型、Google 模型）：決定原始的智能和推理能力。
-2. **代理運行時 (The Agent Runtime)**（例如 Cursor, Claude Code, Windsurf, Copilot, Gemini CLI）：決定*如何*讀取文件、*何時*調用技能以及*執行什麼*鉤子。
+1. **模型 / 模型提供商 (The Model / Model Provider)**（例如 OpenAI、Anthropic、Google、DeepSeek、Qwen、Meta、Moonshot、智譜 (Zhipu)、MiniMax）：決定底層模型的原始能力和推理水準。這裡絕不要寫死具體的模型版本號——完整的運行時 × 模型提供商對應關係請見[模型相容性矩陣](spec/model-compatibility.md)。
+2. **代理運行時 (The Agent Runtime)**（例如 Claude Code, Codex, Gemini CLI, Cursor）：決定*如何*讀取文件、*何時*調用技能以及*執行什麼*鉤子。
 3. **代碼庫標準 (The Repository Standard)**（例如上下文、契約、工作流）：你的項目的全局統一語義真相。
 
 雖然你項目的業務語義是**模型無關**的（OpenAI 和 Anthropic 模型都能理解 `docs/domains/voice.md` 文件），但它們必須是**運行時感知**的。
 - **Anthropic 的 Claude Code** 期望存在 `.claude/settings.json`（專注於生命周期鉤子）。
 - **Cursor** 期望存在 `.cursor/rules/*.mdc`（專注於多模型全局匹配）。
 
+**Model Provider ≠ Agent Runtime，兩者不可合併成同一個維度。** 一個 Runtime 從不專屬於某一個 Model Provider——Cursor 和 Claude Code 都能由 Anthropic、OpenAI，或是 DeepSeek 這類相容 API 的提供商驅動；同一個提供商的模型也可能出現在多個 Runtime 中。這正是 Model Provider 被單獨記錄在[模型相容性矩陣](spec/model-compatibility.md)、而非成為獨立 Template 的原因。
+
 ### 參考代碼庫 vs. 消費代碼庫
 - **本代碼庫 (Reference)**：這個 GitHub 代碼庫是全局的*參考代碼庫*。它包含多個適配器、模板生成器和 CLI 代碼。
 - **你的代碼庫 (Consumer)**：由 CLI 生成的代碼庫是*消費代碼庫*。它應該包含**恰好一個**運行時適配器和**一個**層級，確保 AI 代理永遠不會被相互衝突的規則集所困擾。
+
+### 當前的參考運行時 (Reference Runtimes) 與新興運行時 (Emerging Runtimes)
+本代碼庫目前為四種**參考運行時**提供開箱即用的模板：`claude-code`、`codex`、`gemini-cli`、`cursor`。其他真實存在的運行時——Qwen Code、DeepSeek Harness、Windsurf、GitHub Copilot 等——被記錄為[模型相容性矩陣](spec/model-compatibility.md)中的**新興運行時**，待其慣例穩定後可能升級為參考運行時。
 
 ---
 

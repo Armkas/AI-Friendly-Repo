@@ -39,13 +39,15 @@ Progressive Disclosure is a context-routing policy, not a fixed reading order. T
 
 # II. Standardize Concepts, Isolate Runtimes
 
-## Rule 03 — Model-Agnostic, Runtime-Aware
+## Rule 03 — Semantic-Agnostic, Runtime-Aware, Model-Tunable
 The AI industry requires separating three distinct layers:
-1. **The Model** (e.g., GPT-6 Astra, Claude Opus 5.5): The underlying reasoning engine.
-2. **The Agent Runtime** (e.g., Cursor, Claude Code, Windsurf, Codex): *How* files are read, *when* skills are invoked, and *what* hooks execute.
+1. **The Model / Model Provider** (e.g., OpenAI, Anthropic, Google, DeepSeek, Qwen, Meta, Moonshot, Zhipu, MiniMax): The underlying reasoning engine's provider or family. Never hard-code a specific model version here — providers and families change far less often than model names.
+2. **The Agent Runtime** (e.g., Claude Code, Codex, Gemini CLI, Cursor, Qwen Code, DeepSeek Harness): *How* files are read, *when* skills are invoked, and *what* hooks execute.
 3. **The Repository Standard** (The semantics): *What* your project is.
 
-Your repository's semantics (Domains, Contracts, Workflows) must be **Model-Agnostic**. However, because different agent runtimes expect configurations in different directories (`.claude/`, `.cursor/rules/`, `.agents/skills/`), your repository's setup must be **Runtime-Aware**.
+Your repository's semantics (Domains, Contracts, Workflows) must be **Model-Agnostic**. However, because different agent runtimes expect configurations in different directories (`.claude/`, `.cursor/rules/`, `.agents/skills/`), your repository's setup must be **Runtime-Aware**. Optionally, a small, isolated layer of prompt/skill wording may be **Model-Tunable** — adjusted for a specific model's context window or instruction style — but this must never leak into the Repository Standard's core semantics.
+
+**Model Provider ≠ Agent Runtime — do not collapse them into one axis.** A Runtime is not owned by a single Model Provider (Cursor and Claude Code can both be driven by Anthropic, OpenAI, or API-compatible providers such as DeepSeek), and a single provider's models can show up inside multiple runtimes (Qwen Code natively runs Qwen but also supports DeepSeek, OpenAI, and Anthropic as configured providers). Because of this, **Model Provider must never become a Template dimension** (there is no `templates/deepseek/` or `templates/qwen/`); it is tracked separately in the [Model Compatibility Matrix](model-compatibility.md).
 
 **Establish Explicit Runtime Ownership.**
 While a production project can use multiple agent runtimes concurrently (e.g. Cursor for devs + Claude Code for CI scripts), you must explicitly divide ownership. The business logic (`docs/domains`) remains universal, but you must never duplicate identical business rules across `.cursor/rules/` and `.claude/skills`. Each runtime adapter must cleanly route to the single source of semantic truth.

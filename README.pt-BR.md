@@ -40,18 +40,27 @@ npx ai-native-repo init . --runtime cursor --tier standard
 
 ---
 
-## ⚠️ Agnóstico ao Modelo, Ciente do Runtime
+## ⚠️ Agnóstico à Semântica, Ciente do Runtime, Ajustável ao Modelo
 
 **"A semântica é unificada, mas os runtimes são fragmentados."**
 
 A partir de 2026, a indústria percebeu que a construção de um repositório nativo de IA exige a separação de três camadas:
-1. **O Modelo** (ex: OpenAI, Anthropic, Google).
-2. **O Runtime do Agente** (ex: Cursor, Claude Code, Gemini CLI).
+1. **O Modelo / Provedor de Modelo** (ex: OpenAI, Anthropic, Google, DeepSeek, Qwen, Meta, Moonshot, Zhipu, MiniMax): Determina a capacidade bruta e o raciocínio do modelo subjacente. Nunca fixe uma versão específica de modelo aqui — veja a [Matriz de Compatibilidade de Modelos](spec/model-compatibility.md) para o mapeamento completo Runtime × Provedor de Modelo.
+2. **O Runtime do Agente** (ex: Claude Code, Codex, Gemini CLI, Cursor).
 3. **O Padrão do Repositório**: A verdade semântica do seu projeto.
 
 Embora a semântica seja **Agnóstica ao Modelo**, ela deve ser **Ciente do Runtime**. 
 - **Claude Code (Anthropic)** espera `.claude/settings.json`.
 - **Cursor** espera `.cursor/rules/*.mdc`.
+
+**Provedor de Modelo ≠ Runtime do Agente — não os funda em um único eixo.** Nenhum runtime pertence a um único provedor de modelo (Cursor e Claude Code podem ser executados com Anthropic, OpenAI, ou provedores compatíveis como DeepSeek). Por isso o Provedor de Modelo é registrado separadamente na [Matriz de Compatibilidade de Modelos](spec/model-compatibility.md), em vez de se tornar um Template próprio.
+
+### Repositório de Referência vs. Repositório Consumidor
+- **Este repositório (Referência)**: Este repositório do GitHub é o *Repositório de Referência* global. Ele contém múltiplos adaptadores, o gerador de templates e o código do CLI.
+- **Seu repositório (Consumidor)**: O repositório gerado pelo CLI é um *Repositório Consumidor*. Ele deve conter exatamente **um** adaptador de Runtime e **um** Tier, garantindo que o agente de IA nunca fique confuso com conjuntos de regras conflitantes.
+
+### Runtimes de Referência atuais vs. Runtimes emergentes
+Este repositório já oferece templates de primeira classe para quatro **Runtimes de Referência**: `claude-code`, `codex`, `gemini-cli`, `cursor`. Outros runtimes reais — Qwen Code, DeepSeek Harness, Windsurf, GitHub Copilot, entre outros — são registrados como **Runtimes Emergentes** na [Matriz de Compatibilidade de Modelos](spec/model-compatibility.md) e podem ser promovidos a Runtimes de Referência conforme suas convenções se estabilizarem.
 
 ---
 
